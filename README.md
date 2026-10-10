@@ -15,19 +15,20 @@ develop over time, so you can read the data yourself and judge what it means.
 
 - Interactive forecast charts (meteograms) for temperature, UV index,
   precipitation, cloud cover, wind and pressure
-- Choice of weather models, from global (ECMWF IFS, ECMWF AIFS, GFS) to
-  regional (DWD ICON D2 and ICON EU, DMI HARMONIE), plus an automatic
-  best-match blend
-- Selectable time step (1, 3 or 6 hours) and forecast range
-  (3, 5, 7 or 16 days)
+- Official weather alerts worldwide, wherever official sources are available,
+  with a four-level severity indicator (neutral, yellow, orange, red)
 - Air quality: AQI, particulate matter, reactive gases, dust and aerosol
   optical depth
 - Pollen forecast
 - Sun and moon data: altitude, day and night, moon visibility and daily summary
 - Optional marine data
-- Official weather alerts with a four-level severity indicator
-  (neutral, yellow, orange, red)
-- Saved locations that you can reorder by dragging
+- Choice of weather models, from global (ECMWF IFS, ECMWF AIFS, GFS) to
+  regional (DWD ICON D2 and ICON EU, DMI HARMONIE), plus an automatic
+  best-match blend
+- Save as many locations as you like and reorder them by dragging
+- Add locations by name or by entering coordinates
+- Selectable time step (1, 3 or 6 hours) and forecast range
+  (3, 5, 7 or 16 days)
 - Five unit presets (metric, mmHg, imperial, m/s and knots variants)
 - Adjustable line smoothing, from raw data to strong smoothing
 - Automatic refresh with a last-updated indicator
@@ -126,17 +127,23 @@ data from the following services:
 - **Weather data by [Open-Meteo.com](https://open-meteo.com/)**, licensed under
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
   ([licence details](https://open-meteo.com/en/licence)).
-  This covers forecasts, air quality (based on CAMS / Copernicus) and marine data.
-  The application converts units and visualises the data.
-  Underlying model data come from national weather services such as DWD, ECMWF,
-  NOAA and DMI; please see the Open-Meteo licence page for the full list and terms.
-- **Place search:** Open-Meteo Geocoding API, based on
-  [GeoNames](https://www.geonames.org/) (CC BY 4.0).
-- **Official warnings:** [MeteoAlarm](https://feeds.meteoalarm.org) (Europe) and the
-  [FOSS Public Alert Server (available global CAP sources)](https://github.com/KDE/foss-public-alert-server)
-- **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License).
-
-Open-Meteo, MeteoAlarm and the other data providers do not endorse this project.
+  This covers forecasts, air quality and marine data. The application converts
+  units and visualises the data. Underlying model data come from national
+  weather services and agencies such as DWD, ECMWF, NOAA and DMI; air quality
+  data come from the Copernicus Atmosphere Monitoring Service (CAMS). Please see
+  the Open-Meteo licence page for the full list and terms.
+- **Place search:** [Open-Meteo Geocoding API](https://open-meteo.com/en/docs/geocoding-api),
+  based on [GeoNames](https://www.geonames.org/) (CC BY 4.0).
+- **Place names for coordinates:** [Nominatim](https://nominatim.openstreetmap.org/),
+  © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL).
+- **Official warnings:**
+  - [MeteoAlarm](https://feeds.meteoalarm.org): official warnings for Europe,
+    aggregated from national meteorological services.
+  - [FOSS Public Alert Server](https://github.com/KDE/foss-public-alert-server)
+    ([alerts.kde.org](https://alerts.kde.org)): official CAP warnings collected
+    from alerting authorities worldwide, a project of KDE and the FOSS Warn team.
+- **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License), bundled
+  locally with the application.
 
 ### Usage note
 
