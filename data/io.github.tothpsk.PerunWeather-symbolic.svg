@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g transform="translate(-1.19 -0.76) scale(0.1413)" fill="#bebebe">
+    <path d="M66 26 H78 A18 18 0 0 1 78 62 H58" fill="none" stroke="#bebebe" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M60 16 L34 64 H50 L42 108 L76 56 H60 L70 16 Z"/>
+  </g>
+</svg>

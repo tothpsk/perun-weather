@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Perun Weather
+Comment=Weather, made visible
+Exec=perun-weather
+Icon=io.github.tothpsk.PerunWeather
+Terminal=false
+Type=Application
+Categories=Utility;Science;
+Keywords=weather;forecast;meteogram;air quality;pollen;
+StartupWMClass=io.github.tothpsk.PerunWeather

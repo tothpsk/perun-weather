@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "perun-weather"
+version = "4.0.0"
+description = "Perun Weather — weather, made visible. Interactive charts, alerts and air quality, powered by Open-Meteo."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Peter Tóth" }]
+keywords = ["weather", "meteogram", "forecast", "open-meteo", "gtk4", "libadwaita"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+  "Environment :: X11 Applications :: GTK",
+]
+
+[project.urls]
+Repository = "https://github.com/tothpsk/perun-weather"
+Issues = "https://github.com/tothpsk/perun-weather/issues"
+
+[project.scripts]
+perun-weather = "perun_weather.main:main"
+
+[tool.setuptools]
+packages = ["perun_weather"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+perun_weather = ["data/*.html", "data/*.js"]

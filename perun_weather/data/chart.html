@@ -1,0 +1,3164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Perun Weather — Production</title>
+<script src="plotly.min.js"></script>
+<script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+
+<style>
+:root{--bg:#1e2129;--panel:#262b36;--deep:#1a1d24;--border:#363c4a;--text:#e8eaf0;--muted:#9aa3b2;--accent:#4fc3f7;--heading:#e8eaf0}
+*{box-sizing:border-box}body{margin:0;padding:20px;background:var(--bg);color:var(--text);font-family:Inter,'Segoe UI',sans-serif}.app{max-width:none;margin:0;padding:0 20px}h1{font-size:20px;margin:0 0 4px}.subtitle{font-size:13px;color:var(--muted);margin-bottom:14px}.badge{font-size:11px;color:var(--accent);border:1px solid var(--border);padding:1px 6px;border-radius:4px;margin-left:6px}.layout{display:grid;grid-template-columns:235px 1fr;gap:16px}@media(max-width:900px){.layout{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr!important;padding-bottom:48px}.toolbarStatus{left:18px;right:auto}.summary{max-width:60%}}
+.sidebar,.toolbar,.section{background:var(--panel);border:1px solid var(--border);border-radius:10px}.sidebar{padding:14px;height:max-content}.sidebar h2,.sectionHead h3{font-size:14px;color:var(--heading);font-weight:650;margin:0}.loc{display:flex;align-items:center;gap:7px;background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:8px 9px;margin:8px 0 6px;font-size:13px;cursor:pointer;transition:background .2s}.loc:hover{background:#2a303c}.loc.active{border-color:var(--accent);background:#1c2733}.loc.drag{opacity:.45;border-style:dashed}.loc.dragover{border-color:var(--accent);border-style:solid;box-shadow:inset 0 0 0 1px var(--accent)}.handle{color:var(--muted);font-size:15px;cursor:grab;user-select:none}.locText{flex:1;min-width:0}.locText b{font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.locText small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.delete{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px}.delete:hover{color:#ef5350}.add{width:100%;background:var(--deep);border:1px dashed var(--border);color:var(--muted);border-radius:8px;padding:8px;cursor:pointer;margin-top:3px;transition:all .2s;font-size:13px}.add:hover{border-color:var(--accent);color:var(--accent);background:#1c2733}.searchbox{margin-top:8px;display:none;flex-direction:column;gap:6px}.searchbox.open{display:flex}.searchbox input{background:var(--deep);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 8px;font-size:13px}.searchresults{max-height:220px;overflow-y:auto}.searchresult{padding:7px 8px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid transparent}.searchresult:hover{background:#2a303c;border-color:var(--border)}.searchresult small{display:block;color:var(--muted);margin-top:1px}.searchhint{font-size:11px;color:var(--muted)}.hint{font-size:10px;color:var(--muted);margin:8px 2px 0;line-height:1.35}
+.toolbar{display:grid;grid-template-columns:minmax(220px,1.55fr) minmax(150px,.95fr) minmax(150px,.95fr) minmax(180px,1fr) minmax(180px,1fr) max-content max-content;gap:12px;align-items:end;padding:14px 18px;margin-bottom:14px;position:relative;padding-bottom:42px;overflow:hidden}.toolbar .field{min-width:0}.toolbar .field select{width:100%}.toolbarStatus{position:absolute;right:18px;bottom:12px}.field{display:flex;flex-direction:column;gap:4px}.field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.field select{-webkit-appearance:none;appearance:none;height:40px;min-width:145px;padding:7px 26px 7px 9px;background-color:var(--deep);background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 15px) 50%,calc(100% - 10px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:13px;cursor:pointer}.field select:focus{outline:none;border-color:var(--accent)}.field select:disabled{opacity:.5;cursor:not-allowed}.field select option{background-color:var(--deep);color:var(--text)}.btn{height:40px;border:0;background:var(--accent);color:#10131a;padding:0 15px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}.btn:hover{opacity:.9}.btn.alt{background:#41485c;color:var(--text)}.btn.autoToggle{min-width:150px;text-align:center}.refreshing{opacity:.68;pointer-events:none}.status{font-size:11px;color:var(--muted);white-space:nowrap}.status b{color:var(--accent)}
+.section{padding:12px 14px;margin-bottom:14px}.sectionHead{cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;user-select:none;gap:12px}.sectionHead h3{display:flex;gap:8px;align-items:center;flex-shrink:0}.chev{transition:.2s;color:var(--muted)}.chev.open{transform:rotate(90deg)}.dot{height:10px;width:10px;border-radius:50%;background:#5b6577;flex-shrink:0}.dot.neutral{background:#5b6577}.dot.ok{background:#43a047}.dot.warn{background:#fb8c00}.dot.bad{background:#e53935}.dot.info{background:#4fc3f7}.dot.yellow{background:#fdd835}.dot.orange{background:#fb8c00}.dot.red{background:#e53935}.summary{display:flex;flex-wrap:wrap;gap:4px 13px;justify-content:flex-end;text-align:right;font-size:11px;color:var(--muted);padding-top:2px;max-width:77%}.summary b{color:var(--heading);font-weight:600}.summary .chip{white-space:nowrap;display:inline-flex;align-items:center;gap:4px}.summary .chip.ok b{color:#66d17a}.summary .chip.warn b{color:#ffb74d}.summary .chip.bad b{color:#ff6b6b}.summary .chip.marineHigh b,
+.summary .chip.marineRising {
+  color: #4fc3f7;
+}
+
+.summary .chip.marineHigh b,
+.summary .chip.marineRising b {
+  color: #4fc3f7;
+}
+
+.summary .chip.marineLow b,
+.summary .chip.marineFalling {
+  color: #fb8c00;
+}
+
+.summary .chip.marineLow b,
+.summary .chip.marineFalling b {
+  color: #fb8c00;
+}.body{max-height:0;overflow:hidden;transition:max-height .3s ease}.body.open{max-height:20000px}.inner{padding-top:10px}.alertCard{display:flex;gap:10px;background:var(--deep);padding:8px 10px;border-left:4px solid;border-radius:8px;margin-bottom:7px}.alertCard.neutral{border-color:#5b6577}.alertCard.yellow{border-color:#fdd835}.alertCard.orange{border-color:#fb8c00}.alertCard.red{border-color:#e53935}.meta{font-size:11px;color:var(--muted)}.innerCard{background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:10px}.cardTitle{font-size:12px;color:var(--heading);font-weight:600;padding:2px 4px 4px}.toast{position:fixed;right:20px;bottom:20px;background:#22364a;border:1px solid #4982aa;color:#f1f8ff;border-radius:8px;padding:10px 14px;opacity:0;transform:translateY(12px);transition:.2s;pointer-events:none;font-size:12px;z-index:50}.toast.show{opacity:1;transform:translateY(0)}footer{text-align:center;color:var(--muted);font-size:11px;margin:10px;line-height:1.6}footer b{color:var(--muted)}
+footer a{color:var(--accent);text-decoration:none}
+footer a:visited{color:var(--accent)}
+footer a:hover{text-decoration:underline}
+.dot.day{background:#ffd166}
+.dot.night{background:#2b3550}
+.infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:760px){.infoGrid{grid-template-columns:1fr}}
+.infoCard{background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.infoCard h4{margin:0 0 10px;font-size:12px;color:var(--heading);font-weight:650;display:flex;align-items:center;gap:7px}
+.factRow{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;border-bottom:1px solid #2a2f3b}
+.factRow:last-child{border-bottom:none}
+.factRow .label{color:var(--muted);display:flex;align-items:center;gap:8px;font-size:12px}
+.factRow .value{color:var(--heading);font-weight:600;display:flex;align-items:center;gap:4px}
+.phaseBadge{display:inline-flex;align-items:center;gap:6px;background:#1e2129;border:1px solid var(--border);border-radius:20px;padding:3px 10px 3px 8px;font-size:12px;color:var(--heading)}
+.ico{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex-shrink:0}
+.ico svg{width:20px;height:20px;display:block}
+.arrowUp{color:#66d17a}
+.arrowDown{color:#ff8a65}
+#helpContent h3{font-size:14px;color:var(--heading);margin:18px 0 8px}
+#helpContent h3:first-child{margin-top:0}
+#helpContent p{color:#c9d0dc;font-size:13px;line-height:1.55;margin:6px 0}
+#helpContent table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+#helpContent th,#helpContent td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--border)}
+#helpContent th{color:var(--muted);font-weight:600;text-transform:uppercase;font-size:10.5px;letter-spacing:.03em}
+#helpContent td{color:#dfe3ea}
+#helpContent a{color:var(--accent)}
+#helpContent .swatch{display:inline-block;height:12px;width:12px;border-radius:3px;margin-right:7px;vertical-align:middle}
+#helpContent .gradientBar{height:14px;border-radius:7px;margin:8px 0;background:linear-gradient(90deg,#5b6ea0,#46a0dc,#3c8cdc,#5abed2,#6ebe6e,#d2c846,#eb9632,#e6503c,#aa1e3c)}
+#helpContent .gradientLabels{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted)}
+#helpContent .changelog-entry{border-left:3px solid var(--accent);padding-left:12px;margin-bottom:14px}
+#helpContent .changelog-entry .ver{font-weight:700;color:var(--accent);font-size:13px}
+#helpContent .changelog-entry ul{margin:5px 0 0;padding-left:16px;font-size:12.5px;color:#c9d0dc}
+#helpContent .tag{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;margin-left:5px}
+#helpContent .tag.added{background:rgba(67,160,71,.18);color:#81c784}
+#helpContent .tag.fixed{background:rgba(251,140,0,.18);color:#ffb74d}
+#helpContent .tag.changed{background:rgba(79,195,247,.18);color:#81d4fa}
+#helpContent .card{background:var(--deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+#helpContent .card h4{margin:0 0 6px;font-size:13px;color:var(--heading);font-weight:650}
+#helpContent .card p{margin:0}
+#helpContent .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#helpContent .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+#helpContent .steps{counter-reset:step}
+#helpContent .step{position:relative;padding-left:34px;margin-bottom:12px;font-size:13px;color:#c9d0dc}
+#helpContent .step::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:0;height:22px;width:22px;border-radius:50%;background:var(--accent);color:#10131a;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+#helpContent .warn-box{background:rgba(251,140,0,.1);border:1px solid #fb8c00;border-radius:8px;padding:10px 12px;font-size:12.5px;color:#ffcc80;margin:8px 0}
+#helpContent .limit-box{background:rgba(229,57,53,.08);border:1px solid #e53935;border-radius:8px;padding:10px 12px;font-size:12.5px;color:#ff8a80;margin:8px 0}
+#helpContent .chip{display:inline-flex;align-items:center;font-size:11.5px;background:var(--deep);border:1px solid var(--border);border-radius:6px;padding:3px 8px;margin:2px 4px 2px 0}
+#helpContent code{background:var(--deep);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:12px;color:#ffd166}
+@media(max-width:760px){#helpContent .grid2,#helpContent .grid3{grid-template-columns:1fr}}
+#helpContent .dot{display:inline-block;height:10px;width:10px;border-radius:50%;margin-right:8px;vertical-align:middle;background:#5b6577}
+#helpContent .dot.neutral{background:#5b6577}
+#helpContent .dot.ok{background:#43a047}
+#helpContent .dot.warn{background:#fb8c00}
+#helpContent .dot.bad{background:#e53935}
+#helpContent .dot.info{background:#4fc3f7}
+#helpContent .dot.day{background:#ffd166}
+#helpContent .dot.night{background:#2b3550}
+#helpContent .dot.yellow{background:#fdd835}
+#helpContent .dot.orange{background:#fb8c00}
+#helpContent .dot.red{background:#e53935}
+.appHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.langSwitch{display:flex;gap:6px;background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:4px;flex-shrink:0}
+.langSwitch button{border:0;background:transparent;color:var(--muted);font-size:13px;font-weight:600;padding:6px 16px;border-radius:16px;cursor:pointer;transition:.15s}
+.langSwitch button:hover{color:var(--text)}
+.langSwitch button.active{background:var(--accent);color:#10131a}
+@media(max-width:600px){.appHeader{flex-direction:column}}
+@keyframes nowPulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+.nowPulseDot {
+  animation: nowPulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nowPulseDot { animation: none; }
+}
+/* Marine toggle below the weather model selector. */
+.toolbar {
+  align-items: start;
+}
+
+.toolbar > .btn {
+  margin-top: 18px;
+}
+
+.field label.marineToggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: normal;
+  cursor: pointer;
+}
+
+.marineToggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
+<aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
+<main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option></select>
+<label class="marineToggle">
+  <input
+    id="marineToggle"
+    type="checkbox"
+    onchange="setSetting('marine_enabled', this.checked)"
+  >
+  <span id="lblMarineToggle">Morské údaje</span>
+</label>
+</div><div class="field"><label id="lblInterval">Time interval</label><select id="intervalSelect" onchange="setSetting('interval',this.value)"><option id="optInterval1" value="1">1 hour</option><option id="optInterval3" value="3" selected>3 hours</option><option id="optInterval6" value="6">6 hours</option></select></div><div class="field"><label id="lblRange">Forecast range</label><select id="rangeSelect" onchange="setSetting('hours',String(Number(this.value)*24))"><option id="optRange3" value="3">3 days</option><option id="optRange5" value="5" selected>5 days</option><option id="optRange7" value="7">7 days</option><option id="optRange16" value="16">16 days</option></select></div><div class="field"><label id="lblUnits">Units</label><select id="unitsSelect" onchange="setSetting('units',this.value)"><option value="metric">°C · km/h · mm · hPa</option><option value="metric_mmhg">°C · km/h · mm · mmHg</option><option value="imperial">°F · mph · in · inHg</option><option value="ms">°C · m/s · mm · hPa</option><option value="knots">°C · knots · mm · hPa</option></select></div><div class="field"><label id="lblSmoothing">Line smoothing</label><select id="smoothingSelect" onchange="setSetting('smoothing',this.value)"><option id="optSmoothing0" value="0">None (raw data)</option><option id="optSmoothing1" value="1">Light</option><option id="optSmoothing2" value="2">Medium</option><option id="optSmoothing3" value="3">Strong</option></select></div><button id="refreshButton" class="btn" onclick="native('refresh')"><span id="lblRefresh">Refresh now</span></button><button id="autoButton" class="btn alt autoToggle" onclick="toggleAuto()">Auto-refresh: ON</button><span id="status" class="status toolbarStatus">Last updated: <b>--:--</b> · next auto-refresh: <b>--:--</b></span></div>
+<section class="section"><div class="sectionHead" onclick="toggleSection('alerts')"><h3><span id="alertsChevron" class="chev">▶</span><span id="alertsDot" class="dot neutral"></span> <span id="lblSectionAlerts">Active weather alerts</span></h3><div id="alertsSummary" class="summary"></div></div><div id="alertsBody" class="body"><div class="inner"><div id="alertsCards"></div><div id="alertsChart"></div></div></div></section>
+<section class="section"><div class="sectionHead" onclick="toggleSection('air')"><h3><span id="airChevron" class="chev">▶</span><span id="airDot" class="dot neutral"></span> <span id="lblSectionAir">Air quality &amp; pollen</span></h3><div id="airSummary" class="summary"></div></div><div id="airBody" class="body"><div class="inner"><div class="innerCard"><div class="cardTitle" id="lblCardAqi">AQI &amp; particulate matter</div><div id="aqi" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardGases">Reactive gases</div><div id="gases" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardAerosol">Dust &amp; aerosol optical depth</div><div id="aerosol" style="height:250px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardPollen">Pollen forecast</div><div id="pollen" style="height:285px"></div></div></div></div></section>
+<section class="section"><div class="sectionHead" onclick="toggleSection('weather')"><h3><span id="weatherChevron" class="chev open">▶</span><span id="weatherDot" class="dot neutral"></span> <span id="lblSectionWeather">Weather forecast</span></h3><div id="weatherSummary" class="summary"></div></div><div id="weatherBody" class="body open"><div class="inner"><div class="innerCard"><div class="cardTitle" id="lblCardTemp">Temperature &amp; UV index</div><div id="temperature" style="height:280px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardPrecip">Precipitation &amp; cloud cover</div><div id="precipitation" style="height:290px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardWind">Wind &amp; pressure</div><div id="wind" style="height:300px"></div></div></div></div></section>
+<section class="section">
+  <div class="sectionHead" onclick="toggleSection('sunmoon')">
+    <h3><span id="sunmoonChevron" class="chev">▶</span><span id="sunmoonDot" class="dot neutral"></span> <span id="lblSectionSunmoon">Sun &amp; moon</span></h3>
+    <div id="sunmoonSummary" class="summary"></div>
+  </div>
+  <div id="sunmoonBody" class="body">
+    <div class="inner">
+      <div class="innerCard">
+        <div class="cardTitle" id="lblCardSunmoonAlt">Sun &amp; moon altitude</div>
+        <div id="sunmoonAltitude" style="height:320px"></div>
+      </div>
+      <div class="innerCard">
+        <div class="cardTitle" id="lblCardSunmoonGantt">Day, night &amp; moon visibility</div>
+        <div id="sunmoonGantt" style="height:220px"></div>
+      </div>
+      <div class="infoGrid">
+        <div class="infoCard"><h4>☀️ <span id="lblCardSunToday">Sun today</span></h4><div id="sunFacts"></div></div>
+        <div class="infoCard"><h4>🌙 <span id="lblCardMoonToday">Moon today</span></h4><div id="moonFacts"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="marineSection" class="section" hidden>
+  <div class="sectionHead" onclick="toggleSection('marine')">
+    <h3>
+      <span id="marineChevron" class="chev">▶</span>
+      <span id="marineDot" class="dot neutral"></span>
+      <span id="lblSectionMarine">Morské údaje</span>
+    </h3>
+    <div id="marineSummary" class="summary"></div>
+  </div>
+
+<div id="marineBody" class="body">
+  <div class="inner">
+    <div id="marineMessage" class="meta"></div>
+
+    <div id="marineCharts" hidden>
+      <div class="innerCard">
+        <div id="lblCardSeaTemp" class="cardTitle">Teplota hladiny mora</div>
+        <div id="seaTemperature" style="height:280px"></div>
+      </div>
+
+      <div id="seaLevelCard" class="innerCard">
+        <div id="lblCardSeaLevel" class="cardTitle">Vývoj hladiny · príliv a odliv</div>
+        <div id="seaLevel" style="height:290px"></div>
+        <div id="seaLevelNote" class="meta"></div>
+      </div>
+      <div id="marineWavesCard" class="innerCard">
+        <div id="lblCardMarineWaves" class="cardTitle">Vlny · výška a perióda</div>
+        <div id="marineWaves" style="height:300px"></div>
+        <div id="marineDirectionNote" class="meta"></div>
+      </div>
+    </div>
+
+    <div id="marineDisclaimer" class="meta"></div>
+  </div>
+</div>
+</section>
+<section class="section">
+  <div class="sectionHead" onclick="toggleSection('help')">
+    <h3><span id="helpChevron" class="chev">▶</span><span class="ico" style="width:16px;height:16px"><svg viewBox="0 0 24 24"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11a3 3 0 0 1 3 3 3 3 0 0 1 3-3h5.5c.8 0 1.5.7 1.5 1.5V18c0 .8-.7 1.5-1.5 1.5H16a3 3 0 0 0-3 3 3 3 0 0 0-3-3H5.5C4.7 19.5 4 18.8 4 18z" stroke="#9aa3b2" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M11 7v13.5M14 7.05v13.45" stroke="#9aa3b2" stroke-width="1.5" fill="none"/></svg></span> <span id="helpTitle"></span></h3>
+  </div>
+  <div id="helpBody" class="body">
+    <div class="inner" id="helpContent"></div>
+  </div>
+</section>
+<footer id="footerInfo">Connected to Open-Meteo API</footer></main></div></div><div id="toast" class="toast"></div>
+<script>
+const CLR={temp:'#ff6b6b',uv:'#ffd166',rain:'#4fc3f7',cloud:'#aeb4c0',wind:'#4caf50',gust:'#1b5e20',pressure:'#ba68c8',eaqi:'#fdd835',pm25:'#ff7043',pm10:'#8d6e63',o3:'#ab47bc',no2:'#ef5350',so2:'#42a5f5',co:'#ffb74d',nh3:'#66bb6a',dust:'#b0bec5',aod:'#ce93d8'};
+const POLLEN={alder:'#8d6e63',birch:'#d4e157',grass:'#66bb6a',mugwort:'#ffb74d',ragweed:'#ef5350',olive:'#9ccc65'};
+const MODELS={best_match:'Best match (auto-blend)',icon_d2:'ICON D2 (DWD, 2 km, Europe)',icon_eu:'ICON EU (DWD, 7 km, Europe)',ecmwf_ifs:'ECMWF IFS (9 km, global)',ecmwf_ifs_hres:'ECMWF IFS HRES (9 km, global)',ecmwf_aifs:'ECMWF AIFS (AI model, global)',gfs:'GFS (NOAA, global)',harmonie:'DMI Seamless (HARMONIE → ECMWF, Europe)'};
+const UNITS={metric:{temp:'°C',wind:'km/h',precip:'mm',pressure:'hPa'},metric_mmhg:{temp:'°C',wind:'km/h',precip:'mm',pressure:'mmHg'},imperial:{temp:'°F',wind:'mph',precip:'in',pressure:'inHg'},ms:{temp:'°C',wind:'m/s',precip:'mm',pressure:'hPa'},knots:{temp:'°C',wind:'kn',precip:'mm',pressure:'hPa'}};
+const POLLUTANT_THRESHOLDS={pm25:{warn:25,bad:50},pm10:{warn:50,bad:100},o3:{warn:120,bad:180},no2:{warn:100,bad:200},so2:{warn:150,bad:350},co:{warn:4000,bad:10000},nh3:{warn:200,bad:1000},dust:{warn:50,bad:150},aod:{warn:0.3,bad:0.6}};
+const POLLEN_THRESHOLDS={alder:{warn:50,bad:200},birch:{warn:50,bad:400},grass:{warn:20,bad:50},mugwort:{warn:20,bad:50},ragweed:{warn:10,bad:50},olive:{warn:50,bad:200}};
+const STRINGS = {
+  en: {
+    app_title: "Perun Weather",
+    app_badge: "production",
+    loading_locations: "Loading locations…",
+    saved_locations: "Saved locations",
+    add_location: "+ Add location",
+    search_placeholder: "Search for a place",
+    drag_hint: "Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.",
+    searching: "Searching…",
+    no_locations_found: "No locations found.",
+    results_count: (n) => n + " result(s):",
+
+    label_model: "Weather model",
+    label_interval: "Time interval",
+    label_range: "Forecast range",
+    label_units: "Units",
+    label_smoothing: "Line smoothing",
+    opt_interval_1: "1 hour",
+    opt_interval_3: "3 hours",
+    opt_interval_6: "6 hours",
+    opt_range_3: "3 days",
+    opt_range_5: "5 days",
+    opt_range_7: "7 days",
+    opt_range_16: "16 days",
+    opt_smoothing_0: "None (raw data)",
+    opt_smoothing_1: "Light",
+    opt_smoothing_2: "Medium",
+    opt_smoothing_3: "Strong",
+
+    btn_refresh: "Refresh now",
+    btn_auto_on: "Auto-refresh: ON",
+    btn_auto_off: "Auto-refresh: OFF",
+    status_last_updated: "Last updated:",
+    status_next_refresh: "next auto-refresh:",
+    status_auto_disabled: "auto-refresh disabled",
+    status_pending: "pending",
+
+    section_alerts: "Active weather alerts",
+    section_air: "Air quality & pollen",
+    section_weather: "Weather forecast",
+    section_sunmoon: "Sun & moon",
+    card_aqi: "AQI & particulate matter",
+    card_gases: "Reactive gases",
+    card_aerosol: "Dust & aerosol optical depth",
+    card_pollen: "Pollen forecast",
+    card_temp: "Temperature & UV index",
+    card_precip: "Precipitation & cloud cover",
+    card_wind: "Wind & pressure",
+    card_sunmoon_alt: "Sun & moon altitude",
+    card_sunmoon_gantt: "Day, night & moon visibility",
+    card_sun_today: "Sun today",
+    card_moon_today: "Moon today",
+    moon_phase_names: {
+  newMoon:        "New Moon",
+  waxingCrescent: "Waxing Crescent",
+  firstQuarter:   "First Quarter",
+  waxingGibbous:  "Waxing Gibbous",
+  fullMoon:       "Full Moon",
+  waningGibbous:  "Waning Gibbous",
+  lastQuarter:    "Third/Last Quarter",
+  waningCrescent: "Waning Crescent",
+},
+moon_trend_names: {
+  waxing: "Waxing",
+  waning: "Waning",
+},
+
+    no_active_alerts: "No active alerts",
+    no_active_alerts_full: "No active weather alerts",
+    alert_count: (n) => n + " alert" + (n > 1 ? "s" : ""),
+    europe_only_suffix: " — Europe only",
+
+    footer_weather: "Weather:",
+    footer_air: "Air quality:",
+    footer_alerts: "Alerts:",
+    footer_alerts_value: "MeteoAlarm (Europe) + FOSS Public Alert Server (available global CAP sources) + local threshold rules (fallback)",
+    footer_air_value: "Open-Meteo (CAMS)",
+
+    chip_temp: "Temp", chip_feels: "Feels", chip_uv: "UV",
+    chip_precip: "Precipitation", chip_clouds: "Clouds",
+    chip_wind: "Wind", chip_gusts: "Gusts", chip_direction: "Direction",
+    chip_pressure: "Pressure",
+    chip_pollen_no_data: "Pollen No data",
+
+    sun_sunrise: "Sunrise", sun_noon: "Solar noon", sun_sunset: "Sunset",
+    sun_daylen: "Day length", moon_moonrise: "Moonrise",
+    moon_moonset: "Moonset", moon_phase: "Phase", moon_trend: "Trend",
+    no_sunmoon_data: "No sun/moon data",
+    leg_temperature: "Temperature", leg_uv_index: "UV index",
+    leg_cloud_cover: "Cloud cover", leg_rain: "Rain", leg_showers: "Showers",
+    leg_snow: "Snow", leg_precipitation: "Precipitation",
+    leg_gusts: "Gusts", leg_wind_speed: "Wind speed", leg_pressure: "Pressure",
+    leg_sun_altitude: "Sun altitude", leg_moon_altitude: "Moon altitude",
+    leg_sun_position: "Sun position", leg_moon_position: "Moon position",
+    leg_moon_phase: "Moon phase", leg_daylight: "Daylight", leg_night: "Night",
+    leg_moon_up: "Moon up", leg_moon_down: "Moon down",     leg_alder: "Alder", leg_birch: "Birch", leg_grass: "Grass",
+    leg_mugwort: "Mugwort", leg_ragweed: "Ragweed", leg_olive: "Olive",
+    leg_eaqi: "European AQI (overall index)", leg_pm25: "Fine particles PM2.5", leg_pm10: "Dust particles PM10",
+leg_o3: "Ground-level ozone O₃", leg_no2: "Nitrogen dioxide NO₂", leg_so2: "Sulphur dioxide SO₂",
+leg_nh3: "Ammonia NH₃", leg_co: "Carbon monoxide CO", leg_dust: "Dust", leg_aod: "AOD", alert_level_red: "RED", alert_level_orange: "ORANGE", alert_level_yellow: "YELLOW",     opt_interval_1: "1 hour", opt_interval_3: "3 hours", opt_interval_6: "6 hours",
+    opt_range_3: "3 days", opt_range_5: "5 days", opt_range_7: "7 days", opt_range_16: "16 days",
+    opt_smoothing_0: "None (raw data)", opt_smoothing_1: "Light", opt_smoothing_2: "Medium", opt_smoothing_3: "Strong",
+    
+uv_from_gfs: 'GFS - supplementary source',
+uv_from_selected: 'selected model',
+uv_from_mixed: 'selected model / GFS',
+    
+axis_aqi: "AQI",
+axis_pm: "PM (µg/m³)",
+axis_gas: "µg/m³",
+axis_co: "CO (µg/m³)",
+axis_dust: "Dust (µg/m³)",
+axis_aod: "AOD",
+axis_pollen: "grains/m³",
+axis_uv: "UV index",
+axis_cloudcover: "cloud cover %",
+axis_altitude: "altitude °",
+axis_moon: "🌙 Moon",
+axis_sun: "☀️ Sun",
+
+label_model: "Weather model",
+marine_toggle: "Marine data",
+section_marine: "Marine data",
+marine_modelled: "Modelled data",
+marine_not_connected: "Marine data loading is not connected yet.",
+marine_disclaimer: "Modelled data only. Not for navigation; sea level is referenced to global mean sea level, not a local tide-table datum.",
+marine_available: "Marine forecast data available.",
+marine_unavailable: "Marine forecast data is unavailable or not relevant for this location.",
+card_sea_temperature: "Sea surface temperature",
+leg_sea_temperature: "Sea surface temperature",
+axis_sea_temperature: "temperature (°C)",
+card_sea_level: "Sea level · tides",
+leg_sea_level: "Modelled sea level",
+axis_sea_level: "level (m)",
+marine_level_note: "Height relative to global mean sea level; not a local tide table.",
+card_marine_waves: "Waves · height and period",
+leg_marine_wave_height: "Wave height",
+leg_marine_wave_period: "Wave period",
+axis_marine_wave_height: "wave height (m)",
+axis_marine_wave_period: "period (s)",
+leg_marine_wave_direction: "Wave direction (from)",
+marine_direction_note: "Arrows show the direction waves come from.",
+marine_level_rising: "Level rising",
+marine_level_falling: "Level falling",
+marine_next_high: "Next modelled maximum",
+marine_next_low: "Next modelled minimum",
+marine_no_extreme: "Next maximum/minimum unavailable",
+marine_summary_temp: "Sea temperature",
+marine_summary_wave_height: "Waves",
+marine_summary_period: "Period",
+marine_summary_direction: "From",
+leg_sea_level_high: "Modelled maximum",
+leg_sea_level_low: "Modelled minimum",
+
+footer_license: "License",
+footer_data_by: "Weather data by",
+
+section_help: "Help",
+
+help_html: `
+<section>
+  <h2>Application overview</h2>
+  <p>Perun Weather is a native Linux (GTK4 / Libadwaita) desktop application that shows a detailed weather forecast, air quality, pollen load, sun/moon position, optional marine data and official weather warnings for any number of saved locations. Data comes from <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (forecast, air quality, marine data), <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (official warnings for Europe) and the <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (official CAP warnings from authorities worldwide). Charts are rendered with Plotly.js, running in an embedded WebKit browser inside the app's own window. The interface is available in both Slovak and English, switchable directly in the app.</p>
+  <div class="grid3">
+    <div class="card"><h3 style="margin-top:0">🖥️ Native GTK shell</h3><p style="margin:0">Adw.ApplicationWindow with a headerbar, fully integrated into the GNOME/Fedora desktop.</p></div>
+    <div class="card"><h3 style="margin-top:0">🌦️ Multiple models</h3><p style="margin:0">Best match, ICON D2/EU, ECMWF (IFS HRES/IFS/AIFS), GFS, DMI Seamless — switchable from the toolbar.</p></div>
+    <div class="card"><h3 style="margin-top:0">🚨 Real warnings</h3><p style="margin:0">Official MeteoAlarm warnings for Europe, official CAP warnings worldwide via the FOSS Public Alert Server, plus a local threshold-based estimate.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Features</h2>
+
+  <h3>Location management</h3>
+  <div class="card">
+    <p><b>Adding a location:</b> the <code>+ Add location</code> button opens a search box. You can type a place name or enter coordinates (latitude and longitude in decimal degrees). Results (via the Open-Meteo Geocoding API) show name, region/district, country and coordinates.</p>
+    <p><b>Reordering:</b> drag locations by the <code>⠿</code> handle.</p>
+    <p><b>Removing:</b> trash icon next to each location — the app will not let you remove the last remaining location.</p>
+    <p><b>Selecting:</b> clicking a location switches the active view.</p>
+  </div>
+
+  <h3>Forecast settings panel</h3>
+  <table>
+    <tr><th>Setting</th><th>Options</th><th>Note</th></tr>
+    <tr><td>Weather model</td><td>Best match, ICON D2, ICON EU, ECMWF IFS HRES/IFS/AIFS, GFS, DMI Seamless</td><td>ICON D2/EU only available for locations in Europe</td></tr>
+    <tr><td>Marine data</td><td>On / Off (checkbox under the model selector)</td><td>Marine data is downloaded only when switched on, so it does not slow down other values or locations</td></tr>
+    <tr><td>Time interval</td><td>1 / 3 / 6 hours</td><td>Controls chart point density</td></tr>
+    <tr><td>Forecast range</td><td>3 / 5 / 7 / 16 days</td><td>Air quality capped at 7 days regardless of this setting</td></tr>
+    <tr><td>Units</td><td>Metric, Metric (mmHg), Imperial, m/s, Knots</td><td>Recalculates temperature, wind, precipitation and pressure</td></tr>
+    <tr><td>Line smoothing</td><td>None, Light, Medium, Strong</td><td>Moving average for smoother curves</td></tr>
+  </table>
+
+  <h3>Auto-refresh</h3>
+  <p>The <code>Auto-refresh ON/OFF</code> button. When enabled, the app refreshes data automatically every 6 hours and shows the next scheduled refresh time in the status bar. Time-dependent chart elements (e.g. the current-time marker, sun/moon position) also keep advancing continuously in the background, independent of any data refresh — including catching up correctly after the app window has been in the background for a while. All times are shown in the local time of the selected location.</p>
+
+  <h3>Chart tooltips (hover)</h3>
+  <p>All charts use the same tooltip layout: the date and time on top, followed by one row per series in the form <b>Name: value unit</b>. Numbers are formatted exactly like the axis labels (e.g. 1&nbsp;012 hPa) and the tooltip adapts its width to the longest row. In the wind chart the wind row also shows the direction the wind comes from; in the wave chart the wave-height row shows the direction the waves come from.</p>
+
+  <h3>Content sections (collapsible panels)</h3>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">▶ Active weather alerts</h3><p style="margin:0">Cards for active warnings (official + local estimates), a header summary grouped by event type and severity, and a Gantt chart of their time span.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Air quality &amp; pollen</h3><p style="margin:0">AQI, fine particulates, reactive gases, dust, aerosol optical depth, pollen forecast (6 types).</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Weather forecast</h3><p style="margin:0">Temperature and UV index, precipitation and cloud cover, wind and pressure.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Marine data</h3><p style="margin:0">Optional. Sea surface temperature, modelled sea level with next maximum/minimum, wave height, period and direction.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Sun &amp; moon</h3><p style="margin:0">Sun/moon altitude above horizon, moon phases, rise/set times, day length.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>How to</h2>
+
+  <h3>Add a new location</h3>
+  <div class="steps">
+    <div class="step">Click <code>+ Add location</code> in the sidebar.</div>
+    <div class="step">Type a city or town name, or coordinates (latitude and longitude), and press Enter.</div>
+    <div class="step">Pick the correct location from the results.</div>
+    <div class="step">The app automatically fetches forecast, air quality and warnings for the new location.</div>
+  </div>
+
+  <h3>Change forecast model</h3>
+  <div class="steps">
+    <div class="step">Open the <code>Weather model</code> dropdown in the toolbar.</div>
+    <div class="step">Pick a model — outside Europe, ICON D2/EU is automatically replaced with Best match.</div>
+    <div class="step">Models that do not provide a UV index (e.g. ECMWF) get it supplemented from GFS; the chart legend and tooltip say so.</div>
+  </div>
+
+  <h3>Show marine data</h3>
+  <div class="steps">
+    <div class="step">Tick <code>Marine data</code> under the model selector in the toolbar.</div>
+    <div class="step">Open the <code>Marine data</code> panel. For inland locations the panel states that marine data is not available.</div>
+  </div>
+
+  <h3>Manually refresh data</h3>
+  <div class="steps">
+    <div class="step">Click <code>Refresh now</code> in the toolbar.</div>
+    <div class="step">The button dims and disables briefly while data is loading.</div>
+  </div>
+
+  <h3>Reorder or remove locations</h3>
+  <div class="steps">
+    <div class="step">Drag a location in the list to a new position.</div>
+    <div class="step">Click the trash icon next to the location you want to remove.</div>
+  </div>
+
+  <h3>Change interface language</h3>
+  <div class="steps">
+    <div class="step">Pick Slovak or English in the app settings.</div>
+    <div class="step">The interface, chart labels, moon phases and this help panel switch language immediately.</div>
+  </div>
+</section>
+
+<section>
+  <h2>Reading the charts</h2>
+  <h3>Temperature &amp; UV index</h3>
+  <p>Solid red line = temperature (left axis). Dotted yellow line = UV index (right axis). A pale vertical dashed line marks the current time in the location's own local time. If the selected model has no UV index, values are taken from GFS and marked as a supplementary source.</p>
+  <h3>Precipitation &amp; cloud cover</h3>
+  <p>Bars = precipitation (mm/inches), split into rain/showers/snow when available. Blue filled area = cloud cover percentage (right axis, 0–100%).</p>
+  <h3>Wind &amp; pressure</h3>
+  <p>Green line = wind speed, dark green dotted = gusts. Purple line (right axis) = pressure. Yellow arrows at the top of the chart show the direction the wind is blowing <b>from</b>; the legend explains the arrow symbol. The horizontal gridlines of both axes (wind and pressure) are aligned so they can be read against the same grid.</p>
+  <h3>Alerts — Gantt chart</h3>
+  <p>Each row = one active warning, the horizontal bar = its time span. Bar color reflects severity level. The panel header lists how many warnings of each event type and severity are active, e.g. <i>1× Tempestade (RED) · 4× Tempestade (ORANGE)</i>.</p>
+  <h3>Air quality &amp; pollen</h3>
+  <p>First chart: European AQI + PM2.5/PM10. Second: reactive gases (O₃, NO₂, SO₂, NH₃, CO). Third: dust and aerosol optical depth. Fourth: six pollen types at once. The abbreviations mean:</p>
+  <table>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td>European AQI</td><td>Overall air-quality rating from "good" to "extremely poor". It is based on five pollutants (PM2.5, PM10, O₃, NO₂, SO₂) and the worst one decides the result. CO and NH₃ are not part of it.</td></tr>
+    <tr><td>PM2.5 / PM10</td><td>Tiny airborne particles. The number is their size in micrometres. PM2.5 particles are finer and can reach deeper into the lungs.</td></tr>
+    <tr><td>O₃ (ozone)</td><td>Ground-level ozone, a main component of smog. It forms from other pollutants in sunlight rather than being emitted directly.</td></tr>
+    <tr><td>NO₂</td><td>Nitrogen dioxide, a gas from burning fuels, e.g. traffic and heating.</td></tr>
+    <tr><td>SO₂</td><td>Sulphur dioxide, a gas from burning fossil fuels.</td></tr>
+    <tr><td>CO</td><td>Carbon monoxide, a colourless, odourless gas from incomplete combustion.</td></tr>
+    <tr><td>NH₃</td><td>Ammonia, a gas mainly from agriculture.</td></tr>
+    <tr><td>AOD</td><td>Aerosol optical depth: how much sunlight airborne particles (dust, smoke) block. It has no unit.</td></tr>
+  </table>
+  <h3>Marine data</h3>
+  <p><b>Sea surface temperature:</b> modelled water temperature at the surface.<br>
+  <b>Sea level · tides:</b> modelled sea level in metres with markers for the next maxima (▲) and minima (▼). The values are measured against global mean sea level, not against a local tide-table datum.<br>
+  <b>Waves:</b> wave height (left axis) and wave period (right axis, dotted). Yellow arrows at the top show the direction the waves come <b>from</b>; the tooltip also names it as a compass direction (e.g. SW 225°).</p>
+  <h3>Sun &amp; moon</h3>
+  <p><b>Altitude chart:</b> a curve above zero means the body is above the horizon (visible); below zero means below the horizon. Dots on the curve show the sun/moon's current position and keep advancing in real time; small phase icons appear exactly when the moon phase changes.<br>
+  <b>Day/night/moon Gantt chart:</b> top row = day (gold)/night (dark blue), bottom row = when the moon is above the horizon.<br>
+  <b>Info cards:</b> exact sunrise/sunset and moonrise/moonset times, day length, current moon phase and illumination percentage, waxing/waning trend. The phase name also appears in the panel header.</p>
+</section>
+
+<section>
+  <h2>How values are calculated</h2>
+
+  <h3>Sun</h3>
+  <p>Sunrise, sunset and day length come directly from the Open-Meteo daily forecast for the location. The sun-altitude curve is calculated inside the app with a low-precision solar-position formula from the date, time, latitude and longitude. It is accurate enough for reading the shape of the day, not for astronomical work.</p>
+
+  <h3>Moon</h3>
+  <p>The moon is calculated inside the app, without any online service. Its position is estimated from the main periodic terms of the moon's orbit and converted to altitude using the local sidereal time of the location.</p>
+  <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
+    <li><b>Phase:</b> derived from the elongation (the angle between the moon and the sun). The cycle is split into 8 named phases of 45° each.</li>
+    <li><b>Illumination:</b> calculated from the elongation as (1 − cos elongation) / 2, shown as a percentage.</li>
+    <li><b>Trend:</b> waxing when the elongation is below 180°, otherwise waning.</li>
+    <li><b>Moonrise and moonset:</b> found by stepping through each day in 10-minute steps and detecting when the altitude crosses zero.</li>
+    <li><b>Phase icons on the chart:</b> placed at the moment a named phase begins, found by stepping in 30-minute steps.</li>
+  </ul>
+
+  <h3>Official warnings</h3>
+  <p>MeteoAlarm warnings for the selected country are filtered by the district or region name of your location. The level (yellow, orange, red) is read from the colour named in the warning. The MeteoAlarm feed gives no end time, so the Gantt chart shows a short marker after the publication time instead of a full bar.</p>
+  <p>The FOSS Public Alert Server is queried with the coordinates of the location. Only current, public meteorological warnings whose area (polygon or circle) contains the location are shown. Their CAP severity is mapped to the app's levels:</p>
+  <table>
+    <tr><th>CAP severity</th><th>Level in the app</th></tr>
+    <tr><td>Extreme, Severe</td><td>Red</td></tr>
+    <tr><td>Moderate</td><td>Orange</td></tr>
+    <tr><td>Minor</td><td>Yellow</td></tr>
+    <tr><td>Unknown</td><td>Neutral (grey)</td></tr>
+  </table>
+
+  <h3>Local warning estimate</h3>
+  <p>The app checks the hourly forecast of the selected model against fixed thresholds. These warnings carry the badge <b>Local estimate</b> and appear alongside official ones.</p>
+  <table>
+    <tr><th>Warning</th><th>Condition in the forecast</th><th>Level</th><th>Length shown</th></tr>
+    <tr><td>Thunderstorm risk</td><td>Weather code 95, 96 or 99 (thunderstorm)</td><td>Red</td><td>6 hours</td></tr>
+    <tr><td>Strong wind gusts</td><td>Gusts of 60 km/h or more</td><td>Orange</td><td>12 hours</td></tr>
+    <tr><td>Heavy precipitation</td><td>10 mm or more in one hour</td><td>Orange</td><td>6 hours</td></tr>
+    <tr><td>Extreme heat</td><td>Temperature of 35 °C or more</td><td>Yellow</td><td>24 hours</td></tr>
+    <tr><td>Extreme cold</td><td>Temperature of −15 °C or less</td><td>Yellow</td><td>24 hours</td></tr>
+  </table>
+  <p>Each hazard creates at most one warning, starting at the first hour in which the threshold is reached. The displayed length is a fixed window from that hour, not a prediction of when the event ends. This is a rule-based heuristic, not an official forecast.</p>
+
+  <h3>Marine panel</h3>
+  <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
+    <li><b>Data:</b> loaded from the Open-Meteo marine forecast only when the Marine data checkbox is ticked.</li>
+    <li><b>Level rising / falling:</b> the app compares the two hourly sea-level values around the current time (or the nearest available pair). A change of more than 1 cm is treated as rising or falling; smaller changes leave the trend unknown.</li>
+    <li><b>Next maximum / minimum:</b> a point is a maximum or minimum when the neighbouring values are lower or higher by more than 1 cm. Flat stretches are represented by their middle. The panel shows the time of the next one after the current moment, marked with ≈ because the data is modelled.</li>
+    <li><b>Summary values:</b> sea temperature, wave height, wave period and wave direction are read at the hour closest to the current time.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Color indicators</h2>
+
+  <h3>1. Alerts — dot reflects the most severe active warning</h3>
+  <table>
+   <tr><td><span class="dot neutral"></span></td><td>Neutral</td><td>No active warnings, or data has not yet been evaluated</td></tr>
+<tr><td><span class="dot yellow"></span></td><td>Advisory</td><td>The most severe active warning is yellow</td></tr>
+<tr><td><span class="dot orange"></span></td><td>Severe</td><td>The most severe active warning is orange</td></tr>
+<tr><td><span class="dot red"></span></td><td>Critical</td><td>The most severe active warning is red</td></tr>
+  </table>
+
+  <h3>2. Air quality &amp; pollen — dot reflects threshold breaches</h3>
+  <table>
+    <tr><th>Dot</th><th>State</th><th>Meaning</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutral</td><td>No air quality data</td></tr>
+    <tr><td><span class="dot ok"></span></td><td>OK</td><td>AQI and all pollutants below warning threshold</td></tr>
+    <tr><td><span class="dot warn"></span></td><td>Elevated</td><td>At least one value (e.g. PM2.5, O₃) crossed the moderate threshold</td></tr>
+    <tr><td><span class="dot bad"></span></td><td>High</td><td>At least one value crossed the severe threshold (e.g. AQI &gt; 100)</td></tr>
+  </table>
+
+  <h3>3. Weather — dot reflects current temperature (continuous color gradient)</h3>
+  <p>Unlike the other sections, this dot is not colored with just 3–4 fixed colors — the app computes a <b>continuous color gradient</b> directly from the current temperature at the selected location, from cold blue-violet through green and yellow to deep red:</p>
+  <div class="gradientBar"></div>
+  <div class="gradientLabels"><span>-40 °C</span><span>-10 °C</span><span>10 °C</span><span>20 °C</span><span>35 °C</span><span>45 °C+</span></div>
+  <p>The dot's color therefore changes continuously with every degree, not in steps — e.g. 5 °C will be a slightly different shade than 8 °C, both somewhere between turquoise and green.</p>
+
+  <h3>4. Marine data — dot reflects the sea-level trend</h3>
+  <table>
+    <tr><th>Dot</th><th>State</th><th>Meaning</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutral</td><td>No marine data, or the trend cannot be determined</td></tr>
+    <tr><td><span class="dot info"></span></td><td>Rising</td><td>Modelled sea level is rising (a maximum is approaching)</td></tr>
+    <tr><td><span class="dot warn"></span></td><td>Falling</td><td>Modelled sea level is falling (a minimum is approaching)</td></tr>
+  </table>
+
+  <h3>5. Sun &amp; moon — dot reflects whether it is currently day or night</h3>
+  <table>
+    <tr><th>Dot</th><th>State</th><th>Meaning</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutral</td><td>Sunrise/sunset data missing</td></tr>
+    <tr><td><span class="dot day"></span></td><td>Day</td><td>Sun is currently above the horizon (gold)</td></tr>
+    <tr><td><span class="dot night"></span></td><td>Night</td><td>Sun is currently below the horizon (dark blue)</td></tr>
+  </table>
+
+  <h3>Warning severity levels (card and Gantt bar color)</h3>
+  <table>
+    <tr><th>Color</th><th>Level</th><th>Source</th></tr>
+    <tr><td><span class="swatch" style="background:#e53935"></span></td><td>Red</td><td>Official "Red" warning, CAP severity Severe/Extreme, or thunderstorm risk (local estimate)</td></tr>
+    <tr><td><span class="swatch" style="background:#fb8c00"></span></td><td>Orange</td><td>Official "Orange" warning, CAP severity Moderate, or strong wind/heavy precipitation (local estimate)</td></tr>
+    <tr><td><span class="swatch" style="background:#fdd835"></span></td><td>Yellow</td><td>Official "Yellow" warning, CAP severity Minor, or extreme heat/cold (local estimate)</td></tr>
+  </table>
+
+  <h3>Warning source badge</h3>
+  <span class="chip">💨 YELLOW · MeteoAlarm</span>
+  <span class="chip">⛈ ORANGE · Local estimate</span>
+  <p style="margin-top:8px"><b>MeteoAlarm</b> and national CAP services = official warnings issued by meteorological services. <b>Local estimate</b> = the app calculated the risk itself from threshold breaches in the hourly forecast (not an official warning).</p>
+</section>
+
+<section>
+  <h2>Limitations and known issues</h2>
+  <div class="limit-box">
+    <b>Warnings are not 100% complete.</b> MeteoAlarm covers only Europe, and its Atom feed does not include precise geographic geometry (polygon) — region filtering works by comparing district/region names as text. If the app finds no match, it shows no official warning for that location, even if one might exist in the country under a different name.
+  </div>
+  <h3 style="margin-top:20px">Worldwide warnings (FOSS Public Alert Server)</h3>
+  <div class="warn-box">
+    Besides MeteoAlarm, the app queries the FOSS Public Alert Server, which collects official CAP feeds from alerting authorities worldwide. The server is still in development and not yet declared production-ready, and coverage depends on which authorities publish a feed. An empty list therefore does not guarantee that no warning exists. The WMO Severe Weather Information Centre is not used as a source.
+  </div>
+  <h3 style="margin-top:20px">Forecast model limitations</h3>
+  <table>
+    <tr><th>Model</th><th>Limitation</th></tr>
+    <tr><td>ICON D2 / ICON EU</td><td>Only available for locations in Europe</td></tr>
+    <tr><td>ECMWF IFS HRES / IFS / AIFS</td><td>No native UV index — values are supplemented from GFS and marked as such</td></tr>
+    <tr><td>All models</td><td>Forecast capped at 16 days; air quality capped at 7 days</td></tr>
+  </table>
+  <h3 style="margin-top:20px">Marine data</h3>
+  <p>Marine values are modelled, not measured. Sea level is referenced to global mean sea level and is not a local tide table; the panel is not suitable for navigation. Marine data is available only for sea areas near the location, so inland locations show a notice instead of charts.</p>
+  <h3 style="margin-top:20px">Other limitations</h3>
+  <p>• Requires an internet connection; without it, shows the last cached forecast.<br>
+  • Auto-refresh is fixed at 6 hours, not yet configurable in the UI.<br>
+  • Local threshold-based alert estimates are a heuristic with fixed thresholds, not a meteorologically validated risk model.<br>
+  • Sun/moon position calculations are algorithmic approximations (low/medium precision), not observatory-grade ephemerides — sufficient for everyday use, but not suitable for precise astronomical purposes.<br>
+  • The interface is currently available in Slovak and English only; other languages are not yet supported.</p>
+</section>
+
+<section>
+  <h2>Changelog</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Optional marine panel — sea surface temperature, modelled sea level with next maximum/minimum, wave height, period and direction, enabled by a checkbox under the model selector</li>
+      <li>Adding locations by coordinates, in addition to searching by name</li>
+      <li>Worldwide official warnings through the FOSS Public Alert Server, next to MeteoAlarm and local threshold estimates</li>
+      <li>UV index supplemented from GFS where the selected model has none</li>
+      <li>Phase name of the moon in the Sun &amp; moon panel header</li>
+      <li>Plain-language names for air-quality series and a glossary of abbreviations in this help</li>
+      <li>Unified tooltip layout in all charts — time, series name, value and unit, with width adapting to content</li>
+      <li>Warning header lists warning counts by event type and severity</li>
+      <li>Improved warning integration and layout of the alerts chart</li>
+      <li>Restyled "now" line; different curve color for aerosol optical depth; air-quality chart translations</li>
+      <li>Better integration of other forecast models so that they also show UV index; ECMWF AIFS is working again</li>
+      <li>Day names and dates in the Sun &amp; moon chart moved higher; larger font; day-length icon added; capitalisation in the Sun tooltip</li>
+      <li>Time-zone error; wrong number of weather warnings; moon trend not synchronised with the phase</li>
+      <li>The header of the alerts chart (day and date) went missing when there were many warnings</li>
+      <li>Pressure number format in the tooltip now matches the axis (e.g. 1&nbsp;012 hPa)</li>
+      <li>Wind and wave direction added to the legend; wind direction added to the wind tooltip</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">3.1 <span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Weather forecast section dot now starts neutral gray while loading, matching the other three sections, instead of showing blue before the first refresh</li>
+      <li>Added phase and trend icons next to the Moon "Phase" and "Trend" labels in the Sun &amp; Moon panel</li>
+      <li>Translated the "Dust" and "AOD" chips in the Air quality summary row, previously hardcoded in English</li>
+      <li>Fixed a duplicated nested card wrapper around the Reactive gases chart that caused an extra dark border not present on the other air quality charts</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">3 <span class="tag added">Added</span><span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Added a full Slovak language translation of the interface (switchable directly in the app)</li>
+      <li>Translated moon phases and trend, chart axis labels, and other previously hardcoded English text</li>
+      <li>Fixed horizontal gridlines in the wind &amp; pressure chart — the pressure axis now shares the same gridlines as the wind axis</li>
+      <li>The "now" time marker and sun/moon position dots in charts now advance automatically without a manual refresh, including reliable behavior after returning from the background</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2.5 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
+    <ul>
+      <li>Integrated official MeteoAlarm warnings (Atom feed, per-country)</li>
+      <li>Event-type icon mapping (wind, storm, snow, heat…) instead of a single generic symbol</li>
+      <li>Region-based warning filtering for the selected location, with no fallback to showing the whole country</li>
+      <li>Merged official and local estimated warnings with a source badge</li>
+      <li>Attempted and documented a WMO SWIC integration — ultimately disabled due to lack of a stable API</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2.2 <span class="tag added">Added</span></div>
+    <ul>
+      <li>Built a complete RPM package using <code>pyproject-rpm-macros</code></li>
+      <li>Added a custom vector (SVG) application icon</li>
+      <li>Desktop launcher file with validation</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2 <span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Fixed missing <code>Adw.HeaderBar</code> — the window previously had no close/move controls</li>
+      <li>Fixed <code>set_content()</code> call</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">1.0 <span class="tag added">Added</span></div>
+    <ul>
+      <li>Stable, feature-complete release after development from the alpha stage</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">0.3 <span class="tag added">Added</span></div>
+    <ul>
+      <li>Initial application — HTML mockup gradually turned into a working alpha</li>
+      <li>First connection to live Open-Meteo data and a working native bridge between WebKit (JS) and the GTK/Python layer</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Licenses</h2>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Perun Weather (this application)</h3><p style="margin:0">Author: <b>Peter Tóth</b>. Licensed under the <b>MIT License</b>. The author retains full rights to the source code.</p></div>
+    <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Used for chart rendering, <b>MIT License</b>, bundled locally with the app.</p></div>
+    <div class="card"><h3 style="margin-top:0">Data: Open-Meteo</h3><p style="margin:0">Weather, air-quality and marine data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">licence details</a>). The app converts units and visualises the data. Underlying model data come from national weather services such as DWD, ECMWF, NOAA and DMI; air quality from CAMS (Copernicus). Place search uses the Open-Meteo Geocoding API based on <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Free API access is for non-commercial use (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Terms</a>).</p></div>
+    <div class="card"><h3 style="margin-top:0">Data: MeteoAlarm</h3><p style="margin:0">Official warnings for Europe, aggregated from national meteorological services. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
+    <div class="card"><h3 style="margin-top:0">Data: FOSS Public Alert Server</h3><p style="margin:0">Official CAP warnings collected from alerting authorities worldwide, a project of KDE and the FOSS Warn team. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
+    <div class="card"><h3 style="margin-top:0">Data: OpenStreetMap</h3><p style="margin:0">Place names for coordinate search come from <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL).</p></div>
+  </div>
+</section>
+`,
+
+
+
+    day_full: "long", day_short: "short",
+  },
+
+  sk: {
+    app_title: "Perun Weather",
+    app_badge: "produkcia",
+    loading_locations: "Načítavam lokality…",
+    saved_locations: "Uložené lokality",
+    add_location: "+ Pridať lokalitu",
+    search_placeholder: "Vyhľadať miesto",
+    drag_hint: "Presúvaj lokality za ⠿ pre zmenu poradia. Výberom lokality zmeníš predpoveď, výstrahy, kvalitu ovzdušia a peľ.",
+    searching: "Vyhľadávam…",
+    no_locations_found: "Žiadne lokality sa nenašli.",
+    results_count: (n) => n + " výsledok(ov):",
+
+    label_model: "Model predpovede",
+    label_interval: "Časový interval",
+    label_range: "Rozsah predpovede",
+    label_units: "Jednotky",
+    label_smoothing: "Vyhladenie čiary",
+    opt_interval_1: "1 hodina",
+    opt_interval_3: "3 hodiny",
+    opt_interval_6: "6 hodín",
+    opt_range_3: "3 dni",
+    opt_range_5: "5 dní",
+    opt_range_7: "7 dní",
+    opt_range_16: "16 dní",
+    opt_smoothing_0: "Žiadne (surové dáta)",
+    opt_smoothing_1: "Jemné",
+    opt_smoothing_2: "Stredné",
+    opt_smoothing_3: "Silné",
+
+    btn_refresh: "Obnoviť teraz",
+    btn_auto_on: "Auto-obnova: ZAP",
+    btn_auto_off: "Auto-obnova: VYP",
+    status_last_updated: "Posledná aktualizácia:",
+    status_next_refresh: "ďalšia auto-obnova:",
+    status_auto_disabled: "auto-obnova vypnutá",
+    status_pending: "prebieha",
+
+    section_alerts: "Aktívne výstrahy počasia",
+    section_air: "Kvalita ovzdušia a peľ",
+    section_weather: "Predpoveď počasia",
+    section_sunmoon: "Slnko a Mesiac",
+    card_aqi: "AQI a jemné častice",
+    card_gases: "Reaktívne plyny",
+    card_aerosol: "Prach a optická hrúbka aerosólu",
+    card_pollen: "Peľová predpoveď",
+    card_temp: "Teplota a UV index",
+    card_precip: "Zrážky a oblačnosť",
+    card_wind: "Vietor a tlak",
+    card_sunmoon_alt: "Výška Slnka a Mesiaca",
+    card_sunmoon_gantt: "Deň, noc a viditeľnosť Mesiaca",
+    card_sun_today: "Slnko dnes",
+    card_moon_today: "Mesiac dnes",
+    moon_phase_names: {
+  newMoon:        "Nov",
+  waxingCrescent: "Dorastajúci kosáčik",
+  firstQuarter:   "Prvá štvrť",
+  waxingGibbous:  "Dorastajúci Mesiac",
+  fullMoon:       "Spln",
+  waningGibbous:  "Cúvajúci Mesiac",
+  lastQuarter:    "Posledná štvrť",
+  waningCrescent: "Cúvajúci kosáčik",
+},
+moon_trend_names: {
+  waxing: "Dorastajúci",
+  waning: "Cúvajúci",
+},
+
+    no_active_alerts: "Žiadne aktívne výstrahy",
+    no_active_alerts_full: "Žiadne aktívne výstrahy počasia",
+    alert_count: (n) => n + " " + (n===1?"výstraha":(n>=2&&n<=4?"výstrahy":"výstrah")),
+    europe_only_suffix: " — len Európa",
+
+    footer_weather: "Počasie:",
+    footer_air: "Kvalita ovzdušia:",
+    footer_alerts: "Výstrahy:",
+    footer_alerts_value: "MeteoAlarm (Európa) + FOSS Public Alert Server (dostupné svetové CAP zdroje) + lokálne prahové pravidlá (záloha)",
+    footer_air_value: "Open-Meteo (CAMS)",
+
+    chip_temp: "Teplota", chip_feels: "Pocitová teplota", chip_uv: "UV",
+    chip_precip: "Zrážky", chip_clouds: "Oblačnosť",
+    chip_wind: "Vietor", chip_gusts: "Nárazový vietor", chip_direction: "Smer vetra",
+    chip_pressure: "Tlak",
+    chip_pollen_no_data: "Peľ - žiadne dáta",
+
+    sun_sunrise: "Východ Slnka", sun_noon: "Slnečné poludnie", sun_sunset: "Západ Slnka",
+    sun_daylen: "Dĺžka dňa", moon_moonrise: "Východ Mesiaca",
+    moon_moonset: "Západ Mesiaca", moon_phase: "Fáza", moon_trend: "Trend",
+    no_sunmoon_data: "Žiadne dáta o Slnku/Mesiaci",
+    leg_temperature: "Teplota", leg_uv_index: "UV index",
+    leg_cloud_cover: "Oblačnosť", leg_rain: "Dážď", leg_showers: "Prehánky",
+    leg_snow: "Sneženie", leg_precipitation: "Zrážky",
+    leg_gusts: "Nárazový vietor", leg_wind_speed: "Vietor", leg_pressure: "Tlak",
+    leg_sun_altitude: "Výška Slnka", leg_moon_altitude: "Výška Mesiaca",
+    leg_sun_position: "Poloha Slnka", leg_moon_position: "Poloha Mesiaca",
+    leg_moon_phase: "Fáza Mesiaca", leg_daylight: "Denné svetlo", leg_night: "Noc",
+    leg_moon_up: "Mesiac hore", leg_moon_down: "Mesiac dole",     leg_alder: "Jelša", leg_birch: "Breza", leg_grass: "Tráva",
+    leg_mugwort: "Palina", leg_ragweed: "Ambrózia", leg_olive: "Oliva",
+    leg_eaqi: "Európsky index kvality ovzdušia EAQI (celkový)", leg_pm25: "Jemné častice PM2.5", leg_pm10: "Prachové častice PM10",
+leg_o3: "Prízemný ozón O₃", leg_no2: "Oxid dusičitý NO₂", leg_so2: "Oxid siričitý SO₂",
+leg_nh3: "Amoniak NH₃", leg_co: "Oxid uhoľnatý CO", leg_dust: "Prach", leg_aod: "Optická hrúbka aerosólu (AOD)", alert_level_red: "ČERVENÁ", alert_level_orange: "ORANŽOVÁ", alert_level_yellow: "ŽLTÁ",     opt_interval_1: "1 hodina", opt_interval_3: "3 hodiny", opt_interval_6: "6 hodín",
+    opt_range_3: "3 dni", opt_range_5: "5 dní", opt_range_7: "7 dní", opt_range_16: "16 dní",
+    opt_smoothing_0: "Žiadne (surové dáta)", opt_smoothing_1: "Jemné", opt_smoothing_2: "Stredné", opt_smoothing_3: "Silné",
+
+uv_from_gfs: 'GFS - doplnkový zdroj',
+uv_from_selected: 'zvolený model',
+uv_from_mixed: 'zvolený model / GFS',
+    
+axis_aqi: "AQI",
+axis_pm: "PM (µg/m³)",
+axis_gas: "µg/m³",
+axis_co: "CO (µg/m³)",
+axis_dust: "Prach (µg/m³)",
+axis_aod: "AOD",
+axis_pollen: "zrnko/m³",
+axis_uv: "UV index",
+axis_cloudcover: "Oblačnosť %",
+axis_altitude: "Výška °",
+axis_moon: "🌙 Mesiac",
+axis_sun: "☀️ Slnko",
+
+label_model: "Model predpovede",
+marine_toggle: "Morské údaje",
+section_marine: "Morské údaje",
+marine_modelled: "Modelované údaje",
+marine_not_connected: "Načítanie morských údajov zatiaľ nie je zapojené.",
+marine_disclaimer: "Len modelované údaje. Nie sú určené na navigáciu; výška hladiny je voči globálnej strednej hladine mora, nie voči miestnej nule prílivových tabuliek.",
+marine_available: "Morské predpovedné údaje sú dostupné.",
+marine_unavailable: "Morské predpovedné údaje nie sú pre túto lokalitu dostupné alebo relevantné.",
+card_sea_temperature: "Teplota hladiny mora",
+leg_sea_temperature: "Teplota hladiny mora",
+axis_sea_temperature: "teplota (°C)",
+card_sea_level: "Vývoj hladiny · príliv a odliv",
+leg_sea_level: "Modelovaná hladina mora",
+axis_sea_level: "hladina (m)",
+marine_level_note: "Výška voči globálnej strednej hladine mora; nie miestna prílivová tabuľka.",
+card_marine_waves: "Vlny · výška a perióda",
+leg_marine_wave_height: "Výška vĺn",
+leg_marine_wave_period: "Perióda vĺn",
+axis_marine_wave_height: "výška vĺn (m)",
+axis_marine_wave_period: "perióda (s)",
+leg_marine_wave_direction: "Smer vĺn",
+marine_direction_note: "Šípky ukazujú smer, odkiaľ vlny prichádzajú.",
+marine_level_rising: "Hladina stúpa",
+marine_level_falling: "Hladina klesá",
+marine_next_high: "Najbližšie modelové maximum",
+marine_next_low: "Najbližšie modelové minimum",
+marine_no_extreme: "Ďalšie maximum/minimum nie je dostupné",
+marine_summary_temp: "Teplota mora",
+marine_summary_wave_height: "Výška vĺn",
+marine_summary_period: "Perióda vĺn",
+marine_summary_direction: "Smer vĺn",
+leg_sea_level_high: "Modelované maximum",
+leg_sea_level_low: "Modelované minimum",
+
+footer_license: "Licencia",
+footer_data_by: "Dáta o počasí:",
+
+section_help: "Pomocník",
+
+help_html: `
+<section>
+  <h2>Prehľad aplikácie</h2>
+  <p>Perun Weather je natívna Linuxová (GTK4 / Libadwaita) desktopová aplikácia, ktorá zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľové zaťaženie, polohu Slnka a Mesiaca, voliteľné morské údaje a oficiálne meteorologické výstrahy pre ľubovoľný počet uložených lokalít. Dáta pochádzajú z <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (predpoveď, kvalita ovzdušia, morské údaje), z <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (oficiálne výstrahy pre Európu) a z <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (oficiálne CAP výstrahy od úradov z celého sveta). Vykresľovanie grafov zabezpečuje knižnica Plotly.js, bežiaca vo vstavanom WebKit prehliadači priamo v okne appky. Rozhranie je dostupné v slovenčine aj angličtine, prepínateľné priamo v aplikácii.</p>
+  <div class="grid3">
+    <div class="card"><h3 style="margin-top:0">🖥️ Natívny GTK shell</h3><p style="margin:0">Adw.ApplicationWindow s headerbarom, plne integrovaný do GNOME/Fedora desktop prostredia.</p></div>
+    <div class="card"><h3 style="margin-top:0">🌦️ Viacero modelov</h3><p style="margin:0">Best match, ICON D2/EU, ECMWF (IFS HRES/IFS/AIFS), GFS, DMI Seamless — prepínateľné priamo v paneli nástrojov.</p></div>
+    <div class="card"><h3 style="margin-top:0">🚨 Reálne výstrahy</h3><p style="margin:0">Oficiálne výstrahy MeteoAlarm pre Európu, oficiálne CAP výstrahy z celého sveta cez FOSS Public Alert Server a k tomu lokálny odhad podľa prahových hodnôt.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Funkcie a vlastnosti</h2>
+
+  <h3>Správa lokalít</h3>
+  <div class="card">
+    <p><b>Pridanie lokality:</b> tlačidlo <code>Pridať lokalitu</code> v bočnom paneli otvorí vyhľadávacie pole. Môžeš zadať názov miesta alebo súradnice (zemepisnú šírku a dĺžku v desatinných stupňoch). Výsledky vyhľadávania (cez Open-Meteo Geocoding API) zobrazujú názov, kraj/okres, krajinu a súradnice.</p>
+    <p><b>Preusporiadanie:</b> lokality v zozname sa dajú presúvať ťahaním za ikonu <code>⠿</code> (drag &amp; drop).</p>
+    <p><b>Odstránenie:</b> ikona koša pri každej lokalite — appka nedovolí odstrániť poslednú zostávajúcu lokalitu.</p>
+    <p><b>Výber:</b> kliknutím na lokalitu v zozname sa prepne aktívne zobrazenie.</p>
+  </div>
+
+  <h3>Panel nastavení predpovede</h3>
+  <table>
+    <tr><th>Nastavenie</th><th>Možnosti</th><th>Poznámka</th></tr>
+    <tr><td>Model predpovede</td><td>Best match, ICON D2, ICON EU, ECMWF IFS HRES/IFS/AIFS, GFS, DMI Seamless</td><td>ICON D2/EU dostupné len pre lokality v Európe</td></tr>
+    <tr><td>Morské údaje</td><td>Zap. / Vyp. (zaškrtávacie pole pod výberom modelu)</td><td>Morské údaje sa sťahujú, len keď sú zapnuté, takže nespomaľujú ostatné hodnoty ani lokality</td></tr>
+    <tr><td>Časový interval</td><td>1 / 3 / 6 hodín</td><td>Určuje hustotu bodov v grafoch</td></tr>
+    <tr><td>Rozsah predpovede</td><td>3 / 5 / 7 / 16 dní</td><td>Kvalita ovzdušia je obmedzená na max. 7 dní bez ohľadu na výber</td></tr>
+    <tr><td>Jednotky</td><td>Metric, Metric (mmHg), Imperial, m/s, Knots</td><td>Prepočítava teplotu, vietor, zrážky aj tlak</td></tr>
+    <tr><td>Vyhladenie čiary</td><td>Žiadne, Jemné, Stredné, Silné</td><td>Kĺzavý priemer pre plynulejšie krivky</td></tr>
+  </table>
+
+  <h3>Automatické obnovovanie</h3>
+  <p>Tlačidlo <code>Auto-obnova ZAP/VYP</code>. Pri zapnutí appka automaticky obnoví dáta každých 6 hodín a zobrazí čas ďalšieho plánovaného obnovenia v stavovom riadku. Časovo závislé prvky grafov (napr. zvislá čiara aktuálneho času, poloha Slnka a Mesiaca) sa navyše priebežne posúvajú aj bez manuálneho ani automatického obnovenia dát — appka ich prepočítava na pozadí, vrátane momentu, keď sa okno appky vráti z pozadia po dlhšom čase. Všetky časy sa zobrazujú v miestnom čase vybranej lokality.</p>
+
+  <h3>Popisky v grafoch (hover)</h3>
+  <p>Všetky grafy používajú rovnaké rozloženie popisku: hore dátum a čas, pod ním jeden riadok pre každú veličinu v tvare <b>Názov: hodnota jednotka</b>. Čísla majú rovnaký formát ako popisky osí (napr. 1&nbsp;012 hPa) a šírka popisku sa prispôsobuje najdlhšiemu riadku. V grafe vetra riadok s vetrom obsahuje aj smer, odkiaľ vietor fúka; v grafe vĺn riadok s výškou vĺn obsahuje smer, odkiaľ vlny prichádzajú.</p>
+
+  <h3>Sekcie s obsahom (rozbaľovacie panely)</h3>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">▶ Aktívne výstrahy počasia</h3><p style="margin:0">Karty aktívnych výstrah (oficiálne aj lokálne odhadované), súhrn v záhlaví zoskupený podľa typu udalosti a závažnosti a Gantt graf ich časového rozpätia.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Kvalita ovzdušia a peľ</h3><p style="margin:0">AQI, jemné častice, reaktívne plyny, prach, optická hrúbka aerosólu, peľová predpoveď (6 druhov).</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Predpoveď počasia</h3><p style="margin:0">Teplota a UV index, zrážky a oblačnosť, vietor a tlak.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Morské údaje</h3><p style="margin:0">Voliteľné. Teplota morskej hladiny, modelovaná výška hladiny s ďalším maximom/minimom, výška, perióda a smer vĺn.</p></div>
+    <div class="card"><h3 style="margin-top:0">▶ Slnko a Mesiac</h3><p style="margin:0">Výška Slnka/Mesiaca nad horizontom, fázy Mesiaca, čas východu/západu, dĺžka dňa.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Ako čo urobiť</h2>
+
+  <h3>Pridanie novej lokality</h3>
+  <div class="steps">
+    <div class="step">Klikni na <code>Pridať lokalitu</code> v bočnom paneli.</div>
+    <div class="step">Napíš názov mesta alebo obce, prípadne súradnice (zemepisnú šírku a dĺžku), a stlač Enter.</div>
+    <div class="step">Zo zoznamu výsledkov vyber správnu lokalitu.</div>
+    <div class="step">Appka automaticky stiahne predpoveď, kvalitu ovzdušia aj výstrahy pre novú lokalitu.</div>
+  </div>
+
+  <h3>Zmena modelu predpovede</h3>
+  <div class="steps">
+    <div class="step">V paneli nástrojov otvor zoznam <code>Model predpovede</code>.</div>
+    <div class="step">Vyber model — mimo Európy sa ICON D2/EU automaticky nahradí modelom Best match.</div>
+    <div class="step">Modely bez UV indexu (napr. ECMWF) majú UV index doplnený z modelu GFS; legenda grafu aj popisok to uvádzajú.</div>
+  </div>
+
+  <h3>Zobrazenie morských údajov</h3>
+  <div class="steps">
+    <div class="step">V paneli nástrojov zaškrtni <code>Morské údaje</code> pod výberom modelu.</div>
+    <div class="step">Otvor panel <code>Morské údaje</code>. Pri lokalitách vo vnútrozemí panel oznámi, že morské údaje nie sú dostupné.</div>
+  </div>
+
+  <h3>Manuálne obnovenie dát</h3>
+  <div class="steps">
+    <div class="step">Klikni na <code>Obnoviť teraz</code> v paneli nástrojov.</div>
+    <div class="step">Počas sťahovania sa tlačidlo dočasne stlmí a deaktivuje.</div>
+  </div>
+
+  <h3>Preusporiadanie alebo odstránenie lokalít</h3>
+  <div class="steps">
+    <div class="step">Ťahaj lokalitu v zozname na nové miesto.</div>
+    <div class="step">Klikni na ikonu koša vedľa lokality, ktorú chceš odstrániť.</div>
+  </div>
+
+  <h3>Zmena jazyka rozhrania</h3>
+  <div class="steps">
+    <div class="step">V nastaveniach appky vyber Slovenčinu alebo Angličtinu.</div>
+    <div class="step">Rozhranie, popisky grafov, fázy Mesiaca aj tento pomocník sa okamžite prepnú do zvoleného jazyka.</div>
+  </div>
+</section>
+
+<section>
+  <h2>Ako čítať grafy</h2>
+  <h3>Teplota a UV index</h3>
+  <p>Plná červená čiara = teplota (ľavá os). Bodkovaná žltá čiara = UV index (pravá os). Zvislá bledá prerušovaná čiara = aktuálny čas v miestnom čase lokality. Ak vybraný model UV index neposkytuje, hodnoty sa doplnia z modelu GFS a označia sa ako doplnkový zdroj.</p>
+  <h3>Zrážky a oblačnosť</h3>
+  <p>Stĺpce = zrážky (mm/palce), rozdelené na dážď/prehánky/sneh ak sú dostupné. Modrá plocha na pozadí = percento oblačnosti (pravá os, 0–100 %).</p>
+  <h3>Vietor a tlak</h3>
+  <p>Zelená čiara = rýchlosť vetra, tmavozelená bodkovaná = nárazy. Fialová čiara (pravá os) = tlak. Žlté šípky v hornej časti grafu ukazujú smer, <b>odkiaľ</b> vietor fúka; legenda vysvetľuje symbol šípky. Vodorovné mriežkové čiary oboch osí (vietor aj tlak) sú vzájomne zosúladené, aby sa dali čítať v rovnakej mriežke.</p>
+  <h3>Výstrahy — Gantt graf</h3>
+  <p>Každý riadok = jedna aktívna výstraha, vodorovný pruh = jej časové rozpätie. Farba pruhu zodpovedá úrovni závažnosti. Záhlavie panela uvádza, koľko výstrah ktorého typu a závažnosti je aktívnych, napr. <i>1× Tempestade (RED) · 4× Tempestade (ORANGE)</i>.</p>
+  <h3>Kvalita ovzdušia a peľ</h3>
+  <p>Prvý graf: európsky AQI + PM2.5/PM10. Druhý: reaktívne plyny (O₃, NO₂, SO₂, NH₃, CO). Tretí: prach a optická hrúbka aerosólu. Štvrtý: šesť typov peľu naraz. Skratky znamenajú:</p>
+  <table>
+    <tr><th>Pojem</th><th>Význam</th></tr>
+    <tr><td>Európsky AQI</td><td>Celkové hodnotenie kvality ovzdušia od „dobrá“ po „extrémne zlá“. Počíta sa z piatich látok (PM2.5, PM10, O₃, NO₂, SO₂) a rozhoduje tá najhoršia. CO a NH₃ do neho nevstupujú.</td></tr>
+    <tr><td>PM2.5 / PM10</td><td>Drobné častice vo vzduchu. Číslo je ich veľkosť v mikrometroch. Častice PM2.5 sú jemnejšie a dostanú sa hlbšie do pľúc.</td></tr>
+    <tr><td>O₃ (ozón)</td><td>Prízemný ozón, hlavná zložka smogu. Nevzniká priamo z komína, ale na slnku reakciou iných látok.</td></tr>
+    <tr><td>NO₂</td><td>Oxid dusičitý, plyn zo spaľovania palív, napríklad z dopravy a vykurovania.</td></tr>
+    <tr><td>SO₂</td><td>Oxid siričitý, plyn zo spaľovania fosílnych palív.</td></tr>
+    <tr><td>CO</td><td>Oxid uhoľnatý, bezfarebný plyn bez zápachu, ktorý vzniká pri nedokonalom spaľovaní.</td></tr>
+    <tr><td>NH₃</td><td>Amoniak, plyn pochádzajúci najmä z poľnohospodárstva.</td></tr>
+    <tr><td>AOD</td><td>Optická hrúbka aerosólu: miera, ako veľa slnečného svetla zachytávajú častice vo vzduchu (prach, dym). Nemá jednotku.</td></tr>
+  </table>
+  <h3>Morské údaje</h3>
+  <p><b>Teplota morskej hladiny:</b> modelovaná teplota vody pri povrchu.<br>
+  <b>Hladina mora · príliv:</b> modelovaná výška hladiny v metroch so značkami ďalších maxím (▲) a miním (▼). Hodnoty sa vzťahujú ku globálnej strednej hladine mora, nie k miestnej prílivovej tabuľke.<br>
+  <b>Vlny:</b> výška vĺn (ľavá os) a perióda vĺn (pravá os, bodkovaná). Žlté šípky v hornej časti ukazujú smer, <b>odkiaľ</b> vlny prichádzajú; popisok ho uvádza aj ako svetovú stranu (napr. JZ 225°).</p>
+  <h3>Slnko a Mesiac</h3>
+  <p><b>Graf výšky (altitude):</b> krivka nad nulou = teleso je nad horizontom (viditeľné), pod nulou = pod horizontom. Bodky na krivke ukazujú aktuálnu polohu Slnka/Mesiaca a priebežne sa posúvajú v reálnom čase, malé ikony fáz Mesiaca sa objavujú v momente zmeny fázy.<br>
+  <b>Gantt graf dňa/noci/Mesiaca:</b> horný riadok = deň (zlatá)/noc (tmavomodrá), spodný riadok = kedy je Mesiac nad obzorom.<br>
+  <b>Info karty:</b> presný čas východu/západu Slnka a Mesiaca, dĺžka dňa, aktuálna fáza Mesiaca (napr. Dorastajúci kosáčik, Spln, Cúvajúci kosáčik…) a percento osvetlenia, trend (Dorastajúci/Cúvajúci). Názov fázy sa zobrazuje aj v záhlaví panela.</p>
+</section>
+
+<section>
+  <h2>Ako sa hodnoty počítajú</h2>
+
+  <h3>Slnko</h3>
+  <p>Východ, západ a dĺžku dňa preberá appka priamo z dennej predpovede Open-Meteo pre danú lokalitu. Krivka výšky Slnka sa počíta priamo v appke nízkopresným vzorcom polohy Slnka z dátumu, času, zemepisnej šírky a dĺžky. Je dosť presná na čítanie priebehu dňa, nie na astronomické účely.</p>
+
+  <h3>Mesiac</h3>
+  <p>Mesiac sa počíta priamo v appke, bez online služby. Jeho poloha sa odhaduje z hlavných periodických členov dráhy Mesiaca a prevádza sa na výšku nad horizontom pomocou miestneho hviezdneho času lokality.</p>
+  <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
+    <li><b>Fáza:</b> odvodená z elongácie (uhla medzi Mesiacom a Slnkom). Cyklus je rozdelený na 8 pomenovaných fáz po 45°.</li>
+    <li><b>Osvetlenie:</b> počíta sa z elongácie ako (1 − cos elongácia) / 2 a zobrazuje sa v percentách.</li>
+    <li><b>Trend:</b> dorastajúci, ak je elongácia menšia ako 180°, inak cúvajúci.</li>
+    <li><b>Východ a západ Mesiaca:</b> zisťuje sa prechádzaním každého dňa v 10-minútových krokoch a hľadaním momentu, keď výška prejde cez nulu.</li>
+    <li><b>Ikony fáz v grafe:</b> umiestňujú sa do momentu, keď pomenovaná fáza začína; zisťuje sa to v 30-minútových krokoch.</li>
+  </ul>
+
+  <h3>Oficiálne výstrahy</h3>
+  <p>Výstrahy MeteoAlarm pre vybranú krajinu sa filtrujú podľa názvu okresu alebo regiónu tvojej lokality. Úroveň (žltá, oranžová, červená) sa číta z farby uvedenej vo výstrahe. Feed MeteoAlarm neposkytuje čas ukončenia, preto Gantt graf namiesto celého pruhu zobrazí krátku značku od času zverejnenia.</p>
+  <p>FOSS Public Alert Server sa dopytuje podľa súradníc lokality. Zobrazia sa len aktuálne verejné meteorologické výstrahy, ktorých oblasť (polygón alebo kruh) obsahuje danú lokalitu. Ich závažnosť podľa CAP sa premieta na úrovne aplikácie:</p>
+  <table>
+    <tr><th>Závažnosť podľa CAP</th><th>Úroveň v aplikácii</th></tr>
+    <tr><td>Extreme, Severe</td><td>Červená</td></tr>
+    <tr><td>Moderate</td><td>Oranžová</td></tr>
+    <tr><td>Minor</td><td>Žltá</td></tr>
+    <tr><td>Unknown</td><td>Neutrálna (sivá)</td></tr>
+  </table>
+
+  <h3>Lokálny odhad výstrah</h3>
+  <p>Appka porovnáva hodinovú predpoveď zvoleného modelu s pevnými prahovými hodnotami. Tieto výstrahy majú štítok <b>Local estimate</b> a zobrazujú sa popri oficiálnych.</p>
+  <table>
+    <tr><th>Výstraha</th><th>Podmienka v predpovedi</th><th>Úroveň</th><th>Zobrazená dĺžka</th></tr>
+    <tr><td>Thunderstorm risk (riziko búrky)</td><td>Kód počasia 95, 96 alebo 99 (búrka)</td><td>Červená</td><td>6 hodín</td></tr>
+    <tr><td>Strong wind gusts (silné nárazy vetra)</td><td>Nárazy 60 km/h a viac</td><td>Oranžová</td><td>12 hodín</td></tr>
+    <tr><td>Heavy precipitation (výdatné zrážky)</td><td>10 mm a viac za jednu hodinu</td><td>Oranžová</td><td>6 hodín</td></tr>
+    <tr><td>Extreme heat (extrémne teplo)</td><td>Teplota 35 °C a viac</td><td>Žltá</td><td>24 hodín</td></tr>
+    <tr><td>Extreme cold (extrémny mráz)</td><td>Teplota −15 °C a menej</td><td>Žltá</td><td>24 hodín</td></tr>
+  </table>
+  <p>Každé nebezpečenstvo vytvorí najviac jednu výstrahu, ktorá začína v prvej hodine, keď sa prah dosiahne. Zobrazená dĺžka je pevné okno od tejto hodiny, nie predpoveď konca udalosti. Ide o heuristiku založenú na pravidlách, nie o oficiálnu predpoveď.</p>
+
+  <h3>Morský panel</h3>
+  <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
+    <li><b>Dáta:</b> načítavajú sa z morskej predpovede Open-Meteo, len keď je zaškrtnuté pole Morské údaje.</li>
+    <li><b>Hladina rastie / klesá:</b> appka porovná dve hodinové hodnoty hladiny okolo aktuálneho času (alebo najbližšiu dostupnú dvojicu). Zmena väčšia ako 1 cm sa berie ako rast alebo pokles; pri menšej zmene zostane trend neznámy.</li>
+    <li><b>Ďalšie maximum / minimum:</b> bod je maximom alebo minimom, ak sú susedné hodnoty nižšie alebo vyššie o viac ako 1 cm. Ploché úseky reprezentuje ich stred. Panel ukazuje čas najbližšieho po aktuálnom okamihu a značí ho ≈, pretože ide o modelované dáta.</li>
+    <li><b>Súhrnné hodnoty:</b> teplota mora, výška, perióda a smer vĺn sa čítajú z hodiny najbližšej aktuálnemu času.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Farebné indikátory</h2>
+
+  <h3>1. Výstrahy — bodka podľa najzávažnejšej aktívnej výstrahy</h3>
+  <table>
+    <tr><td><span class="dot neutral"></span></td><td>Neutrálny</td><td>Žiadne aktívne výstrahy alebo appka ešte nevyhodnotila dáta</td></tr>
+<tr><td><span class="dot yellow"></span></td><td>Upozornenie</td><td>Najzávažnejšia aktívna výstraha je žltá</td></tr>
+<tr><td><span class="dot orange"></span></td><td>Závažné</td><td>Najzávažnejšia aktívna výstraha je oranžová</td></tr>
+<tr><td><span class="dot red"></span></td><td>Kritické</td><td>Najzávažnejšia aktívna výstraha je červená</td></tr>
+  </table>
+
+  <h3>2. Kvalita ovzdušia a peľ — bodka podľa prekročenia prahov</h3>
+  <table>
+    <tr><th>Bodka</th><th>Stav</th><th>Význam</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutrálny</td><td>Žiadne dáta o kvalite ovzdušia</td></tr>
+    <tr><td><span class="dot ok"></span></td><td>V poriadku</td><td>AQI aj všetky znečisťujúce látky pod prahom upozornenia</td></tr>
+    <tr><td><span class="dot warn"></span></td><td>Zvýšené</td><td>Aspoň jedna hodnota (napr. PM2.5, O₃) prekročila mierny prah</td></tr>
+    <tr><td><span class="dot bad"></span></td><td>Vysoké</td><td>Aspoň jedna hodnota prekročila vážny prah (napr. AQI &gt; 100)</td></tr>
+  </table>
+
+  <h3>3. Počasie — bodka podľa aktuálnej teploty (plynulý farebný prechod)</h3>
+  <p>Na rozdiel od ostatných sekcií sa táto bodka nefarbí len na 3–4 pevné farby — appka počíta <b>plynulý farebný gradient</b> priamo z aktuálnej teploty v danej lokalite, od studenej modrofialovej cez zelenú a žltú až po sýtu červenú:</p>
+  <div class="gradientBar"></div>
+  <div class="gradientLabels"><span>-40 °C</span><span>-10 °C</span><span>10 °C</span><span>20 °C</span><span>35 °C</span><span>45 °C+</span></div>
+  <p>Farba bodky sa teda mení kontinuálne s každým stupňom teploty, nie skokovo — napr. 5 °C bude mierne inou farbou ako 8 °C, obe niekde medzi tyrkysovou a zelenou.</p>
+
+  <h3>4. Morské údaje — bodka podľa trendu hladiny mora</h3>
+  <table>
+    <tr><th>Bodka</th><th>Stav</th><th>Význam</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutrálny</td><td>Žiadne morské údaje alebo sa trend nedá určiť</td></tr>
+    <tr><td><span class="dot info"></span></td><td>Rastie</td><td>Modelovaná hladina mora stúpa (blíži sa maximum)</td></tr>
+    <tr><td><span class="dot warn"></span></td><td>Klesá</td><td>Modelovaná hladina mora klesá (blíži sa minimum)</td></tr>
+  </table>
+
+  <h3>5. Slnko a Mesiac — bodka podľa toho, či je práve deň alebo noc</h3>
+  <table>
+    <tr><th>Bodka</th><th>Stav</th><th>Význam</th></tr>
+    <tr><td><span class="dot neutral"></span></td><td>Neutrálny</td><td>Chýbajú dáta o východe/západe Slnka</td></tr>
+    <tr><td><span class="dot day"></span></td><td>Deň</td><td>Slnko je práve nad horizontom (zlatá farba)</td></tr>
+    <tr><td><span class="dot night"></span></td><td>Noc</td><td>Slnko je práve pod horizontom (tmavomodrá farba)</td></tr>
+  </table>
+
+  <h3>Úrovne výstrah (farba karty a pruhu v Gantt grafe)</h3>
+  <table>
+    <tr><th>Farba</th><th>Úroveň</th><th>Zdroj</th></tr>
+    <tr><td><span class="swatch" style="background:#e53935"></span></td><td>Červená</td><td>Oficiálna „červená“ výstraha, závažnosť CAP Severe/Extreme alebo riziko búrky (lokálny odhad)</td></tr>
+    <tr><td><span class="swatch" style="background:#fb8c00"></span></td><td>Oranžová</td><td>Oficiálna „oranžová“ výstraha, závažnosť CAP Moderate alebo silný vietor/výdatné zrážky (lokálny odhad)</td></tr>
+    <tr><td><span class="swatch" style="background:#fdd835"></span></td><td>Žltá</td><td>Oficiálna „žltá“ výstraha, závažnosť CAP Minor alebo extrémne teplo/mráz (lokálny odhad)</td></tr>
+  </table>
+
+  <h3>Badge zdroja výstrahy</h3>
+  <span class="chip">💨 YELLOW · MeteoAlarm</span>
+  <span class="chip">⛈ ORANGE · Local estimate</span>
+  <p style="margin-top:8px"><b>MeteoAlarm</b> a národné CAP služby = oficiálne výstrahy od meteorologických služieb. <b>Local estimate</b> = appka si sama vypočítala riziko z prekročenia prahových hodnôt v hodinovej predpovedi (nejde o oficiálne varovanie).</p>
+</section>
+
+<section>
+  <h2>Limitácie a známe obmedzenia</h2>
+  <div class="limit-box">
+    <b>Výstrahy nie sú stopercentne úplné.</b> MeteoAlarm pokrýva iba Európu a jeho Atom feed neobsahuje presnú geografickú geometriu (polygón) — filtrovanie podľa regiónu funguje na základe textového porovnania názvu okresu/kraja. Ak appka nenájde zhodu, pre danú lokalitu nezobrazí žiadnu oficiálnu výstrahu, aj keby mohla v krajine existovať pod iným názvom.
+  </div>
+  <h3 style="margin-top:20px">Svetové výstrahy (FOSS Public Alert Server)</h3>
+  <div class="warn-box">
+    Popri MeteoAlarm appka dopytuje FOSS Public Alert Server, ktorý zbiera oficiálne CAP kanály od úradov z celého sveta. Server je stále vo vývoji a zatiaľ nie je vyhlásený za pripravený na produkčné nasadenie a pokrytie závisí od toho, ktoré úrady kanál zverejňujú. Prázdny zoznam preto nezaručuje, že žiadna výstraha neexistuje. WMO Severe Weather Information Centre sa ako zdroj nepoužíva.
+  </div>
+  <h3 style="margin-top:20px">Obmedzenia dátových modelov</h3>
+  <table>
+    <tr><th>Model</th><th>Obmedzenie</th></tr>
+    <tr><td>ICON D2 / ICON EU</td><td>Dostupné iba pre lokality v Európe</td></tr>
+    <tr><td>ECMWF IFS HRES / IFS / AIFS</td><td>Bez vlastného UV indexu — hodnoty sa doplnia z modelu GFS a sú tak označené</td></tr>
+    <tr><td>Všetky modely</td><td>Predpoveď na max. 16 dní; kvalita ovzdušia max. 7 dní</td></tr>
+  </table>
+  <h3 style="margin-top:20px">Morské údaje</h3>
+  <p>Morské hodnoty sú modelované, nie namerané. Hladina mora sa vzťahuje ku globálnej strednej hladine mora a nie je to miestna prílivová tabuľka; panel nie je vhodný na navigáciu. Morské údaje sú dostupné len pre morské oblasti v blízkosti lokality, preto lokality vo vnútrozemí zobrazia oznam namiesto grafov.</p>
+  <h3 style="margin-top:20px">Ďalšie obmedzenia</h3>
+  <p>• Vyžaduje internetové pripojenie; bez neho zobrazuje poslednú cache predpoveď.<br>
+  • Auto-obnova je pevne nastavená na 6 hodín, zatiaľ nenastaviteľná v UI.<br>
+  • Lokálne prahové odhady výstrah sú heuristika s pevnými prahmi, nie meteorologicky validovaný model rizika.<br>
+  • Výpočty polohy Slnka/Mesiaca sú algoritmické priblíženia (nízka/stredná presnosť), nie observatórne efemeridy — pre bežné použitie postačujúce, ale nie vhodné na presné astronomické účely.<br>
+  • Rozhranie je momentálne dostupné v slovenčine a angličtine; ďalšie jazyky nie sú zatiaľ podporované.</p>
+</section>
+
+<section>
+  <h2>História zmien</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Voliteľný morský panel — teplota morskej hladiny, modelovaná výška hladiny s ďalším maximom/minimom, výška, perióda a smer vĺn, zapínaný zaškrtávacím poľom pod výberom modelu</li>
+      <li>Pridávanie lokalít podľa súradníc popri vyhľadávaní podľa názvu</li>
+      <li>Svetové oficiálne výstrahy cez FOSS Public Alert Server popri MeteoAlarm a lokálnych prahových odhadoch</li>
+      <li>UV index doplnený z modelu GFS tam, kde vybraný model žiadny nemá</li>
+      <li>Názov fázy Mesiaca v záhlaví panela Slnko a Mesiac</li>
+      <li>Zrozumiteľné názvy sérií kvality ovzdušia a slovník skratiek v tomto pomocníkovi</li>
+      <li>Jednotné rozloženie popiskov vo všetkých grafoch — čas, názov veličiny, hodnota a jednotka, so šírkou prispôsobenou obsahu</li>
+      <li>Záhlavie výstrah uvádza počty výstrah podľa typu udalosti a závažnosti</li>
+      <li>Lepšia integrácia výstrah a rozloženie grafu výstrah</li>
+      <li>Nový štýl čiary „teraz“; iná farba krivky pre optickú hrúbku aerosólu; preklady pre kvalitu ovzdušia</li>
+      <li>Lepšia integrácia ďalších modelov predpovede tak, aby zobrazovali aj UV index; ECMWF AIFS opäť funguje</li>
+      <li>Názvy dní a dátumy v grafe Slnka a Mesiaca posunuté vyššie; väčšie písmo; doplnená ikona k dĺžke dňa; veľké písmená v popisku Slnka</li>
+      <li>Chyba časového pásma; nesprávny počet meteorologických výstrah; trend Mesiaca nebol zosynchronizovaný s fázou</li>
+      <li>Pri veľkom počte výstrah sa stratila hlavička grafu výstrah (deň a dátum)</li>
+      <li>Formát čísla tlaku v popisku teraz zodpovedá osi (napr. 1&nbsp;012 hPa)</li>
+      <li>Smer vetra a vĺn doplnený do legendy; smer vetra doplnený do popisku vetra</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">3.1 <span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Bodka pri sekcii Predpoveď počasia teraz pri načítavaní zobrazuje neutrálnu sivú farbu rovnako ako ostatné tri sekcie, namiesto modrej pred prvým obnovením dát</li>
+      <li>Pridané ikony fázy a trendu vedľa popiskov „Fáza“ a „Trend“ v paneli Slnko a Mesiac</li>
+      <li>Preložené popisky „Prach“ a „AOD“ v súhrnnom riadku panela Kvalita ovzdušia, predtým natvrdo v angličtine</li>
+      <li>Opravený duplicitne vnorený obal karty okolo grafu Reaktívne plyny, ktorý spôsoboval nadbytočný tmavý rámček oproti ostatným grafom kvality ovzdušia</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">3 <span class="tag added">Pridané</span><span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Pridaná plná slovenská jazyková mutácia rozhrania (prepínateľná priamo v aplikácii)</li>
+      <li>Preložené fázy a trend Mesiaca, popisky osí grafov a ďalšie texty predtým natvrdo v angličtine</li>
+      <li>Oprava vodorovných mriežkových čiar v grafe vetra a tlaku — os tlaku teraz zdieľa rovnaké čiary ako os vetra</li>
+      <li>Automatické posúvanie časovej značky „teraz“ a polohy Slnka/Mesiaca v grafoch aj bez ručného obnovenia dát, vrátane spoľahlivého správania po návrate z pozadia</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2.5 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
+    <ul>
+      <li>Integrácia oficiálnych výstrah MeteoAlarm (Atom feed, per-krajina)</li>
+      <li>Mapovanie ikon podľa typu udalosti (vietor, búrka, sneh, teplota…) namiesto univerzálneho symbolu</li>
+      <li>Filtrovanie výstrah podľa regiónu vybranej lokality, bez fallbacku na zobrazenie celej krajiny</li>
+      <li>Zlúčenie oficiálnych a lokálnych odhadovaných výstrah s rozlíšením zdroja (badge)</li>
+      <li>Vyskúšaná a zdokumentovaná integrácia WMO SWIC — napokon vypnutá pre chýbajúce stabilné API</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2.2 <span class="tag added">Pridané</span></div>
+    <ul>
+      <li>Vytvorený kompletný RPM balíček s <code>pyproject-rpm-macros</code></li>
+      <li>Pridaná vlastná vektorová (SVG) ikona aplikácie</li>
+      <li>Desktop launcher súbor s validáciou</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">2 <span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Oprava chýbajúceho <code>Adw.HeaderBar</code> — okno predtým nemalo tlačidlá na zatvorenie/presun</li>
+      <li>Oprava <code>set_content()</code> volania</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">1.0 <span class="tag added">Pridané</span></div>
+    <ul>
+      <li>Stabilná plnohodnotná verzia aplikácie po vývoji z alfa štádia</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
+    <div class="ver">0.3 <span class="tag added">Pridané</span></div>
+    <ul>
+      <li>Iniciálna aplikácia — HTML mockup postupne preklopený do funkčnej alfa podoby</li>
+      <li>Prvé naviazanie na živé dáta Open-Meteo a funkčný natívny most medzi WebKit (JS) a GTK/Python vrstvou</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Licencie</h2>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Perun Weather (táto aplikácia)</h3><p style="margin:0">Autor: <b>Peter Tóth</b>. Licencované pod <b>MIT License</b>. Autor si ponecháva plné práva na zdrojový kód.</p></div>
+    <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Vykresľovanie grafov, <b>MIT License</b>, súčasť appky lokálne.</p></div>
+    <div class="card"><h3 style="margin-top:0">Dáta: Open-Meteo</h3><p style="margin:0">Dáta o počasí, kvalite ovzdušia a mori poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> pod licenciou <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">podrobnosti o licencii</a>). Appka dáta prepočítava na zvolené jednotky a vizualizuje. Podkladové modelové dáta pochádzajú z národných meteorologických služieb, napríklad DWD, ECMWF, NOAA a DMI, a kvalita ovzdušia z CAMS (Copernicus). Vyhľadávanie miest využíva Open-Meteo Geocoding API založené na <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Bezplatný prístup k API je určený na nekomerčné použitie (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Podmienky</a>).</p></div>
+    <div class="card"><h3 style="margin-top:0">Dáta: MeteoAlarm</h3><p style="margin:0">Oficiálne výstrahy pre Európu od národných meteo služieb. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
+    <div class="card"><h3 style="margin-top:0">Dáta: FOSS Public Alert Server</h3><p style="margin:0">Oficiálne CAP výstrahy zbierané od úradov z celého sveta, projekt KDE a tímu FOSS Warn. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
+    <div class="card"><h3 style="margin-top:0">Dáta: OpenStreetMap</h3><p style="margin:0">Názvy miest pri vyhľadávaní podľa súradníc poskytuje <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">prispievatelia OpenStreetMap</a> (ODbL).</p></div>
+  </div>
+</section>
+`,
+
+    day_full: "long", day_short: "short",
+  },
+};
+
+// currentLang is read from persisted app settings (state.lang), so the
+// language choice survives app restarts via main.py/config.py, not just
+// a single browser session. Falls back to English if state is not yet
+// loaded or lang was never set.
+
+// t(key, ...args) - looks up a string in the current language, falling
+// back to English if the key is missing there, and finally to the raw
+// key itself so a missing translation is visible/debuggable rather than
+// silently blank. Some entries are functions (for pluralization etc.)
+// and are called with the given args; others are plain strings.
+function t(key, ...args){
+  const dict = STRINGS[currentLang] || STRINGS.en;
+  const entry = (key in dict) ? dict[key] : (STRINGS.en[key] !== undefined ? STRINGS.en[key] : key);
+  return typeof entry === "function" ? entry(...args) : entry;
+}
+
+// Returns the list of language codes currently available, derived directly
+// from STRINGS - adding a new language later means adding one new key to
+// STRINGS (e.g. "cz"), with no other code changes needed for it to show
+// up wherever this function is used (e.g. building a language switcher).
+function availableLanguages(){
+  return Object.keys(STRINGS);
+}
+let state={locations:[],selected:0,units:'metric',hours:72,auto:true,model:'best_match',interval:3,smoothing:0,icon_models_available:true};let currentData=null,dragIndex=null;
+let currentLang = (typeof state !== "undefined" && state && state.lang) || "sk";
+let nowTickTimer = null;
+function startNowTick(){
+  if(nowTickTimer) clearInterval(nowTickTimer);
+  nowTickTimer = setInterval(()=>{
+    if(currentData) renderForecast(currentData, true);
+  }, 60000);
+}
+
+window.qtBridge = null;
+
+function initQtBridge() {
+  if (
+    typeof QWebChannel === "undefined" ||
+    typeof qt === "undefined" ||
+    !qt.webChannelTransport
+  ) {
+    return;
+  }
+
+  new QWebChannel(qt.webChannelTransport, function (channel) {
+    window.qtBridge = channel.objects.bridge || null;
+
+    if (window.qtBridge) {
+      console.log("[Perun Weather] Qt bridge ready");
+    } else {
+      console.error("[Perun Weather] Qt bridge object was not found");
+    }
+  });
+}
+
+initQtBridge();
+
+function native(a, p = {}) {
+  // 1. Windows: aktuálny PySide6 / Qt QWebChannel bridge.
+  if (window.qtBridge) {
+    switch (a) {
+      case "refresh":
+        window.qtBridge.refresh();
+        return;
+
+      case "select":
+        window.qtBridge.select(Number(p.index));
+        return;
+
+      case "delete":
+        window.qtBridge.delete(Number(p.index));
+        return;
+
+      case "reorder":
+        window.qtBridge.reorder(
+          typeof p.order === "string"
+            ? p.order
+            : JSON.stringify(p.order || [])
+        );
+        return;
+
+      case "add":
+        window.qtBridge.add(String(p.query || ""));
+        return;
+
+      case "add_confirm":
+        window.qtBridge.add_confirm(
+          typeof p.location === "string"
+            ? p.location
+            : JSON.stringify(p.location || {})
+        );
+        return;
+
+      case "setting":
+        window.qtBridge.setting(
+          String(p.key || ""),
+          String(p.value ?? "")
+        );
+        return;
+
+      default:
+        console.warn("Unknown native action:", a);
+        return;
+    }
+  }
+
+  // 2. Predchádzajúca Windows/pywebview kompatibilita.
+  // Nechávame ju, aby sa nezlomila staršia testovacia verzia.
+  if (window.pywebview && window.pywebview.api) {
+    const fn = window.pywebview.api[a];
+
+    if (typeof fn !== "function") {
+      console.warn("Unknown pywebview action:", a);
+      return;
+    }
+
+    if (a === "setting") {
+      fn(p.key, p.value);
+    } else if (a === "select" || a === "delete") {
+      fn(Number(p.index));
+    } else if (a === "reorder") {
+      fn(
+        typeof p.order === "string"
+          ? JSON.parse(p.order)
+          : (p.order || [])
+      );
+    } else if (a === "add") {
+      fn(p.query || "");
+    } else if (a === "add_confirm") {
+      fn(
+        typeof p.location === "string"
+          ? JSON.parse(p.location)
+          : (p.location || {})
+      );
+    } else {
+      fn();
+    }
+
+    return;
+  }
+
+  // 3. Linux: GTK/WebKit URL scheme.
+  const q = new URLSearchParams(p).toString();
+  window.location.href = "perunweather://" + a + (q ? "?" + q : "");
+}function setSetting(k,v){native('setting',{key:k,value:String(v)})}function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),3200)}function showError(m){showToast(m)}function setRefreshing(on){document.getElementById('refreshButton').classList.toggle('refreshing',on)}
+function updateMarineVisibility() {
+  const enabled = state.marine_enabled === true;
+  const section = document.getElementById('marineSection');
+
+  section.hidden = !enabled;
+
+  if (!enabled) {
+    document.getElementById('marineBody').classList.remove('open');
+    document.getElementById('marineChevron').classList.remove('open');
+  }
+}
+
+function marineHasData(marine) {
+  const hourly = marine && marine.hourly;
+  const times = hourly && hourly.time;
+
+  if (!Array.isArray(times) || times.length < 2) {
+    return false;
+  }
+
+  return [
+    "sea_surface_temperature",
+    "sea_level_height_msl",
+    "wave_height",
+    "wave_period",
+    "wave_direction",
+  ].some((key) =>
+    Array.isArray(hourly[key]) &&
+    hourly[key].some((value) =>
+      typeof value === "number" &&
+      Number.isFinite(value)
+    )
+  );
+}
+
+function renderSeaTemperature(marine) {
+  const target = document.getElementById("seaTemperature");
+  const hourly = marine && marine.hourly;
+  const times = hourly && hourly.time;
+  const values = hourly && hourly.sea_surface_temperature;
+
+  if (
+    !Array.isArray(times) ||
+    !Array.isArray(values) ||
+    !times.length ||
+    !values.some((value) => value !== null && Number.isFinite(Number(value)))
+  ) {
+    Plotly.purge(target);
+    return;
+  }
+
+  const z = proc(
+    times,
+    [values]
+  );
+  
+  const mu = marineUnits();
+  z.ss[0] = z.ss[0].map(mu.temp);
+
+  Plotly.newPlot(
+    target,
+    [{
+      x: z.x,
+      y: z.ss[0],
+      name: t("leg_sea_temperature"),
+      type: "scatter",
+      mode: "lines",
+      line: {color: CLR.temp, width: 2.5},
+      hovertemplate: hv(mu.tempUnit),
+    }],
+    layout(
+      z.x,
+      {
+        yaxis: axis(
+          mu.label(t("axis_sea_temperature")),
+          CLR.temp,
+        ),
+      }
+    ),
+    {
+      responsive: true,
+      displayModeBar: false,
+    }
+  );
+}
+
+function renderSeaLevel(marine) {
+  const target = document.getElementById("seaLevel");
+  const card = document.getElementById("seaLevelCard");
+  const hourly = marine && marine.hourly;
+  const times = hourly && hourly.time;
+  const values = hourly && hourly.sea_level_height_msl;
+
+  const valid =
+    Array.isArray(times) &&
+    Array.isArray(values) &&
+    times.length >= 2 &&
+    values.some((value) =>
+      value !== null &&
+      value !== undefined &&
+      Number.isFinite(Number(value))
+    );
+
+  card.hidden = !valid;
+
+  if (!valid) {
+    Plotly.purge(target);
+    return;
+  }
+
+  const cleanValues = times.map((_, i) => {
+    const value = values[i];
+    return value !== null &&
+      value !== undefined &&
+      Number.isFinite(Number(value))
+        ? Number(value)
+        : null;
+  });
+
+  const mu = marineUnits();
+  const z = proc(times, [cleanValues]);
+  const highs = [];
+  const lows = [];
+  const epsilon = 0.01; // 1 cm: potlačí drobné modelové výkyvy
+
+  for (let i = 1; i < cleanValues.length - 1; ) {
+    const current = cleanValues[i];
+
+    if (current === null) {
+      i += 1;
+      continue;
+    }
+
+    let end = i;
+    while (
+      end + 1 < cleanValues.length &&
+      cleanValues[end + 1] !== null &&
+      Math.abs(cleanValues[end + 1] - current) <= epsilon
+    ) {
+      end += 1;
+    }
+
+    const previous = cleanValues[i - 1];
+    const next = cleanValues[end + 1];
+
+    if (previous !== null && next !== null) {
+      const isHigh =
+        current - previous > epsilon &&
+        current - next > epsilon;
+
+      const isLow =
+        previous - current > epsilon &&
+        next - current > epsilon;
+
+      if (isHigh || isLow) {
+        const middle = Math.floor((i + end) / 2);
+        const point = {x: times[middle], y: cleanValues[middle]};
+
+        if (isHigh) {
+          highs.push(point);
+        } else {
+          lows.push(point);
+        }
+      }
+    }
+
+    i = end + 1;
+  }
+
+  Plotly.newPlot(
+    target,
+      [
+      {
+        x: z.x,
+        y: z.ss[0].map(mu.len),
+        name: t("leg_sea_level"),
+        type: "scatter",
+        mode: "lines",
+        connectgaps: false,
+        line: {color: "#2f7fa8", width: 2.5},
+        hovertemplate: hv(mu.lenUnit, 2),
+      },
+      {
+        x: highs.map((point) => point.x),
+        y: highs.map((point) => mu.len(point.y)),
+        name: t("leg_sea_level_high"),
+        type: "scatter",
+        mode: "markers",
+        marker: {
+          color: "#4fc3f7",
+          size: 10,
+          symbol: "triangle-up",
+          line: {color: "#1a1d24", width: 1},
+        },
+        hovertemplate: hv(mu.lenUnit, 2),
+      },
+      {
+        x: lows.map((point) => point.x),
+        y: lows.map((point) => mu.len(point.y)),
+        name: t("leg_sea_level_low"),
+        type: "scatter",
+        mode: "markers",
+        marker: {
+          color: "#fb8c00",
+          size: 10,
+          symbol: "triangle-down",
+          line: {color: "#1a1d24", width: 1},
+        },
+        hovertemplate: hv(mu.lenUnit, 2),
+      },
+    ],
+    layout(z.x, {
+       yaxis: axis(mu.label(t("axis_sea_level")), "#2f7fa8", {
+        zeroline: true,
+        zerolinecolor: "#5b6577",
+        zerolinewidth: 1,
+      }),
+    }),
+    {
+      responsive: true,
+      displayModeBar: false,
+    }
+  );
+}
+
+function renderMarineWaves(marine) {
+  const target = document.getElementById("marineWaves");
+  const card = document.getElementById("marineWavesCard");
+  const hourly = marine && marine.hourly;
+  const times = hourly && hourly.time;
+
+  if (!Array.isArray(times) || times.length < 2) {
+    card.hidden = true;
+    Plotly.purge(target);
+    return;
+  }
+
+  function cleanSeries(key) {
+    const source = hourly[key];
+    if (!Array.isArray(source)) return times.map(() => null);
+
+    return times.map((_, i) => {
+      const value = source[i];
+      return value !== null &&
+        value !== undefined &&
+        Number.isFinite(Number(value))
+          ? Number(value)
+          : null;
+    });
+  }
+
+  const heights = cleanSeries("wave_height");
+  const periods = cleanSeries("wave_period");
+  const directions = cleanSeries("wave_direction");
+  const hasHeight = heights.some((v) => v !== null);
+  const hasPeriod = periods.some((v) => v !== null);
+
+  card.hidden = !hasHeight && !hasPeriod;
+
+  if (card.hidden) {
+    Plotly.purge(target);
+    return;
+  }
+
+  const z = proc(times, [heights, periods]);
+  const mu = marineUnits();
+  const traces = [];
+
+  if (hasHeight) {
+    traces.push({
+      x: z.x,
+      y: z.ss[0].map(mu.len),
+      name: t("leg_marine_wave_height"),
+      type: "scatter",
+      mode: "lines",
+      connectgaps: false,
+      line: {color: "#4fc3f7", width: 2.5},
+      customdata: z.x.map((ts) => {
+        const i = times.indexOf(ts);
+        const d = i >= 0 ? directions[i] : null;
+        return d == null ? "--" : dir(d) + " " + Math.round(d) + "°";
+      }),
+      hovertemplate: hv(mu.lenUnit, 2, " · %{customdata}"),
+    });
+  }
+
+  if (hasPeriod) {
+    traces.push({
+      x: z.x,
+      y: z.ss[1],
+      name: t("leg_marine_wave_period"),
+      type: "scatter",
+      mode: "lines",
+      yaxis: "y2",
+      connectgaps: false,
+      line: {color: "#469d4a", width: 2, dash: "dot"},
+      hovertemplate: hv('s', 1),
+    });
+  }
+
+  const waveLayout = layout(z.x, {
+    yaxis: axis(mu.label(t("axis_marine_wave_height")), "#4fc3f7", {
+      rangemode: "tozero",
+    }),
+    yaxis2: axis(t("axis_marine_wave_period"), "#469d4a", {
+      overlaying: "y",
+      side: "right",
+      rangemode: "tozero",
+      showgrid: false,
+    }),
+  });
+
+
+  const step = 3;
+
+  const arrows = [];
+  const hoverX = [];
+  const hoverY = [];
+  const hoverText = [];
+
+  // Samostatný rad v hornej časti grafu, nezávislý od výšky vĺn.
+  const arrowRow = 0.90;
+
+  for (let i = 0; i < times.length; i += step) {
+    const direction = directions[i];
+    if (direction === null) continue;
+
+    const rad = direction * Math.PI / 180;
+
+    arrows.push({
+      x: times[i],
+      y: arrowRow,
+      xref: "x",
+      yref: "paper",
+      ax: Math.sin(rad) * 20,
+      ay: -Math.cos(rad) * 20,
+      axref: "pixel",
+      ayref: "pixel",
+      showarrow: true,
+      arrowhead: 2,
+      arrowsize: 1.1,
+      arrowwidth: 1.6,
+      arrowcolor: "#ffd166",
+      text: "",
+    });
+  }
+
+  waveLayout.annotations = [
+    ...(waveLayout.annotations || []),
+    ...arrows,
+  ];
+
+    if (arrows.length) {
+    traces.push({
+      x: [null],
+      y: [null],
+      name: '<span style="color:#ffd166">➤</span> ' + t("leg_marine_wave_direction"),
+      type: "scatter",
+      mode: "markers",
+      marker: {size: 1, color: "rgba(0,0,0,0)"},
+      hoverinfo: "skip",
+      showlegend: true,
+    });
+  }
+
+  Plotly.newPlot(
+    target,
+    traces,
+    waveLayout,
+    {
+      responsive: true,
+      displayModeBar: false,
+    }
+  );
+}
+
+function marineLevelState(marine) {
+  const hourly = marine && marine.hourly;
+  const times = hourly && hourly.time;
+  const values = hourly && hourly.sea_level_height_msl;
+
+  if (!Array.isArray(times) || !Array.isArray(values) || times.length < 3) {
+    return null;
+  }
+
+  const cleanValues = times.map((_, i) => {
+    const value = values[i];
+    return typeof value === "number" && Number.isFinite(value)
+      ? value
+      : null;
+  });
+
+  const now = nowMarker().getTime();
+  const epsilon = 0.01;
+  const extremes = [];
+
+  for (let i = 1; i < cleanValues.length - 1; ) {
+    const current = cleanValues[i];
+
+    if (current === null) {
+      i += 1;
+      continue;
+    }
+
+    let end = i;
+    while (
+      end + 1 < cleanValues.length &&
+      cleanValues[end + 1] !== null &&
+      Math.abs(cleanValues[end + 1] - current) <= epsilon
+    ) {
+      end += 1;
+    }
+
+    const previous = cleanValues[i - 1];
+    const next = cleanValues[end + 1];
+
+    if (previous !== null && next !== null) {
+      const isHigh =
+        current - previous > epsilon &&
+        current - next > epsilon;
+
+      const isLow =
+        previous - current > epsilon &&
+        next - current > epsilon;
+
+      if (isHigh || isLow) {
+        const middle = Math.floor((i + end) / 2);
+
+        extremes.push({
+          type: isHigh ? "high" : "low",
+          time: times[middle],
+          timestamp: new Date(times[middle]).getTime(),
+        });
+      }
+    }
+
+    i = end + 1;
+  }
+
+  const nextExtreme = extremes.find((point) => point.timestamp > now) || null;
+
+  let trend = null;
+  for (let i = 0; i < cleanValues.length - 1; i++) {
+    const leftTime = new Date(times[i]).getTime();
+    const rightTime = new Date(times[i + 1]).getTime();
+
+    if (
+      cleanValues[i] !== null &&
+      cleanValues[i + 1] !== null &&
+      leftTime <= now &&
+      now <= rightTime
+    ) {
+      const delta = cleanValues[i + 1] - cleanValues[i];
+
+      if (delta > epsilon) trend = "rising";
+      else if (delta < -epsilon) trend = "falling";
+
+      break;
+    }
+  }
+
+  return {trend, nextExtreme};
+}
+
+function renderMarine(data) {
+  const enabled = state.marine_enabled === true;
+  const message = document.getElementById("marineMessage");
+  const disclaimer = document.getElementById("marineDisclaimer");
+  const summary = document.getElementById("marineSummary");
+  const dot = document.getElementById("marineDot");
+
+  if (!enabled) {
+    return;
+  }
+
+  const marine = data && data.marine;
+  const error = data && data.marine_error;
+
+  summary.innerHTML = "";
+
+  if (marineHasData(marine)) {
+    const hourly = marine.hourly;
+    const times = Array.isArray(hourly.time) ? hourly.time : [];
+    const index = times.length ? nowIndex(times) : -1;
+
+    const atNow = (key) => {
+      const series = hourly[key];
+      if (!Array.isArray(series) || index < 0) return null;
+      const value = series[index];
+      return typeof value === "number" && Number.isFinite(value)
+        ? value
+        : null;
+    };
+
+    const mu = marineUnits();
+
+    const seaTemp = atNow("sea_surface_temperature");
+    if (seaTemp !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_temp"),
+        fmt(mu.temp(seaTemp), 1) + " " + mu.tempUnit
+      );
+    }
+    const level = marineLevelState(marine);
+
+    dot.className = "dot neutral";
+    if (level && level.trend === "rising") {
+      dot.className = "dot info";
+    } else if (level && level.trend === "falling") {
+      dot.className = "dot warn";
+    }
+
+    if (level && level.trend) {
+      summary.innerHTML += chip(
+        t(level.trend === "rising"
+          ? "marine_level_rising"
+          : "marine_level_falling"),
+        "",
+        level.trend === "rising"
+          ? "marineRising"
+          : "marineFalling"
+      );
+    }
+
+    if (level && level.nextExtreme) {
+      const extreme = level.nextExtreme;
+      const time = new Date(extreme.time).toTimeString().slice(0, 5);
+
+      summary.innerHTML += chip(
+        t(extreme.type === "high"
+          ? "marine_next_high"
+          : "marine_next_low"),
+        "≈ " + time,
+        extreme.type === "high"
+          ? "marineHigh"
+          : "marineLow"
+      );
+    }
+
+    const waveHeight = atNow("wave_height");
+    const wavePeriod = atNow("wave_period");
+    const waveDirection = atNow("wave_direction");
+
+    if (waveHeight !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_wave_height"),
+        fmt(mu.len(waveHeight), 1) + " " + mu.lenUnit
+      );
+    }
+    if (wavePeriod !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_period"),
+        fmt(wavePeriod, 0) + " s"
+      );
+    }
+    if (waveDirection !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_direction"),
+        dir(waveDirection) + " " + fmt(waveDirection, 0) + "°"
+      );
+    }
+
+    if (waveHeight !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_wave_height"),
+        fmt(mu.len(waveHeight), 1) + " " + mu.lenUnit
+      );
+    }
+    if (wavePeriod !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_period"),
+        fmt(mu.len(waveHeight), 1) + " " + mu.lenUnit
+      );
+    }
+    if (waveDirection !== null) {
+      summary.innerHTML += chip(
+        t("marine_summary_direction"),
+        dir(waveDirection) + " " + fmt(waveDirection, 0) + "°"
+      );
+    }
+
+    message.hidden = true;
+    document.getElementById("marineCharts").hidden = false;
+
+    renderSeaTemperature(marine);
+    renderSeaLevel(marine);
+    renderMarineWaves(marine);
+    disclaimer.textContent = t("marine_disclaimer");
+  } else {
+    message.hidden = false;
+    document.getElementById("marineCharts").hidden = true;
+    Plotly.purge(document.getElementById("seaTemperature"));
+    Plotly.purge(document.getElementById("seaLevel"));
+    Plotly.purge(document.getElementById("seaLevel"));
+    dot.className = "dot neutral";
+    message.textContent = error
+      ? t("marine_unavailable")
+      : t("marine_unavailable");
+    disclaimer.textContent = t("marine_disclaimer");
+  }
+}
+
+function setAppState(n){state=n;currentLang=state.lang||'en';document.getElementById('unitsSelect').value=state.units||'metric';document.getElementById('rangeSelect').value=String(Math.round((state.hours||72)/24));document.getElementById('modelSelect').value=state.model||'best_match';document.getElementById('marineToggle').checked =
+  state.marine_enabled === true;updateMarineVisibility();if (currentData) renderMarine(currentData);document.getElementById('intervalSelect').value=String(state.interval||3);document.getElementById('smoothingSelect').value=String(state.smoothing||0);document.getElementById('btnLangSk').classList.toggle('active',(state.lang||'en')==='sk');document.getElementById('btnLangEn').classList.toggle('active',(state.lang||'en')==='en');document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));+(state.auto?'ON':'OFF');setModelOptions();applyTranslations();renderHelp();renderSites();updateFooter();updateStatusForAutoToggle();if(currentData)renderForecast(currentData,true)}
+
+function renderHelp(){
+  document.getElementById('helpTitle').textContent = t('section_help');
+  document.getElementById('helpContent').innerHTML = t('help_html');
+  const labels = document.querySelector('#helpContent .gradientLabels');
+  if (labels) {
+    const imp = state.units === 'imperial';
+    const pointsC = [-40, -10, 10, 20, 35, 45];
+    labels.innerHTML = pointsC.map((c, i) => {
+      const value = imp ? Math.round(c * 9 / 5 + 32) : c;
+      const plus = i === pointsC.length - 1 ? '+' : '';
+      return `<span>${value} ${imp ? '°F' : '°C'}${plus}</span>`;
+    }).join('');
+  }
+}
+
+function setModelOptions(){const sel=document.getElementById('modelSelect');['icon_d2','icon_eu'].forEach(v=>{const o=sel.querySelector('option[value="'+v+'"]');if(o){o.disabled=!state.icon_models_available;o.textContent=MODELS[v]+(state.icon_models_available?'':' — Europe only')}})}
+function applyTranslations(){
+  const byId = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  byId('lblModel', t('label_model'));
+  byId('lblMarineToggle', t('marine_toggle'));
+  byId('lblSectionMarine', t('section_marine'));
+  byId('marineMessage', t('marine_not_connected'));
+  byId('marineDisclaimer', t('marine_disclaimer'));
+  byId("lblCardSeaTemp", t("card_sea_temperature"));
+  byId("lblCardSeaLevel", t("card_sea_level"));
+  byId("seaLevelNote", t("marine_level_note"));
+  byId("lblCardMarineWaves", t("card_marine_waves"));
+  byId("marineDirectionNote", t("marine_direction_note"));
+  byId('lblInterval', t('label_interval'));
+  byId('lblRange', t('label_range'));
+  byId('lblUnits', t('label_units'));
+  byId('lblSmoothing', t('label_smoothing'));
+  byId('lblRefresh', t('btn_refresh'));
+  byId('lblSectionAlerts', t('section_alerts'));
+  byId('lblSectionAir', t('section_air'));
+  byId('lblSectionWeather', t('section_weather'));
+  byId('lblSectionSunmoon', t('section_sunmoon'));
+  byId('lblCardAqi', t('card_aqi'));
+  byId('lblCardGases', t('card_gases'));
+  byId('lblCardAerosol', t('card_aerosol'));
+  byId('lblCardPollen', t('card_pollen'));
+  byId('lblCardTemp', t('card_temp'));
+  byId('lblCardPrecip', t('card_precip'));
+  byId('lblCardWind', t('card_wind'));
+  byId('lblCardSunmoonAlt', t('card_sunmoon_alt'));
+  byId('lblCardSunmoonGantt', t('card_sunmoon_gantt'));
+  byId('lblCardSunToday', t('card_sun_today'));
+  byId('lblCardMoonToday', t('card_moon_today'));
+  byId('lblSavedLocations', t('saved_locations'));
+  byId('lblAddLocation', t('add_location'));
+  byId('lblDragHint', t('drag_hint'));
+  byId('optInterval1', t('opt_interval_1'));
+  byId('optInterval3', t('opt_interval_3'));
+  byId('optInterval6', t('opt_interval_6'));
+  byId('optRange3', t('opt_range_3'));
+  byId('optRange5', t('opt_range_5'));
+  byId('optRange7', t('opt_range_7'));
+  byId('optRange16', t('opt_range_16'));
+  byId('optSmoothing0', t('opt_smoothing_0'));
+  byId('optSmoothing1', t('opt_smoothing_1'));
+  byId('optSmoothing2', t('opt_smoothing_2'));
+  byId('optSmoothing3', t('opt_smoothing_3'));
+  const searchInputEl = document.getElementById('searchInput');
+  if(searchInputEl) searchInputEl.placeholder = t('search_placeholder');
+}
+function updateFooter(){
+  const OM = '<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>';
+  const LIC = '<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>';
+  const OML = '<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">' + t('footer_license') + '</a>';
+  document.getElementById('footerInfo').innerHTML =
+    '<b>' + t('footer_weather') + '</b> ' + OM + ' · ' +
+    escapeHtml(MODELS[state.model] || MODELS.best_match) +
+    ' &nbsp;·&nbsp; <b>' + t('footer_air') + '</b> ' + OM + ' (CAMS)' +
+    ' &nbsp;·&nbsp; <b>' + t('footer_alerts') + '</b> ' + t('footer_alerts_value') +
+    ' &nbsp;·&nbsp; ' + LIC + ' · ' + OML;
+}
+function updateStatusForAutoToggle(){const el=document.getElementById('status');const current=el.textContent||'';const m=current.match(/(\d{2}:\d{2}|--:--)/);const lastUpdated=m?m[1]:'--:--';if(state.auto){el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_next_refresh')+' <b>--:--</b> ('+t('status_pending')+')';}else{el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_auto_disabled');}}
+function renderSites(){const h=document.getElementById('locations');h.innerHTML='';(state.locations||[]).forEach((s,i)=>{const r=document.createElement('div');r.className='loc'+(i===state.selected?' active':'');r.draggable=true;r.innerHTML='<span class="handle">⠿</span><div class="locText"><b>'+escapeHtml(s.name)+'</b><small>'+escapeHtml(s.country||'')+' · '+Number(s.latitude).toFixed(2)+'°N, '+Number(s.longitude).toFixed(2)+'°E</small></div>'+((state.locations.length>1)?'<button class="delete">✕</button>':'');r.onclick=e=>{if(e.target.classList.contains('delete'))native('delete',{index:i});else if(i!==state.selected)native('select',{index:i})};r.ondragstart=e=>{dragIndex=i;r.classList.add('drag');e.dataTransfer.setData('text/plain',String(i))};r.ondragend=()=>{r.classList.remove('drag');document.querySelectorAll('.dragover').forEach(x=>x.classList.remove('dragover'))};r.ondragover=e=>{e.preventDefault();r.classList.add('dragover')};r.ondragleave=()=>r.classList.remove('dragover');r.ondrop=e=>{e.preventDefault();const from=dragIndex,to=i;dragIndex=null;r.classList.remove('dragover');if(from===null||from===to)return;const order=Array.from({length:state.locations.length},(_,k)=>k);order.splice(from,1);order.splice(to,0,from);native('reorder',{order:JSON.stringify(order)})};h.appendChild(r)})}
+function toggleSearch(){const b=document.getElementById('searchbox');b.classList.toggle('open');if(b.classList.contains('open'))document.getElementById('searchInput').focus()}function doSearch(){const q=document.getElementById('searchInput').value.trim();if(!q)return;document.getElementById('searchHint').textContent=t('searching');document.getElementById('searchResults').innerHTML='';native('add',{query:q})}function renderSearchResults(rs){const h=document.getElementById('searchResults'),hint=document.getElementById('searchHint');h.innerHTML='';if(!rs||!rs.length){hint.textContent=t('no_locations_found');return}hint.textContent=t('results_count',rs.length);rs.forEach(x=>{
+    const e=document.createElement('div');
+    e.className='searchresult';
+    e.innerHTML='<b>'+escapeHtml(x.name)+'</b><small>'+escapeHtml([x.admin1,x.country].filter(Boolean).join(', '))+' · '+Number(x.latitude).toFixed(2)+'°N, '+Number(x.longitude).toFixed(2)+'°E</small>';
+    e.onclick=()=>{
+        native('add_confirm',{location:JSON.stringify({
+            name:x.name, country:x.country, latitude:x.latitude, longitude:x.longitude, country_code:x.country_code||"", region: x.region || x.admin2 || x.admin1 || x.name||""
+        })});
+        document.getElementById('searchbox').classList.remove('open');
+        document.getElementById('searchInput').value='';
+        h.innerHTML='';
+        hint.textContent=''
+    };
+    h.appendChild(e)
+})
+}
+function toggleAuto(){state.auto=!state.auto;document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));updateStatusForAutoToggle();setSetting('auto',state.auto)}
+function setStatus(msg){let s=msg;if(currentLang==='sk'){s=s.replace('Last updated:',t('status_last_updated')).replace('next auto-refresh:',t('status_next_refresh'))}document.getElementById('status').innerHTML=s.replace(/(\d{2}:\d{2})/g,'<b>$1</b>')}
+function arr(o,k){return(o&&o[k])||[]}
+function fmt(v,d=0){if(v==null||!Number.isFinite(Number(v)))return'--';const n=Number(v);const fixed=n.toFixed(d);const parts=fixed.split('.');parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009');return parts.join(',')}
+function pressure(v){if(v==null)return null;if(state.units==='metric_mmhg')return v*0.750061683;if(state.units==='imperial')return v*0.0295299831;return v}
+function pressureText(v){const p=pressure(v);return p==null?'--':fmt(p,0)+' '+(UNITS[state.units]||UNITS.metric).pressure}
+function pressureValueOnly(v){const p=pressure(v);return p==null?'--':fmt(p,0)}
+function thin(x,ss){const h=Number(state.interval)||1;if(h<=1||!x.length)return{x,ss};const m=h*3600000,t0=new Date(x[0]).getTime(),ox=[],os=ss.map(()=>[]);x.forEach((t,i)=>{if((new Date(t).getTime()-t0)%m===0){ox.push(t);ss.forEach((s,j)=>os[j].push(s[i]))}});return ox.length>1?{x:ox,ss:os}:{x,ss}}function smooth(y){const n=Number(state.smoothing)||0;if(!n)return y;const w=n===1?3:n===2?5:9,half=Math.floor(w/2);return y.map((_,i)=>{let s=0,c=0;for(let k=-half;k<=half;k++){const z=y[i+k];if(z!=null){s+=z;c++}}return c?s/c:null})}function proc(x,ss){const t=thin(x,ss);return{x:t.x,ss:t.ss.map(smooth)}}function days(){return Math.max(1,Math.round((state.hours||72)/24))}function range(x){if(!x.length)return undefined;const d=new Date(x[0]);d.setHours(0,0,0,0);return[d,new Date(d.getTime()+days()*86400000)]}function labels(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const full=days()<=7;return Array.from({length:days()},(_,i)=>{const q=new Date(d.getTime()+i*86400000);return{x:new Date(q.getTime()+43200000),y:1.28,xref:'x',yref:'paper',text:q.toLocaleDateString(currentLang==='sk'?'sk-SK':'en-GB',{weekday:full?'long':'short'})+'<br>'+q.getDate()+'.'+(q.getMonth()+1)+'.',showarrow:false,font:{size:12,color:'#c9d0dc'}}})}
+function nowMarker(){const offsetSec=(currentData&&currentData.utc_offset_seconds)||0;const nowLocal=new Date(Date.now()+offsetSec*1000);return new Date(nowLocal.getUTCFullYear(),nowLocal.getUTCMonth(),nowLocal.getUTCDate(),nowLocal.getUTCHours(),nowLocal.getUTCMinutes(),nowLocal.getUTCSeconds())}
+// Finds the hourly-array index whose timestamp is closest to "now" in the
+// displayed location's own local time (same basis as nowMarker()/the dashed
+// line), so collapsed-panel summary chips read the current hour's values
+// instead of always reading index 0 (the first hour of the fetched range).
+function placeNowPulseDot(gd) {
+  if (!gd) return;
+
+  const svg = gd.querySelector(".main-svg");
+  if (!svg) return;
+
+  let dot = svg.querySelector(".nowPulseDot");
+
+  const paths = [...gd.querySelectorAll(".shapelayer path")];
+  const nowLine = paths.reverse().find(path => {
+    const stroke = path.style.stroke || path.getAttribute("stroke");
+    return stroke === "rgb(79, 195, 247)" ||
+           stroke === "#4fc3f7";
+  });
+
+  if (!nowLine) {
+    if (dot) dot.remove();
+    return;
+  }
+
+  const d = nowLine.getAttribute("d") || "";
+  const match = d.match(
+    /^M\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)L\s*(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)$/
+  );
+
+  if (!match) {
+    if (dot) dot.remove();
+    return;
+  }
+
+  const x = Number(match[1]);
+  const topY = Math.min(Number(match[2]), Number(match[4]));
+
+  if (!dot) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    dot = document.createElementNS(svgNS, "circle");
+    dot.setAttribute("class", "nowPulseDot");
+    dot.setAttribute("r", "4.5");
+    dot.setAttribute("fill", "#4fc3f7");
+    dot.setAttribute("stroke", "#1a1d24");
+    dot.setAttribute("stroke-width", "1.2");
+    dot.style.pointerEvents = "none";
+    svg.appendChild(dot);
+  }
+
+  dot.setAttribute("cx", String(x));
+  dot.setAttribute("cy", String(topY - 3.5));
+}
+
+function attachNowPulseDot(chartId) {
+  const gd = document.getElementById(chartId);
+
+  if (!gd || typeof gd.on !== "function") return;
+
+  if (!gd._nowPulseAttached) {
+    gd._nowPulseAttached = true;
+    gd.on("plotly_afterplot", () => placeNowPulseDot(gd));
+  }
+
+  requestAnimationFrame(() => placeNowPulseDot(gd));
+}
+function nowIndex(times){
+  if(!times||!times.length) return 0;
+  const target=nowMarker().getTime();
+  let bestIdx=0,bestDiff=Infinity;
+  for(let i=0;i<times.length;i++){
+    const diff=Math.abs(new Date(times[i]).getTime()-target);
+    if(diff<bestDiff){bestDiff=diff;bestIdx=i;}
+  }
+  return bestIdx;
+}
+function shapes(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const a=[];for(let i=0;i<=days();i++){const q=new Date(d.getTime()+i*86400000);a.push({type:'line',xref:'x',yref:'paper',x0:q,x1:q,y0:0,y1:1,line:{color:'#697080',width:1.7}})}const now = nowMarker();
+
+a.push({
+  type: "line",
+  xref: "x",
+  yref: "paper",
+  x0: now,
+  x1: now,
+  y0: 0,
+  y1: 1,
+  line: {
+    color: "#4fc3f7",
+    width: 1.5,
+  },
+});
+return a}
+function xDtick(){const n=days(),stepHours=Number(state.interval)||1;if(n<=3)return Math.max(stepHours,3)*3600000;if(n<=7)return 21600000;if(n<=10)return 43200000;return 86400000}
+function axis(title,c,e={}){return Object.assign({title:{text:title,font:{color:c,size:13}},tickfont:{color:c,size:12},gridcolor:'#363c4a'},e)}
+function hv(unit, dec = 1, extra = '') {
+  return '%{fullData.name}: %{y:,.' + dec + 'f}' +
+    (unit ? ' ' + unit : '') + extra + '<extra></extra>';
+}
+function marineUnits() {
+  const imp = state.units === 'imperial';
+  const tempUnit = imp ? '°F' : '°C';
+  const lenUnit = imp ? 'ft' : 'm';
+  return {
+    tempUnit,
+    lenUnit,
+    temp: v => (v == null ? v : (imp ? v * 9 / 5 + 32 : v)),
+    len: v => (v == null ? v : (imp ? v * 3.280839895 : v)),
+    label: s => String(s)
+      .replace('(°C)', '(' + tempUnit + ')')
+      .replace('(m)', '(' + lenUnit + ')'),
+  };
+}
+function layout(x,e={}){const rotated=days()>7;return Object.assign({paper_bgcolor:'#1a1d24',plot_bgcolor:'#1a1d24',font:{color:'#e8eaf0',size:10},margin:{l:64,r:74,t:92,b:rotated?70:28},hovermode:'x unified',hoverlabel:{font:{size:12},namelength:-1}, showlegend:true,legend:{orientation:'h',x:0,y:1.62,font:{size:11}},xaxis:{hoverformat:'%d.%m. %H:%M',gridcolor:'#363c4a',tickformat:'%H:%M',tickfont:{size:11},dtick:xDtick(),tickangle:rotated?-90:0,range:range(x)},yaxis:{},annotations:labels(x),shapes:shapes(x)},e)}
+function chip(label,value,level=''){return'<span class="chip '+level+'">'+label+' <b>'+value+'</b></span>'}
+function bandLevel(v,key){const t=POLLUTANT_THRESHOLDS[key];if(v==null||!t)return'';return v>=t.bad?'bad':v>=t.warn?'warn':'ok'}
+function pollenLevel(v,key){const t=POLLEN_THRESHOLDS[key];if(v==null||!t)return'';return v>=t.bad?'bad':v>=t.warn?'warn':'ok'}
+function aqiLevel(v){return v==null?'':v>=100?'bad':v>=60?'warn':'ok'}
+const ALERT_COLORS = {
+  neutral: "#5b6577",
+  yellow: "#fdd835",
+  orange: "#fb8c00",
+  red: "#e53935",
+};
+
+const ALERT_RANK = {
+  neutral: 0,
+  yellow: 1,
+  orange: 2,
+  red: 3,
+};
+
+function alertLevel(a) {
+  const level = String(a.level || "").toLowerCase();
+  return ALERT_RANK[level] !== undefined ? level : "neutral";
+}
+
+function alertEvent(a) {
+  return String(a.event || a.title || "Weather warning").trim();
+}
+
+function alertIssuer(a) {
+  return String(a.issuer || a.source || "Official warning").trim();
+}
+
+function alertDisplayLabel(a) {
+  const icon = String(a.icon || "⚠️").trim();
+  return `${icon} ${alertEvent(a)} — ${alertIssuer(a)}`;
+}
+
+function alertHoverHtml(a) {
+  const icon = escapeHtml(String(a.icon || "⚠️"));
+  const event = escapeHtml(alertEvent(a));
+  const issuer = escapeHtml(alertIssuer(a));
+  const title = escapeHtml(String(a.title || ""));
+  const level = escapeHtml(alertLevel(a).toUpperCase());
+
+  return [
+    `<b>${icon} ${event}</b>`,
+    `${level} · ${issuer}`,
+    title ? `<br><span style="color:#9aa3b2">${title}</span>` : "",
+    "<br>%{x|%d.%m. %H:%M}",
+    "<extra></extra>",
+  ].join("<br>");
+}
+
+function alertSummaryText(alerts) {
+  const counts = new Map();
+
+  for (const alert of alerts) {
+    const event = alertEvent(alert);
+    const issuer = alertIssuer(alert);
+    const label = issuer === "Local estimate"
+      ? `${event} — ${issuer}`
+      : event;
+    const level = alertLevel(alert);
+
+    const key = JSON.stringify([label, level]);
+    const entry = counts.get(key) || { label, level, count: 0 };
+    entry.count += 1;
+    counts.set(key, entry);
+  }
+
+  return [...counts.values()]
+    .sort((a, b) =>
+      ALERT_RANK[b.level] - ALERT_RANK[a.level] ||
+      b.count - a.count ||
+      a.label.localeCompare(b.label)
+    )
+    .map(({ label, level, count }) =>
+      `${count}× ${label} (${level.toUpperCase()})`
+    )
+    .join(" · ");
+}
+
+function highestAlertLevel(alerts) {
+  return alerts.reduce(
+    (highest, alert) =>
+      ALERT_RANK[alertLevel(alert)] > ALERT_RANK[highest]
+        ? alertLevel(alert)
+        : highest,
+    "neutral"
+  );
+}
+function renderAlerts(d) {
+  const alerts = Array.isArray(d.alerts) ? d.alerts : [];
+  const dot = document.getElementById("alertsDot");
+  const sum = document.getElementById("alertsSummary");
+  const cards = document.getElementById("alertsCards");
+  const chart = document.getElementById("alertsChart");
+
+  const highest = highestAlertLevel(alerts);
+  dot.className = `dot ${highest}`;
+
+  if (!alerts.length) {
+    sum.innerHTML = `<span class="chip">${t("no_active_alerts")}</span>`;
+    cards.innerHTML = `<div class="meta">${t("no_active_alerts_full")}</div>`;
+    Plotly.purge(chart);
+    return;
+  }
+
+  const countText = t("alert_count", alerts.length);
+  const summaryText = alertSummaryText(alerts);
+
+  sum.innerHTML = `
+    <span class="chip">${escapeHtml(countText)}</span>
+    ${summaryText ? `<span class="chip">${escapeHtml(summaryText)}</span>` : ""}
+  `;
+
+  cards.innerHTML = alerts.map(a => {
+    const level = alertLevel(a);
+    const label = alertDisplayLabel(a);
+    const sourceTitle = String(a.title || "").trim();
+
+    return `
+      <div class="alertCard ${level}">
+        <span style="font-size:18px">${escapeHtml(String(a.icon || "⚠️"))}</span>
+        <div>
+          <b>${escapeHtml(label.replace(/^[^ ]+\s/, ""))}</b>
+          <div class="meta">
+            ${escapeHtml(level.toUpperCase())}
+            · ${escapeHtml(alertIssuer(a))}
+          </div>
+          ${sourceTitle ? `
+            <div class="meta" style="margin-top:3px">
+              ${escapeHtml(sourceTitle)}
+            </div>
+          ` : ""}
+          <div class="meta">
+            ${escapeHtml(a.start || "")} – ${escapeHtml(a.end || "")}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const rowHeight = 34;
+  const topMargin = 80;
+  const bottomMargin = 30;
+  const chartHeight = Math.max(
+    220,
+    topMargin + bottomMargin + alerts.length * rowHeight
+  );
+  chart.style.height = `${chartHeight}px`;
+
+  const tickvals = alerts.map((_, i) => i);
+  const ticktext = alerts.map(a => alertDisplayLabel(a));
+
+  const traces = alerts.map((a, i) => ({
+    x: [a.start, a.end],
+    y: [i, i],
+    mode: "lines",
+    type: "scatter",
+    line: {
+      color: ALERT_COLORS[alertLevel(a)],
+      width: 18,
+    },
+    name: alertDisplayLabel(a),
+    hovertemplate: alertHoverHtml(a),
+    showlegend: false,
+  }));
+
+  const timeBasis = currentData?.hourly?.time?.length
+    ? currentData.hourly.time
+    : alerts.flatMap(a => [a.start, a.end]);
+
+  Plotly.newPlot(
+    chart,
+    traces,
+    {
+      paper_bgcolor: "#1a1d24",
+      plot_bgcolor: "#1a1d24",
+      font: { color: "#e8eaf0", size: 11 },
+      height: chartHeight,
+      margin: { l: 210, r: 25, t: topMargin, b: bottomMargin },
+      xaxis: {
+        gridcolor: "#363c4a",
+        tickformat: "%H:%M",
+        tickfont: { size: 11 },
+        dtick: xDtick(),
+        range: range(timeBasis),
+      },
+      yaxis: {
+        type: "linear",
+        tickmode: "array",
+        tickvals: tickvals,
+        ticktext: ticktext,
+        range: [alerts.length - 0.5, -0.5],
+        gridcolor: "#2a2f3b",
+        tickfont: { size: 11 },
+        automargin: true,
+      },
+      hovermode: "closest",
+      annotations: labels(timeBasis).map(label => ({
+        ...label,
+        y: 1,
+        yref: "paper",
+        yanchor: "bottom",
+        yshift: 20,
+      })),
+      shapes: shapes(timeBasis),
+    },
+    {
+      responsive: true,
+      displayModeBar: false,
+    }
+  );
+}
+function renderAir(d){const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.time)||[];const ni=nowIndex(x);const ea=arr(a,'european_aqi'),p25=arr(a,'pm2_5'),p10=arr(a,'pm10'),o3=arr(a,'ozone'),no2=arr(a,'nitrogen_dioxide'),so2=arr(a,'sulphur_dioxide'),co=arr(a,'carbon_monoxide'),nh3=arr(a,'ammonia'),dust=arr(a,'dust'),aod=arr(a,'aerosol_optical_depth'),alder=arr(a,'alder_pollen'),birch=arr(a,'birch_pollen'),grass=arr(a,'grass_pollen'),mug=arr(a,'mugwort_pollen'),rag=arr(a,'ragweed_pollen'),olive=arr(a,'olive_pollen');const dot=document.getElementById('airDot'),has=ea.length||p25.length||p10.length;dot.className='dot '+(has?aqiLevel(ea[ni]):'neutral');
+    const pollenRows=[[(STRINGS[currentLang]||STRINGS.en).leg_alder,alder[ni],'alder'],[(STRINGS[currentLang]||STRINGS.en).leg_birch,birch[ni],'birch'],[(STRINGS[currentLang]||STRINGS.en).leg_grass,grass[ni],'grass'],[(STRINGS[currentLang]||STRINGS.en).leg_mugwort,mug[ni],'mugwort'],[(STRINGS[currentLang]||STRINGS.en).leg_ragweed,rag[ni],'ragweed'],[(STRINGS[currentLang]||STRINGS.en).leg_olive,olive[ni],'olive']];
+  const pollenChips=pollenRows.filter(([,v])=>v!=null).map(([n,v,k])=>chip(n,fmt(v,0),pollenLevel(v,k))).join('')||'<span class="chip">'+t('chip_pollen_no_data')+'</span>';
+  const sum=document.getElementById('airSummary');
+  sum.innerHTML=chip('EAQI',fmt(ea[ni]),aqiLevel(ea[ni]))+chip('PM2.5',fmt(p25[ni],1),bandLevel(p25[ni],'pm25'))+chip('PM10',fmt(p10[ni],1),bandLevel(p10[ni],'pm10'))+chip('O₃',fmt(o3[ni]),bandLevel(o3[ni],'o3'))+chip('NO₂',fmt(no2[ni]),bandLevel(no2[ni],'no2'))+chip('SO₂',fmt(so2[ni]),bandLevel(so2[ni],'so2'))+chip('NH₃',fmt(nh3[ni],1),bandLevel(nh3[ni],'nh3'))+chip('CO',fmt(co[ni]),bandLevel(co[ni],'co'))+chip((STRINGS[currentLang]||STRINGS.en).leg_dust,fmt(dust[ni],1),bandLevel(dust[ni],'dust'))+chip((STRINGS[currentLang]||STRINGS.en).leg_aod,fmt(aod[ni],2),bandLevel(aod[ni],'aod'))+pollenChips;
+    const mk=(y,n,c,dash='',y2=false,unit='µg/m³',dec=1)=>({
+    x,y,name:n,type:'scatter',mode:'lines',
+    line:{color:c,width:2,dash},
+    yaxis:y2?'y2':'y',
+    customdata:y.map(v=>fmt(v,dec)),
+    hovertemplate:'%{fullData.name}: %{customdata}'+(unit?' '+unit:'')+'<extra></extra>'
+  });
+  let z=proc(x,[ea,p25,p10]);
+  Plotly.newPlot('aqi',[
+    mk(z.ss[0],t('leg_eaqi'),CLR.eaqi,'',false,'',0),
+    mk(z.ss[1],t('leg_pm25'),CLR.pm25,'',true),
+    mk(z.ss[2],t('leg_pm10'),CLR.pm10,'',true)
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_aqi,CLR.eaqi),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_pm,CLR.pm25,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  z=proc(x,[o3,no2,so2,nh3,co]);
+  Plotly.newPlot('gases',[
+    mk(z.ss[0],t('leg_o3'),CLR.o3),
+    mk(z.ss[1],t('leg_no2'),CLR.no2),
+    mk(z.ss[2],t('leg_so2'),CLR.so2),
+    mk(z.ss[3],t('leg_nh3'),CLR.nh3),
+    mk(z.ss[4],t('leg_co'),CLR.co,'dash',true)
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_gas,CLR.o3),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_co,CLR.co,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  z=proc(x,[dust,aod]);
+  Plotly.newPlot('aerosol',[
+    mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_dust,CLR.dust),
+    mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_aod,CLR.aod,'',true,'',2)
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_dust,CLR.dust),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_aod,CLR.aod,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  z=proc(x,[alder,birch,grass,mug,rag,olive]);
+  const pu=t('axis_pollen');
+  Plotly.newPlot('pollen',[
+    mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_alder,POLLEN.alder,'',false,pu,0),
+    mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_birch,POLLEN.birch,'',false,pu,0),
+    mk(z.ss[2],(STRINGS[currentLang]||STRINGS.en).leg_grass,POLLEN.grass,'',false,pu,0),
+    mk(z.ss[3],(STRINGS[currentLang]||STRINGS.en).leg_mugwort,POLLEN.mugwort,'',false,pu,0),
+    mk(z.ss[4],(STRINGS[currentLang]||STRINGS.en).leg_ragweed,POLLEN.ragweed,'',false,pu,0),
+    mk(z.ss[5],(STRINGS[currentLang]||STRINGS.en).leg_olive,POLLEN.olive,'',false,pu,0)
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_pollen,POLLEN.grass)}),{responsive:true,displayModeBar:false})
+}
+function dir(d){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]}
+function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=arr(h,'temperature_2m'),feel=arr(h,'apparent_temperature'),uv=arr(h,'uv_index'),cloud=arr(h,'cloud_cover'),rain=arr(h,'rain'),show=arr(h,'showers'),snow=arr(h,'snowfall'),prec=arr(h,'precipitation'),wind=arr(h,'wind_speed_10m'),gust=arr(h,'wind_gusts_10m'),wd=arr(h,'wind_direction_10m'),press=arr(h,'pressure_msl'),u=UNITS[state.units]||UNITS.metric;
+  const uvSources = Array.isArray(d.uv_sources) ? d.uv_sources : [];
+  const uvSourceAt = i => uvSources[i] ||
+    (uv[i] != null ? 'selected' : null);
+  const uvSourceLabel = source =>
+    source === 'gfs' ? t('uv_from_gfs') :
+    source === 'selected' ? t('uv_from_selected') : '';
+  const usedGfs = uvSources.includes('gfs');
+  const usedSelected = uvSources.includes('selected');
+    const uvLegend = t('leg_uv_index') +
+    (usedGfs
+      ? ' (' + (usedSelected ? t('uv_from_mixed') : t('uv_from_gfs')) + ')'
+      : '');
+    
+  document.getElementById('weatherDot').className='dot';
+  document.getElementById('weatherDot').style.background=tempDotColor(temp[ni]);
+  const precipVal=prec.length&&prec[ni]!=null?prec[ni]:(([rain[ni],show[ni],snow[ni]].some(v=>v!=null))?(Number(rain[ni]||0)+Number(show[ni]||0)+Number(snow[ni]||0)):null);
+  // Chip order now matches chart order: Temperature & UV chart (Temp, Feels,
+  // UV) -> Precipitation & cloud chart (Precipitation, Clouds) -> Wind &
+  // pressure chart (Wind, Gusts, Direction, Pressure). All values read at
+  // nowIndex(x) instead of a hardcoded [0].
+  document.getElementById('weatherSummary').innerHTML=
+    chip(t('chip_temp'),fmt(temp[ni])+u.temp)+
+    chip(t('chip_feels'),fmt(feel[ni])+u.temp)+
+    chip(
+      t('chip_uv') + (uvSourceAt(ni) === 'gfs' ? ' — GFS' : ''),
+      fmt(uv[ni], 1)
+    )+
+    chip(t('chip_precip'),fmt(precipVal,1)+' '+u.precip)+
+    chip(t('chip_clouds'),fmt(cloud[ni])+'%')+
+    chip(t('chip_wind'),fmt(wind[ni])+' '+u.wind)+
+    chip(t('chip_gusts'),fmt(gust[ni])+' '+u.wind)+
+    chip(t('chip_direction'),wd.length?dir(wd[ni])+' '+fmt(wd[ni])+'°':'--')+
+    chip(t('chip_pressure'), pressureValueOnly(press[ni]) + ' ' + u.pressure)
+  let z=proc(x,[temp,uv]);
+  const uvMax=Math.max(6,...uv.filter(v=>v!=null).map(Number))*1.35;
+
+  Plotly.newPlot('temperature',[
+    {
+      x:z.x,
+      y:z.ss[0],
+      name:t('leg_temperature'),
+      type:'scatter',
+      mode:'lines',
+      line:{color:CLR.temp,width:2.5},
+      hovertemplate:hv(u.temp)
+    },
+    {
+      x:z.x,
+      y:z.ss[1],
+      name:uvLegend,
+      type:'scatter',
+      mode:'lines',
+      yaxis:'y2',
+      line:{color:CLR.uv,width:2,dash:'dot'},
+      customdata:z.x.map(timestamp => {
+        const i=x.indexOf(timestamp);
+        return i>=0 ? uvSourceLabel(uvSourceAt(i)) : '';
+      }),
+      hovertemplate:hv('', 1, '<br>%{customdata}')
+    }
+  ],layout(x,{
+    yaxis:axis(u.temp,CLR.temp),
+    yaxis2:axis(t('axis_uv'),CLR.uv,{
+      overlaying:'y',
+      side:'right',
+      range:[0,uvMax],
+      fixedrange:true
+    })
+  }),{responsive:true,displayModeBar:false});
+  z=proc(x,[cloud,rain,show,snow,prec]);const split=rain.length||show.length||snow.length;const bars=split?[{x:z.x,y:z.ss[1],name:t('leg_rain'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[2],name:t('leg_showers'),type:'bar',marker:{color:'#2196c9'},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[3],name:t('leg_snow'),type:'bar',marker:{color:'#e8eaf0'},hovertemplate:hv(u.precip)}]:[{x:z.x,y:z.ss[4],name:t('leg_precipitation'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)}];Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
+  z = proc(x, [gust, wind, press]);
+
+  const top = Math.max(
+    12,
+    ...gust.filter(v => v != null).map(Number)
+  ) * 1.15;
+
+  const pv = press
+    .filter(v => v != null)
+    .map(v => pressure(v));
+
+  const pmin = pv.length ? Math.min(...pv) : 990;
+  const pmax = pv.length ? Math.max(...pv) : 1030;
+  const pad = Math.max((pmax - pmin) * 0.2, 3);
+
+  const pSeries = z.ss[2].map(v =>
+    v == null ? null : pressure(v)
+  );
+const N_TICKS=5;
+const windTickvals=Array.from({length:N_TICKS},(_,i)=>Math.round(top*i/(N_TICKS-1)));
+const windTicktext=windTickvals.map(v=>fmt(v,0));
+const pLo=pmin-pad,pHi=pmax+pad;
+const pressureTickvals=Array.from({length:N_TICKS},(_,i)=>pLo+(pHi-pLo)*i/(N_TICKS-1));
+const pTicks={tickvals:pressureTickvals,ticktext:pressureTickvals.map(v=>fmt(v,0))};
+Plotly.newPlot('wind',[
+  {
+    x:z.x,
+    y:z.ss[0],
+    name:t('leg_gusts'),
+    type:'scatter',
+    mode:'lines',
+    line:{color:CLR.gust,dash:'dot'},
+    hovertemplate:hv(u.wind)
+  },
+  {
+    x:z.x,
+    y:z.ss[1],
+    name:t('leg_wind_speed'),
+    type:'scatter',
+    mode:'lines',
+    line:{color:CLR.wind,width:2.5},
+    customdata:z.x.map(ts => {
+      const i = x.indexOf(ts);
+      const d = i >= 0 ? wd[i] : null;
+      return d == null ? '--' : dir(d) + ' ' + Math.round(d) + '°';
+    }),
+    hovertemplate:hv(u.wind, 1, ' · %{customdata}')
+  },
+  {
+    x:z.x,
+    y:pSeries,
+    name:t('leg_pressure'),
+    type:'scatter',
+    mode:'lines',
+    yaxis:'y2',
+    line:{color:CLR.pressure,width:1.6,dash:'dashdot'},
+    customdata:pSeries.map(v => fmt(v,0)),
+    hovertemplate:'%{fullData.name}: %{customdata} ' + u.pressure + '<extra></extra>'
+  }
+], layout(x,{
+  margin:{l:64,r:82,t:92,b:days()>7?70:28},
+  yaxis:axis(u.wind,CLR.wind,{range:[0,top],tickmode:'array',tickvals:windTickvals,ticktext:windTicktext}),
+  yaxis2:axis(u.pressure,CLR.pressure,{overlaying:'y',side:'right',range:[pmin-pad,pmax+pad],tickmode:'array',tickvals:pTicks.tickvals,ticktext:pTicks.ticktext,automargin:true}),
+
+}),{responsive:true,displayModeBar:false});
+  if(wd.length===x.length){const arrows=x.map((q,i)=>{const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((_,i)=>i%3===0);Plotly.relayout('wind',{annotations:[...labels(x),...arrows]})}}
+function tempDotColor(t){
+  if(t==null || !Number.isFinite(t)) return '#5b6577';
+  if(state.units === 'imperial') t = (t - 32) * 5 / 9;
+  const stops = [
+    [-40, [110, 30, 160]],
+    [-25, [70, 60, 200]],
+    [-10, [60, 140, 220]],
+    [0,   [90, 190, 210]],
+    [10,  [110, 190, 110]],
+    [20,  [210, 200, 70]],
+    [28,  [235, 150, 50]],
+    [35,  [230, 80, 60]],
+    [45,  [170, 30, 60]],
+  ];
+  const c = Math.max(stops[0][0], Math.min(stops[stops.length-1][0], t));
+  let lo = stops[0], hi = stops[stops.length-1];
+  for(let i=0;i<stops.length-1;i++){
+    if(c>=stops[i][0] && c<=stops[i+1][0]){ lo=stops[i]; hi=stops[i+1]; break; }
+  }
+  const frac = (c-lo[0])/(hi[0]-lo[0]);
+  const rgb = lo[1].map((v,i)=>Math.round(v+(hi[1][i]-v)*frac));
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+// Builds explicit tickvals/ticktext for an axis so numeric labels use our
+// own space-grouped formatting (fmt) instead of Plotly's built-in d3-format
+// tick renderer, which does not support a custom thousands separator
+// character via tickformat strings alone.
+function manualTicks(minVal,maxVal,decimals=0){
+  const span=maxVal-minVal;
+  const rawStep=span/4;
+  const mag=Math.pow(10,Math.floor(Math.log10(rawStep||1)));
+  const step=Math.max(mag,(rawStep/mag>=5?5:(rawStep/mag>=2?2:1))*mag);
+  const start=Math.ceil(minVal/step)*step;
+  const vals=[];
+  for(let v=start;v<=maxVal;v+=step) vals.push(Math.round(v/step)*step);
+  return {tickvals:vals,ticktext:vals.map(v=>fmt(v,decimals))};
+}
+function toggleSection(n){const b=document.getElementById(n+'Body'),c=document.getElementById(n+'Chevron');b.classList.toggle('open');c.classList.toggle('open');if(b.classList.contains('open'))setTimeout(()=>{if(n==='air')['aqi','gases','aerosol','pollen'].forEach(id=>Plotly.Plots.resize(id));if(n==='weather')['temperature','precipitation','wind'].forEach(id=>Plotly.Plots.resize(id));if(n=='sunmoon')['sunmoonAltitude','sunmoonGantt'].forEach(id=>Plotly.Plots.resize(id));if (n === "marine") {
+  ["seaTemperature", "seaLevel", "marineWaves"].forEach((id) => {
+    const chart = document.getElementById(id);
+    if (chart && chart.data && chart.offsetWidth > 0) {
+      Plotly.Plots.resize(chart);
+    }
+  });
+}if(n==='alerts'&&document.getElementById('alertsChart').data)Plotly.Plots.resize('alertsChart')},260)}
+function renderForecast(d, keep = false) {
+  renderMarine(d);
+  currentData = d;
+
+  if (!keep) {
+    document.getElementById("subtitle").textContent =
+      `${d.name || "Location"} · ${Number(d.latitude).toFixed(2)}°N, ` +
+      `${Number(d.longitude).toFixed(2)}°E`;
+  }
+
+  renderAlerts(d);
+  renderAir(d);
+  renderWeather(d);
+  renderSunMoon(d);
+
+  requestAnimationFrame(() => {
+    [
+      "alertsChart",
+      "aqi",
+      "gases",
+      "aerosol",
+      "pollen",
+      "temperature",
+      "precipitation",
+      "wind",
+      "sunmoonAltitude",
+      "sunmoonGantt",
+      "seaTemperature", 
+      "seaLevel", 
+      "marineWaves",
+    ].forEach(attachNowPulseDot);
+  });
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+
+const PHASE_ICON = {
+  "New moon": "🌑", "Waxing crescent": "🌒", "First quarter": "🌓",
+  "Waxing gibbous": "🌔", "Full moon": "🌕", "Waning gibbous": "🌖",
+  "Last quarter": "🌗", "Waning crescent": "🌘",
+};
+
+// Maps the exact English strings that moonPhaseName()/moonTrend() return
+// (e.g. "Waxing gibbous", "Waxing") to the camelCase keys used in
+// STRINGS.*.moon_phase_names / moon_trend_names, then looks up the
+// translated label for the current language, falling back to English,
+// then to the raw input if nothing matches (so nothing ever renders blank).
+const PHASE_NAME_TO_KEY = {
+  "New moon": "newMoon",
+  "Waxing crescent": "waxingCrescent",
+  "First quarter": "firstQuarter",
+  "Waxing gibbous": "waxingGibbous",
+  "Full moon": "fullMoon",
+  "Waning gibbous": "waningGibbous",
+  "Last quarter": "lastQuarter",
+  "Waning crescent": "waningCrescent",
+};
+const TREND_NAME_TO_KEY = {
+  "Waxing": "waxing",
+  "Waning": "waning",
+};
+function tPhase(phaseName){
+  const key = PHASE_NAME_TO_KEY[phaseName];
+  const dict = STRINGS[currentLang] || STRINGS.en;
+  const names = dict.moon_phase_names || STRINGS.en.moon_phase_names || {};
+  return (key && names[key]) || (STRINGS.en.moon_phase_names || {})[key] || phaseName;
+}
+function tTrend(trendName){
+  const key = TREND_NAME_TO_KEY[trendName];
+  const dict = STRINGS[currentLang] || STRINGS.en;
+  const names = dict.moon_trend_names || STRINGS.en.moon_trend_names || {};
+  return (key && names[key]) || (STRINGS.en.moon_trend_names || {})[key] || trendName;
+}
+
+function _julianDay(date) {
+  const y0 = date.getUTCFullYear(), m0 = date.getUTCMonth() + 1;
+  const day = date.getUTCDate() + (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600) / 24;
+  let y = y0, m = m0;
+  if (m <= 2) { y -= 1; m += 12; }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5;
+}
+function _deg2rad(d) { return d * Math.PI / 180; }
+function _rad2deg(r) { return r * 180 / Math.PI; }
+function _norm360(d) { return ((d % 360) + 360) % 360; }
+
+function _moonEquatorial(date) {
+  const jd = _julianDay(date);
+  const T = (jd - 2451545.0) / 36525;
+  const Lp = _norm360(218.3164477 + 481267.88123421 * T);
+  const D = _norm360(297.8501921 + 445267.1114034 * T);
+  const M = _norm360(357.5291092 + 35999.0502909 * T);
+  const Mp = _norm360(134.9633964 + 477198.8675055 * T);
+  const F = _norm360(93.2720950 + 483202.0175233 * T);
+  const Dr = _deg2rad(D), Mr = _deg2rad(M), Mpr = _deg2rad(Mp), Fr = _deg2rad(F);
+  const lon = Lp + (
+    6.289 * Math.sin(Mpr) - 1.274 * Math.sin(2 * Dr - Mpr) + 0.658 * Math.sin(2 * Dr)
+    - 0.186 * Math.sin(Mr) - 0.059 * Math.sin(2 * Mpr - 2 * Dr) - 0.057 * Math.sin(Mpr - 2 * Dr + Mr)
+    + 0.053 * Math.sin(Mpr + 2 * Dr) + 0.046 * Math.sin(2 * Dr - Mr) + 0.041 * Math.sin(Mpr - Mr)
+    - 0.035 * Math.sin(Dr) - 0.031 * Math.sin(Mpr + Mr)
+  );
+  const lat = (
+    5.128 * Math.sin(Fr) + 0.281 * Math.sin(Mpr + Fr) - 0.278 * Math.sin(Fr - Mpr)
+    - 0.173 * Math.sin(2 * Dr - Fr) + 0.055 * Math.sin(2 * Dr + Fr - Mpr)
+    + 0.046 * Math.sin(2 * Dr - Fr - Mpr) + 0.033 * Math.sin(Fr + 2 * Mpr)
+  );
+  const eps = _deg2rad(23.439281);
+  const lonR = _deg2rad(_norm360(lon)), latR = _deg2rad(lat);
+  const ra = _norm360(_rad2deg(Math.atan2(
+    Math.sin(lonR) * Math.cos(eps) - Math.tan(latR) * Math.sin(eps), Math.cos(lonR)
+  )));
+  const dec = _rad2deg(Math.asin(
+    Math.sin(latR) * Math.cos(eps) + Math.cos(latR) * Math.sin(eps) * Math.sin(lonR)
+  ));
+  const sunL = _norm360(280.4665 + 36000.7698 * T);
+  const elongation = _norm360(lon - sunL);
+  return { ra, dec, elongation };
+}
+
+function _localSiderealTimeDeg(date, lonDeg) {
+  const jd = _julianDay(date);
+  const T = (jd - 2451545.0) / 36525;
+  const gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T - (T * T * T) / 38710000;
+  return _norm360(gmst + lonDeg);
+}
+function _equatorialToAltitude(raDeg, decDeg, date, latDeg, lonDeg) {
+  const lst = _localSiderealTimeDeg(date, lonDeg);
+  const haDeg = _norm360(lst - raDeg);
+  const ha = _deg2rad(haDeg > 180 ? haDeg - 360 : haDeg);
+  const dec = _deg2rad(decDeg), lat = _deg2rad(latDeg);
+  const sinAlt = Math.sin(lat) * Math.sin(dec) + Math.cos(lat) * Math.cos(dec) * Math.cos(ha);
+  return _rad2deg(Math.asin(Math.max(-1, Math.min(1, sinAlt))));
+}
+function moonAltitude(date, latDeg, lonDeg) {
+  const { ra, dec } = _moonEquatorial(date);
+  return _equatorialToAltitude(ra, dec, date, latDeg, lonDeg);
+}
+function moonIllumination(date) {
+  const { elongation } = _moonEquatorial(date);
+  return ((1 - Math.cos(_deg2rad(elongation))) / 2) * 100;
+}
+function moonPhaseName(date) {
+  const { elongation } = _moonEquatorial(date);
+  const bins = ["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"];
+  return bins[Math.round(elongation / 45) % 8];
+}
+function moonTrend(date) {
+  const elongation = _moonEquatorial(date).elongation;
+  return elongation < 180 ? "Waxing" : "Waning";
+}
+function moonRiseSetForDay(dayStart, latDeg, lonDeg) {
+  const stepMin = 10, stepsPerDay = (24 * 60) / stepMin;
+  let prevAlt = moonAltitude(dayStart, latDeg, lonDeg);
+  let rise = null, set = null;
+  for (let i = 1; i <= stepsPerDay; i++) {
+    const t = new Date(dayStart.getTime() + i * stepMin * 60000);
+    const alt = moonAltitude(t, latDeg, lonDeg);
+    if (prevAlt < 0 && alt >= 0 && !rise) rise = t;
+    if (prevAlt >= 0 && alt < 0 && !set) set = t;
+    prevAlt = alt;
+  }
+  return { rise, set };
+}
+
+const SM_ICONS = {
+  sunrise: '<svg viewBox="0 0 24 24"><path d="M4 17a8 8 0 0 1 16 0z" fill="#ffd54a"/><path d="M12 3v3M4.2 9.2l2.1 2.1M19.8 9.2l-2.1 2.1M2 17h20" stroke="#ffd54a" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>',
+  noon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5.4" fill="#ffcc33" stroke="#ff9f1c" stroke-width="1.4"/><g stroke="#ffcc33" stroke-width="1.6" stroke-linecap="round"><path d="M12 2v3M12 19v3M22 12h-3M5 12H2M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1M18.4 18.4l-2.1-2.1M7.7 7.7 5.6 5.6"/></g></svg>', noonCurve: `<svg viewBox="0 0 24 24"><path d="M2 18C5 18 6 6 12 6s7 12 10 12" stroke="#ffd166" stroke-width="1.8" stroke-linecap="round" fill="none"/><circle cx="12" cy="6" r="2.6" fill="#ffd166"/></svg>`,
+  sunset: '<svg viewBox="0 0 24 24"><path d="M4 15a8 8 0 0 1 16 0z" fill="#ff8c42"/><path d="M12 9v-3M4.2 12.8l2.1-2.1M19.8 12.8l-2.1-2.1M2 15h20" stroke="#ff8c42" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>',
+  daylenIcon: '<svg viewBox="0 0 24 24"><line x1="3" y1="18" x2="21" y2="18" stroke="#ffd166" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="10" r="3.8" fill="#ffd166"/></svg>',
+  moonrise: '<svg viewBox="0 0 24 24"><path d="M12 4a7 7 0 1 0 6.9 8.1A6 6 0 0 1 12 4z" fill="#d7dbe3"/></svg>',
+  moonset: '<svg viewBox="0 0 24 24"><path d="M12 4a7 7 0 1 0 6.9 8.1A6 6 0 0 1 12 4z" fill="#7c8496"/></svg>',
+  up: '<svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+  down: '<svg viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+  daylen: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#9aa3b2" stroke-width="1.6"/><path d="M12 7v5l3.5 2" stroke="#9aa3b2" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>',
+  trendUp: '<svg viewBox="0 0 24 24"><path d="M3 16l6-6 4 4 8-9" stroke="#66d17a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15 5h6v6" stroke="#66d17a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+  trendDown: '<svg viewBox="0 0 24 24"><path d="M3 8l6 6 4-4 8 9" stroke="#ff8a65" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M15 19h6v-6" stroke="#ff8a65" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+  phase: `<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c-2.5-2-4-5.2-4-9s1.5-7 4-9z" fill="#9aa3b2"/></svg>`,
+  trend: `<svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 3 7-9" stroke="#9aa3b2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M3 20h18" stroke="#9aa3b2" stroke-width="1.4" stroke-linecap="round"/></svg>`,
+};
+function smIcon(name){ return `<span class="ico">${SM_ICONS[name]}</span>`; }
+function smIconDir(dir){ return `<span class="ico ${dir==='up'?'arrowUp':'arrowDown'}">${SM_ICONS[dir]}</span>`; }
+function smChip(iconHtml,label,value){ return `<span class="chip">${iconHtml}${label} <b>${value}</b></span>`; }
+function smFmtHM(iso){ if(!iso) return '--'; const d=new Date(iso); return d.toTimeString().slice(0,5); }
+
+function smContinuousSegments(ups, downs, rangeStart, rangeEnd){
+  let events = ups.map(t=>({t:new Date(t), type:'up'})).concat(downs.map(t=>({t:new Date(t), type:'down'})));
+  events.sort((a,b)=>a.t-b.t);
+  const segs = [];
+  let cursor = rangeStart;
+  let state = (events.length && events[0].type==='down') ? 'up' : 'down';
+  events.forEach(e=>{
+    if(e.t > cursor){ segs.push([cursor, e.t, state]); }
+    state = e.type==='up' ? 'up' : 'down';
+    cursor = e.t;
+  });
+  if(cursor < rangeEnd) segs.push([cursor, rangeEnd, state]);
+  return segs;
+}
+function renderSunMoon(d){
+  const hourly = d.hourly || {};
+  const times = (hourly.time || []).map(s=>new Date(s));
+  const daily = d.daily || {};
+  const dot = document.getElementById('sunmoonDot');
+  const sum = document.getElementById('sunmoonSummary');
+
+  if(!times.length || !daily.sunrise || !daily.sunrise.length){
+    dot.className = 'dot neutral';
+    sum.innerHTML = '<span class="chip">No sun/moon data</span>';
+    document.getElementById('sunFacts').innerHTML = '';
+    document.getElementById('moonFacts').innerHTML = '';
+    Plotly.purge('sunmoonAltitude');
+    Plotly.purge('sunmoonGantt');
+    return;
+  }
+
+  const lat = d.latitude, lon = d.longitude;
+  const now = nowMarker();
+  const rangeStart = times[0], rangeEnd = times[times.length-1];
+  const daysCount = Math.max(1, Math.round(state.hours/24));
+
+  const sunUps = (daily.sunrise || []).map(s=>new Date(s));
+  const sunDowns = (daily.sunset || []).map(s=>new Date(s));
+
+  const dayCount = Math.max(1, Math.round((rangeEnd - rangeStart)/86400000) + 1);
+  const moonUps = [], moonDowns = [];
+  for(let i=0;i<dayCount;i++){
+    const dayStart = new Date(rangeStart); dayStart.setHours(0,0,0,0); dayStart.setDate(dayStart.getDate()+i);
+    const { rise, set } = moonRiseSetForDay(dayStart, lat, lon);
+    if(rise) moonUps.push(rise);
+    if(set) moonDowns.push(set);
+  }
+
+  const sunAlt = times.map(t => _sunAltitudeLowPrecision(t, lat, lon));
+  const moonAlt = times.map(t => moonAltitude(t, lat, lon));
+
+  function xDtick(){
+    if(daysCount<=3) return 10800000;
+    if(daysCount<=7) return 21600000;
+    if(daysCount<=10) return 43200000;
+    return 86400000;
+  }
+  function dayShapes() {
+  const dd = new Date(rangeStart);
+  dd.setHours(0, 0, 0, 0);
+
+  const a = [];
+
+  for (let i = 0; i <= dayCount; i++) {
+    const q = new Date(dd.getTime() + i * 86400000);
+
+    a.push({
+      type: "line",
+      xref: "x",
+      yref: "paper",
+      x0: q,
+      x1: q,
+      y0: 0,
+      y1: 1,
+      line: { color: "#697080", width: 1.7 },
+    });
+  }
+
+  a.push({
+    type: "line",
+    xref: "x",
+    yref: "paper",
+    x0: now,
+    x1: now,
+    y0: 0,
+    y1: 1,
+    line: { color: "#4fc3f7", width: 1.5 },
+  });
+
+  return a;
+}
+  function dayLabels(){
+    const dd = new Date(rangeStart); dd.setHours(0,0,0,0);
+    return Array.from({length:dayCount},(_,i)=>{
+      const q = new Date(dd.getTime()+i*86400000+43200000);
+      return {
+        x:q, y:1.28, xref:'x', yref:'paper',
+        text:q.toLocaleDateString(currentLang==='sk'?'sk-SK':'en-GB',{weekday: dayCount<=10 ? 'long':'short'})+'<br>'+q.getDate()+'.'+(q.getMonth()+1)+'.',
+        showarrow:false, font:{size:12,color:'#c9d0dc'}
+      };
+    });
+  }
+
+  const nowIdx = nowIndex(hourly.time || []);
+  const CLR = {sun:'#ffd166', moon:'#aeb4c0'};
+  const traces = [
+  {
+    x:times, y:sunAlt,
+    name:t('leg_sun_altitude'),
+    type:'scatter', mode:'lines',
+    line:{color:CLR.sun,width:2.5},
+    fill:'tozeroy', fillcolor:'rgba(255,209,102,.10)',
+    hovertemplate:hv('°', 1)
+  },
+  {
+    x:times, y:moonAlt,
+    name:t('leg_moon_altitude'),
+    type:'scatter', mode:'lines',
+    line:{color:CLR.moon,width:2,dash:'dot'},
+    hovertemplate:hv('°', 1)
+  },
+];
+
+// Current sun/moon position dots (replace the old emoji markers), shown in
+// the legend as "Sun position" / "Moon position".
+    const positionMarkers = [
+  {
+    x:[times[nowIdx]], y:[sunAlt[nowIdx]],
+    mode:'markers', name:t('leg_sun_position'),
+    marker:{size:10,color:CLR.sun,line:{color:'#8a6d1f',width:1}},
+    showlegend:true,
+    hovertemplate:hv('°', 1)
+  },
+  {
+    x:[times[nowIdx]], y:[moonAlt[nowIdx]],
+    mode:'markers', name:t('leg_moon_position'),
+    marker:{size:9,color:'#9aa3b2',line:{color:'#6b7280',width:1}},
+    showlegend:true,
+    hovertemplate:hv('°', 1)
+  },
+];
+
+// Detect the exact moment each of the 8 named moon phases FIRST begins
+// within the visible range, by stepping forward in small increments and
+// watching for moonPhaseName() to change. Each transition is marked once,
+// at its real timestamp and real altitude on the moon curve -- not once
+// per calendar day.
+const phaseStepMin = 30;
+const phaseSteps = Math.ceil((rangeEnd - rangeStart) / (phaseStepMin*60000));
+const phaseTransitions = [];
+let prevPhaseName = moonPhaseName(rangeStart);
+for(let i=1;i<=phaseSteps;i++){
+  const t = new Date(rangeStart.getTime() + i*phaseStepMin*60000);
+  const name = moonPhaseName(t);
+  if(name !== prevPhaseName){
+    phaseTransitions.push({t, name});
+    prevPhaseName = name;
+  }
+}
+
+const phaseMarkerTrace = {
+  x: phaseTransitions.map(p=>p.t),
+  y: phaseTransitions.map(p=>moonAltitude(p.t, lat, lon)),
+  mode:'markers+text',
+  text: phaseTransitions.map(p=>PHASE_ICON[p.name]),
+  textposition:'top center', textfont:{size:15},
+  marker:{size:6,color:'#e8eaf0',line:{color:'#aeb4c0',width:1.2}},
+  name:t('leg_moon_phase'), showlegend:true,
+  hovertemplate:'%{text}<extra></extra>',
+};
+
+  Plotly.newPlot('sunmoonAltitude', traces.concat(positionMarkers).concat([phaseMarkerTrace]), {
+    paper_bgcolor:'#1a1d24', plot_bgcolor:'#1a1d24', font:{color:'#e8eaf0',size:10},
+    margin:{l:54,r:20,t:92,b:28},
+    hovermode:'x unified', hoverlabel:{font:{size:12},namelength:-1}, showlegend:true,
+    legend:{orientation:'h',x:0,y:1.62,font:{size:11}},
+    xaxis:{gridcolor:'#363c4a', hoverformat:'%d.%m. %H:%M', tickformat:'%H:%M', tickfont:{size:11}, dtick:xDtick(), range:[rangeStart, rangeEnd]},
+    yaxis:{title:{text:t('axis_altitude'),font:{color:'#9aa3b2',size:12}}, tickfont:{color:'#9aa3b2',size:11}, gridcolor:'#363c4a', zeroline:true, zerolinecolor:'#5b6577', zerolinewidth:1.4, range:[-90,90]},
+    annotations: dayLabels(),
+    shapes: dayShapes(),
+  }, {responsive:true, displayModeBar:false});
+
+  const sunSegs = smContinuousSegments(sunUps, sunDowns, rangeStart, rangeEnd);
+  const moonSegs = smContinuousSegments(moonUps, moonDowns, rangeStart, rangeEnd);
+  const COL = {sunUp:'#ffd166', sunDown:'#232b45', moonUp:'#c7cbd4', moonDown:'#4a3f3a'};
+
+  function segTraces(segs, y, upColor, downColor, upName, downName, legendGroup){
+    const seen = {up:false, down:false};
+    return segs.map(function(seg){
+      const s=seg[0], e=seg[1], st=seg[2];
+      const isUp = st==='up';
+      const show = isUp ? !seen.up : !seen.down;
+      if(isUp) seen.up=true; else seen.down=true;
+      return {
+        x:[s,e], y:[y,y], mode:'lines', type:'scatter',
+        line:{color:isUp?upColor:downColor, width:18},
+        name:isUp?upName:downName, legendgroup:legendGroup+(isUp?'up':'down'), showlegend:show,
+        hovertemplate:(isUp?upName:downName)+'<br>%{x|%H:%M}<extra></extra>',
+      };
+    });
+  }
+  const ganttTraces = [].concat(
+  segTraces(sunSegs, 1, COL.sunUp, COL.sunDown, t('leg_daylight'), t('leg_night'), 'sun'),
+  segTraces(moonSegs, 0, COL.moonUp, COL.moonDown, t('leg_moon_up'), t('leg_moon_down'), 'moon')
+);
+
+// Real-time sun/moon position dots on the Gantt rows, same gold/grey style
+// as the altitude chart's "Sun position" / "Moon position" markers.
+const ganttPositionMarkers = [
+  {x:[times[nowIdx]], y:[1], mode:'markers', name:t('leg_sun_position'),
+   marker:{size:10,color:CLR.sun,line:{color:'#8a6d1f',width:1}},
+   showlegend:true, hovertemplate:'Sun%{x|, %H:%M}<extra></extra>'},
+  {x:[times[nowIdx]], y:[0], mode:'markers', name:t('leg_moon_position'),
+   marker:{size:9,color:'#9aa3b2',line:{color:'#6b7280',width:1}},
+   showlegend:true, hovertemplate:'Moon%{x|, %H:%M}<extra></extra>'},
+];
+
+// Same phase-transition detection as the altitude chart, placed on the
+// moon row (y=0) of the Gantt instead of on the sinusoid.
+const ganttPhaseMarkerTrace = {
+  x: phaseTransitions.map(p=>p.t),
+  y: phaseTransitions.map(()=>0),
+  mode:'markers+text',
+  text: phaseTransitions.map(p=>PHASE_ICON[p.name]),
+  textposition:'top center', textfont:{size:14},
+  marker:{size:6,color:'#e8eaf0',line:{color:'#aeb4c0',width:1.2}},
+  name:t('leg_moon_phase'), showlegend:true,
+  hovertemplate:'%{text}<extra></extra>',
+};
+
+Plotly.newPlot('sunmoonGantt', ganttTraces.concat(ganttPositionMarkers).concat([ganttPhaseMarkerTrace]), {
+  paper_bgcolor:'#1a1d24', plot_bgcolor:'#1a1d24', font:{color:'#e8eaf0',size:11},
+  margin:{l:70,r:20,t:92,b:28},
+  xaxis:{gridcolor:'#363c4a', tickformat:'%H:%M', tickfont:{size:11}, dtick:xDtick(), range:[rangeStart, rangeEnd]},
+  yaxis:{tickmode:'array', tickvals:[0,1], ticktext:[t('axis_moon'),t('axis_sun')], range:[-0.6,1.6], gridcolor:'#2a2f3b', automargin:true},
+  hovermode:'closest', hoverlabel:{font:{size:12}}, showlegend:true,
+  legend:{orientation:'h', x:0, y:2.64, font:{size:11}},
+  annotations: dayLabels().map(label => ({...label, y:1.66})),
+  shapes: dayShapes(),
+}, {responsive:true, displayModeBar:false});
+
+  const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
+  const sunriseToday = sunUps.find(t => t >= todayStart && t < new Date(todayStart.getTime()+86400000));
+  const sunsetToday = sunDowns.find(t => t >= todayStart && t < new Date(todayStart.getTime()+86400000));
+  const noonToday = sunriseToday && sunsetToday ? new Date((sunriseToday.getTime()+sunsetToday.getTime())/2) : null;
+  const { rise: moonriseToday, set: moonsetToday } = moonRiseSetForDay(todayStart, lat, lon);
+
+  const dayLenMs = (sunriseToday && sunsetToday) ? (sunsetToday - sunriseToday) : null;
+  const dayLenH = dayLenMs!=null ? Math.floor(dayLenMs/3600000) : null;
+  const dayLenM = dayLenMs!=null ? Math.round((dayLenMs%3600000)/60000) : null;
+
+  const illum = Math.round(moonIllumination(now));
+  const trend = moonTrend(now);
+  const phaseName = moonPhaseName(now);
+
+  document.getElementById('sunFacts').innerHTML =
+    `<div class="factRow"><span class="label">${smIcon('sunrise')}${t('sun_sunrise')}</span><span class="value">${smFmtHM(sunriseToday)}${smIconDir('up')}</span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('noon')}${t('sun_noon')}</span><span class="value">${noonToday?smFmtHM(noonToday):'--'}${smIcon('noonCurve')}</span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('sunset')}${t('sun_sunset')}</span><span class="value">${smFmtHM(sunsetToday)}${smIconDir('down')}</span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('daylen')} ${t('sun_daylen')}</span><span class="value">${dayLenH!==null ? `${dayLenH}h ${dayLenM}m` : '--'} ${smIcon('daylenIcon')}</span></div>`;
+
+  document.getElementById('moonFacts').innerHTML =
+    `<div class="factRow"><span class="label">${smIcon('moonrise')}${t('moon_moonrise')}</span><span class="value">${smFmtHM(moonriseToday)}${smIconDir('up')}</span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('moonset')}${t('moon_moonset')}</span><span class="value">${smFmtHM(moonsetToday)}${smIconDir('down')}</span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('phase')}${t('moon_phase')}</span><span class="value"><span class="phaseBadge">${PHASE_ICON[phaseName]} ${tPhase(phaseName)} · ${illum}%</span></span></div>` +
+    `<div class="factRow"><span class="label">${smIcon('trend')}${t('moon_trend')}</span><span class="value">${trend==='Waxing'?smIcon('trendUp'):smIcon('trendDown')}${tTrend(trend)}</span></div>`;
+
+
+  const isDaylight = sunSegs.find(s => now >= s[0] && now < s[1]);
+  dot.className = 'dot ' + (isDaylight && isDaylight[2]==='up' ? 'day' : 'night');
+    sum.innerHTML =
+    smChip(smIcon('sunrise'),t('sun_sunrise'), smFmtHM(sunriseToday)) +
+    smChip(smIcon('noon'),t('sun_noon'), noonToday?smFmtHM(noonToday):'--') +
+    smChip(smIcon('sunset'),t('sun_sunset'), smFmtHM(sunsetToday)) +
+    smChip(smIcon('moonrise'),t('moon_moonrise'), smFmtHM(moonriseToday)) +
+    smChip(smIcon('moonset'),t('moon_moonset'), smFmtHM(moonsetToday)) +
+    smChip('',t('moon_phase'), tPhase(phaseName)+' · '+illum+'%');
+}
+
+function _sunAltitudeLowPrecision(date, latDeg, lonDeg) {
+  const jd = _julianDay(date);
+  const T = (jd - 2451545.0) / 36525;
+  const L = _norm360(280.46646 + 36000.76983 * T);
+  const M = _deg2rad(_norm360(357.52911 + 35999.05029 * T));
+  const C = (1.914602 - 0.004817 * T) * Math.sin(M) + 0.019993 * Math.sin(2 * M);
+  const trueLon = _norm360(L + C);
+  const eps = _deg2rad(23.439281);
+  const lonR = _deg2rad(trueLon);
+  const ra = _norm360(_rad2deg(Math.atan2(Math.cos(eps) * Math.sin(lonR), Math.cos(lonR))));
+  const dec = _rad2deg(Math.asin(Math.sin(eps) * Math.sin(lonR)));
+  return _equatorialToAltitude(ra, dec, date, latDeg, lonDeg);
+}
+
+startNowTick();
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && currentData) {
+    renderForecast(currentData, true);
+  }
+});
+
+</script>
+</body>
+</html>
