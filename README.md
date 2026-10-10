@@ -32,7 +32,7 @@ develop over time, so you can read the data yourself and judge what it means.
 - Adjustable line smoothing, from raw data to strong smoothing
 - Automatic refresh with a last-updated indicator
 - Slovak and English interface
-- Comprehensive help
+- Built-in help
 
 
 ## Screenshots
