@@ -133,7 +133,7 @@ data from the following services:
 - **Place search:** Open-Meteo Geocoding API, based on
   [GeoNames](https://www.geonames.org/) (CC BY 4.0).
 - **Official warnings:** [MeteoAlarm](https://feeds.meteoalarm.org) (Europe) and the
-  FOSS Public Alert Server (available global CAP sources).
+  [FOSS Public Alert Server (available global CAP sources)](https://github.com/KDE/foss-public-alert-server)
 - **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License).
 
 Open-Meteo, MeteoAlarm and the other data providers do not endorse this project.
