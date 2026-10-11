@@ -52,7 +52,7 @@ develop over time, so you can read the data yourself and judge what it means.
 ![Sun and moon](https://github.com/user-attachments/assets/adeb6490-ba5f-4374-bf30-c439c8853f06)
 
 
-**Marine data**
+**Marine data (optional)**
 
 ![Marine data](https://github.com/user-attachments/assets/2a05e6a1-99bd-4c76-90fa-72465c253586)
 
