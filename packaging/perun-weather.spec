@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        4.0.0
+Version:        4.0.1
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
@@ -60,7 +60,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
-* Thu Oct 08 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.0.0-1
-- Rename the application to Perun Weather
-- Add Open-Meteo, OpenStreetMap and MeteoAlarm attribution
-- Four-level alert severity indicator (neutral, yellow, orange, red)
+* Sun Oct 11 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.0.1-1
+- Update the licensing notice in the help (copyright and MIT License)
+- Credit Copernicus instead of CAMS for air quality data
+- Disable page zoom (Ctrl + wheel, Ctrl + plus/minus/zero)
+- Add Debian packaging

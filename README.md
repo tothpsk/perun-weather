@@ -87,14 +87,46 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-4.0.0-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-4.0.1-1.fc44.noarch.rpm
 ```
+
+`dnf` installs the required dependencies automatically.
+
+### Debian (DEB)
+
+Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-weather/releases)
+page and install it:
+
+```bash
+sudo apt install ./perun-weather_4.0.1-1_all.deb
+```
+
+Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`
+installs the dependencies for you. On a minimal system this pulls in a large
+number of packages, mostly because of WebKitGTK and its media libraries.
+
+Built and tested on Debian 13 (trixie). Other Debian-based distributions may
+work but are untested; the application requires Python 3.12 or newer.
 
 ### Windows
 
 Download the Windows ZIP from [Releases](https://github.com/tothpsk/perun-weather/releases),
 extract the whole folder and run `PerunWeather.exe`. Keep all files in the
-folder together.
+folder together. No separate installation of Python or Qt is needed.
+
+### Dependencies (Linux)
+
+The Linux packages depend on:
+
+| Component | Debian package | Fedora package |
+|---|---|---|
+| Python bindings for GObject | `python3-gi` | `python3-gobject` |
+| GTK 4 | `gir1.2-gtk-4.0` | `gtk4` |
+| libadwaita | `gir1.2-adw-1` | `libadwaita` |
+| WebKitGTK 6 | `gir1.2-webkit-6.0` | `webkitgtk6.0` |
+
+These are installed automatically with the package. You only need to install
+them manually when running Perun Weather from source.
 
 ## Roadmap
 

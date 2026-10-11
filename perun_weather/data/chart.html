@@ -305,7 +305,7 @@ moon_trend_names: {
     footer_air: "Air quality:",
     footer_alerts: "Alerts:",
     footer_alerts_value: "MeteoAlarm (Europe) + FOSS Public Alert Server (available global CAP sources) + local threshold rules (fallback)",
-    footer_air_value: "Open-Meteo (CAMS)",
+    footer_air_value: "Open-Meteo (Copernicus)",
 
     chip_temp: "Temp", chip_feels: "Feels", chip_uv: "UV",
     chip_precip: "Precipitation", chip_clouds: "Clouds",
@@ -647,6 +647,16 @@ help_html: `
   <h2>Changelog</h2>
 
   <div class="changelog-entry">
+    <div class="ver">4.0.1 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
+    <ul>
+      <li>Updated the licensing notice in the help — clearer wording for copyright and the MIT License</li>
+      <li>Air quality data now credits Copernicus instead of CAMS</li>
+      <li>Disabled page zoom (Ctrl + mouse wheel, Ctrl + plus/minus/zero) so the interface layout stays stable</li>
+      <li>Debian package (<code>.deb</code>) — first build, tested on Debian 13</li>
+    </ul>
+  </div>
+  
+  <div class="changelog-entry">
     <div class="ver">4 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
     <ul>
       <li>Optional marine panel — sea surface temperature, modelled sea level with next maximum/minimum, wave height, period and direction, enabled by a checkbox under the model selector</li>
@@ -735,9 +745,9 @@ help_html: `
 <section>
   <h2>Licenses</h2>
   <div class="grid2">
-    <div class="card"><h3 style="margin-top:0">Perun Weather (this application)</h3><p style="margin:0">Author: <b>Peter Tóth</b>. Licensed under the <b>MIT License</b>. The author retains full rights to the source code.</p></div>
+    <div class="card"><h3 style="margin-top:0">Perun Weather (this application)</h3><p style="margin:0">Copyright © 2026 <b>Peter Tóth</b>. Released under the <b>MIT License</b>.</p></div>
     <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Used for chart rendering, <b>MIT License</b>, bundled locally with the app.</p></div>
-    <div class="card"><h3 style="margin-top:0">Data: Open-Meteo</h3><p style="margin:0">Weather, air-quality and marine data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">licence details</a>). The app converts units and visualises the data. Underlying model data come from national weather services such as DWD, ECMWF, NOAA and DMI; air quality from CAMS (Copernicus). Place search uses the Open-Meteo Geocoding API based on <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Free API access is for non-commercial use (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Terms</a>).</p></div>
+    <div class="card"><h3 style="margin-top:0">Data: Open-Meteo</h3><p style="margin:0">Weather, air-quality and marine data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">licence details</a>). The app converts units and visualises the data. Underlying model data come from national weather services such as DWD, ECMWF, NOAA and DMI; air quality from Copernicus. Place search uses the Open-Meteo Geocoding API based on <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Free API access is for non-commercial use (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Terms</a>).</p></div>
     <div class="card"><h3 style="margin-top:0">Data: MeteoAlarm</h3><p style="margin:0">Official warnings for Europe, aggregated from national meteorological services. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Data: FOSS Public Alert Server</h3><p style="margin:0">Official CAP warnings collected from alerting authorities worldwide, a project of KDE and the FOSS Warn team. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Data: OpenStreetMap</h3><p style="margin:0">Place names for coordinate search come from <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL).</p></div>
@@ -826,7 +836,7 @@ moon_trend_names: {
     footer_air: "Kvalita ovzdušia:",
     footer_alerts: "Výstrahy:",
     footer_alerts_value: "MeteoAlarm (Európa) + FOSS Public Alert Server (dostupné svetové CAP zdroje) + lokálne prahové pravidlá (záloha)",
-    footer_air_value: "Open-Meteo (CAMS)",
+    footer_air_value: "Open-Meteo (Copernicus)",
 
     chip_temp: "Teplota", chip_feels: "Pocitová teplota", chip_uv: "UV",
     chip_precip: "Zrážky", chip_clouds: "Oblačnosť",
@@ -1166,6 +1176,16 @@ help_html: `
 
 <section>
   <h2>História zmien</h2>
+  
+  <div class="changelog-entry">
+    <div class="ver">4.0.1 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
+    <ul>
+      <li>Aktualizované licenčné oznámenie v pomocníkovi — jasnejší zápis o autorských právach a licencii MIT</li>
+      <li>Pri údajoch o kvalite ovzdušia sa teraz uvádza Copernicus namiesto CAMS</li>
+      <li>Vypnuté priblíženie stránky (Ctrl + koliesko myši, Ctrl + plus/mínus/nula), aby sa rozloženie rozhrania nerozbilo</li>
+      <li>Balíček pre Debian (<code>.deb</code>) — prvé zostavenie, otestované na Debiane 13</li>
+    </ul>
+  </div>
 
   <div class="changelog-entry">
     <div class="ver">4 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
@@ -1256,9 +1276,9 @@ help_html: `
 <section>
   <h2>Licencie</h2>
   <div class="grid2">
-    <div class="card"><h3 style="margin-top:0">Perun Weather (táto aplikácia)</h3><p style="margin:0">Autor: <b>Peter Tóth</b>. Licencované pod <b>MIT License</b>. Autor si ponecháva plné práva na zdrojový kód.</p></div>
+    <div class="card"><h3 style="margin-top:0">Perun Weather (táto aplikácia)</h3><p style="margin:0">Copyright © 2026 <b>Peter Tóth</b>. Vydané pod <b>MIT License</b>.</p></div>
     <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Vykresľovanie grafov, <b>MIT License</b>, súčasť appky lokálne.</p></div>
-    <div class="card"><h3 style="margin-top:0">Dáta: Open-Meteo</h3><p style="margin:0">Dáta o počasí, kvalite ovzdušia a mori poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> pod licenciou <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">podrobnosti o licencii</a>). Appka dáta prepočítava na zvolené jednotky a vizualizuje. Podkladové modelové dáta pochádzajú z národných meteorologických služieb, napríklad DWD, ECMWF, NOAA a DMI, a kvalita ovzdušia z CAMS (Copernicus). Vyhľadávanie miest využíva Open-Meteo Geocoding API založené na <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Bezplatný prístup k API je určený na nekomerčné použitie (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Podmienky</a>).</p></div>
+    <div class="card"><h3 style="margin-top:0">Dáta: Open-Meteo</h3><p style="margin:0">Dáta o počasí, kvalite ovzdušia a mori poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> pod licenciou <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">podrobnosti o licencii</a>). Appka dáta prepočítava na zvolené jednotky a vizualizuje. Podkladové modelové dáta pochádzajú z národných meteorologických služieb, napríklad DWD, ECMWF, NOAA a DMI, a kvalita ovzdušia z Copernicus. Vyhľadávanie miest využíva Open-Meteo Geocoding API založené na <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Bezplatný prístup k API je určený na nekomerčné použitie (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Podmienky</a>).</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: MeteoAlarm</h3><p style="margin:0">Oficiálne výstrahy pre Európu od národných meteo služieb. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: FOSS Public Alert Server</h3><p style="margin:0">Oficiálne CAP výstrahy zbierané od úradov z celého sveta, projekt KDE a tímu FOSS Warn. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: OpenStreetMap</h3><p style="margin:0">Názvy miest pri vyhľadávaní podľa súradníc poskytuje <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">prispievatelia OpenStreetMap</a> (ODbL).</p></div>
@@ -2092,7 +2112,7 @@ function updateFooter(){
   document.getElementById('footerInfo').innerHTML =
     '<b>' + t('footer_weather') + '</b> ' + OM + ' · ' +
     escapeHtml(MODELS[state.model] || MODELS.best_match) +
-    ' &nbsp;·&nbsp; <b>' + t('footer_air') + '</b> ' + OM + ' (CAMS)' +
+    ' &nbsp;·&nbsp; <b>' + t('footer_air') + '</b> ' + OM + ' (Copernicus)' +
     ' &nbsp;·&nbsp; <b>' + t('footer_alerts') + '</b> ' + t('footer_alerts_value') +
     ' &nbsp;·&nbsp; ' + LIC + ' · ' + OML;
 }
@@ -3156,6 +3176,16 @@ startNowTick();
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && currentData) {
     renderForecast(currentData, true);
+  }
+});
+
+document.addEventListener('wheel', function (e) {
+  if (e.ctrlKey) e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
+    e.preventDefault();
   }
 });
 

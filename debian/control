@@ -1,0 +1,25 @@
+Source: perun-weather
+Section: science
+Priority: optional
+Maintainer: Peter Tóth <tothpsk@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13),
+ dh-python,
+ pybuild-plugin-pyproject,
+ python3-all,
+ python3-setuptools (>= 77),
+ desktop-file-utils
+Standards-Version: 4.7.0
+Homepage: https://github.com/tothpsk/perun-weather
+Rules-Requires-Root: no
+
+Package: perun-weather
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends},
+ python3-gi,
+ gir1.2-gtk-4.0,
+ gir1.2-adw-1,
+ gir1.2-webkit-6.0
+Description: Weather, made visible - interactive charts powered by Open-Meteo
+ Perun Weather is a GTK4/libadwaita desktop application that visualises
+ forecasts, air quality, pollen, sun and moon data, optional marine data and
+ official weather alerts as interactive charts.
