@@ -360,6 +360,7 @@ marine_not_connected: "Marine data loading is not connected yet.",
 marine_disclaimer: "Modelled data only. Not for navigation; sea level is referenced to global mean sea level, not a local tide-table datum.",
 marine_available: "Marine forecast data available.",
 marine_unavailable: "Marine forecast data is unavailable or not relevant for this location.",
+marine_load_failed: "Marine data could not be loaded. Try refreshing later.",
 card_sea_temperature: "Sea surface temperature",
 leg_sea_temperature: "Sea surface temperature",
 axis_sea_temperature: "temperature (°C)",
@@ -918,6 +919,7 @@ marine_not_connected: "Načítanie morských údajov zatiaľ nie je zapojené.",
 marine_disclaimer: "Len modelované údaje. Nie sú určené na navigáciu; výška hladiny je voči globálnej strednej hladine mora, nie voči miestnej nule prílivových tabuliek.",
 marine_available: "Morské predpovedné údaje sú dostupné.",
 marine_unavailable: "Morské predpovedné údaje nie sú pre túto lokalitu dostupné alebo relevantné.",
+marine_load_failed: "Morské údaje sa nepodarilo načítať. Skús obnoviť neskôr.",
 card_sea_temperature: "Teplota hladiny mora",
 leg_sea_temperature: "Teplota hladiny mora",
 axis_sea_temperature: "teplota (°C)",
@@ -2051,25 +2053,6 @@ function renderMarine(data) {
       );
     }
 
-    if (waveHeight !== null) {
-      summary.innerHTML += chip(
-        t("marine_summary_wave_height"),
-        fmt(mu.len(waveHeight), 1) + " " + mu.lenUnit
-      );
-    }
-    if (wavePeriod !== null) {
-      summary.innerHTML += chip(
-        t("marine_summary_period"),
-        fmt(mu.len(waveHeight), 1) + " " + mu.lenUnit
-      );
-    }
-    if (waveDirection !== null) {
-      summary.innerHTML += chip(
-        t("marine_summary_direction"),
-        dir(waveDirection) + " " + fmt(waveDirection, 0) + "°"
-      );
-    }
-
     message.hidden = true;
     document.getElementById("marineCharts").hidden = false;
 
@@ -2082,17 +2065,17 @@ function renderMarine(data) {
     document.getElementById("marineCharts").hidden = true;
     Plotly.purge(document.getElementById("seaTemperature"));
     Plotly.purge(document.getElementById("seaLevel"));
-    Plotly.purge(document.getElementById("seaLevel"));
+    Plotly.purge(document.getElementById("marineWaves"));
     dot.className = "dot neutral";
     message.textContent = error
-      ? t("marine_unavailable")
+      ? t("marine_load_failed")
       : t("marine_unavailable");
     disclaimer.textContent = t("marine_disclaimer");
   }
 }
 
 function setAppState(n){state=n;currentLang=state.lang||'en';document.getElementById('unitsSelect').value=state.units||'metric';document.getElementById('rangeSelect').value=String(Math.round((state.hours||72)/24));document.getElementById('modelSelect').value=state.model||'best_match';document.getElementById('marineToggle').checked =
-  state.marine_enabled === true;updateMarineVisibility();if (currentData) renderMarine(currentData);document.getElementById('intervalSelect').value=String(state.interval||3);document.getElementById('smoothingSelect').value=String(state.smoothing||0);document.getElementById('btnLangSk').classList.toggle('active',(state.lang||'en')==='sk');document.getElementById('btnLangEn').classList.toggle('active',(state.lang||'en')==='en');document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));+(state.auto?'ON':'OFF');setModelOptions();applyTranslations();renderHelp();renderSites();updateFooter();updateStatusForAutoToggle();if(currentData)renderForecast(currentData,true)}
+  state.marine_enabled === true;updateMarineVisibility();if (currentData) renderMarine(currentData);document.getElementById('intervalSelect').value=String(state.interval||3);document.getElementById('smoothingSelect').value=String(state.smoothing||0);document.getElementById('btnLangSk').classList.toggle('active',(state.lang||'en')==='sk');document.getElementById('btnLangEn').classList.toggle('active',(state.lang||'en')==='en');document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));setModelOptions();applyTranslations();renderHelp();renderSites();updateFooter();updateStatusForAutoToggle();if(currentData)renderForecast(currentData,true)}
 
 function renderHelp(){
   document.getElementById('helpTitle').textContent = t('section_help');
