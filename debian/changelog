@@ -1,3 +1,14 @@
+perun-weather (4.5.0-1) unstable; urgency=medium
+
+  * New upstream release 4.5.0.
+  * Add 13 weather models and Best match fallback.
+  * Add saved EU/US AQI selection and composite air/pollen indicator.
+  * Add coloured weather summaries and separate precipitation types.
+  * Fix marine chips, smoothing gaps and missing wind direction arrows.
+  * Update bilingual help, changelog and README.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Mon, 12 Oct 2026 23:38:00 +0200
+
 perun-weather (4.0.1-1) unstable; urgency=medium
 
   * New upstream release 4.0.1.

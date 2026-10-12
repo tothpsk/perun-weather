@@ -146,7 +146,7 @@ footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.0.1</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
+<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.5.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
 <main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
@@ -686,6 +686,22 @@ help_html: `
 
 <section>
   <h2>Changelog</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4.5.0 · 2026-10-12 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Added 13 weather models, including global models, European regional models, CHMI ALADIN and ICON Seamless; expanded model help.</li>
+      <li>Added Best match fallback when the selected model has no usable data for the location.</li>
+      <li>Added a saved European/US AQI selector, full index names in the legend, category-aware hover and a composite air quality/pollen indicator.</li>
+      <li>Added temperature, feels-like temperature, UV and wind colours to the weather summary; documented colour scales in Slovak and English help.</li>
+      <li>Listed rain, showers and snow separately in the summary using chart colours; added localized none labels for zero precipitation.</li>
+      <li>Fixed duplicate marine summary chips and distinguished marine loading failures from unavailable data; removed an unused expression.</li>
+      <li>Preserved missing forecast values during smoothing; hid wind direction arrows where direction data are unavailable.</li>
+      <li>Allowed only one panel to remain open at a time; displayed air quality and pollen values with one decimal place.</li>
+      <li>Updated README with the origin of the name and roadmap progress, including Debian packaging and additional weather models.</li>
+      <li>Updated AQI chart time alignment for selected intervals; kept AQI values unsmoothed and removed coloured chart backgrounds.</li>
+    </ul>
+  </div>
 
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
@@ -1251,6 +1267,22 @@ help_html: `
 
 <section>
   <h2>História zmien</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4.5.0 · 2026-10-12 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Pridaných 13 modelov počasia vrátane globálnych a európskych regionálnych modelov, CHMI ALADIN a ICON Seamless; rozšírený pomocník k modelom.</li>
+      <li>Pridané prepnutie na Best match, keď zvolený model nemá použiteľné dáta pre lokalitu.</li>
+      <li>Pridaný uložený prepínač európskeho/amerického AQI, celé názvy indexov v legende, kategórie v hoveri a súhrnný indikátor kvality ovzdušia a peľu.</li>
+      <li>Pridané farby teploty, pocitovej teploty, UV a vetra v súhrne; farebné škály vysvetlené v slovenskom aj anglickom pomocníkovi.</li>
+      <li>Dážď, prehánky a sneh sa v súhrne uvádzajú samostatne vo farbách grafu; pri nulových zrážkach pridané lokalizované označenie žiadne.</li>
+      <li>Opravené zdvojené morské čipy; odlíšená chyba načítania morských údajov od ich nedostupnosti a odstránený nepoužívaný výraz.</li>
+      <li>Vyhladzovanie zachováva chýbajúce hodnoty predpovede; šípky smeru vetra sa bez údajov o smere nezobrazujú.</li>
+      <li>Otvorený zostáva iba jeden panel; údaje o kvalite ovzdušia a peli sa zobrazujú s jedným desatinným miestom.</li>
+      <li>README doplnené o pôvod názvu a postup v pláne vývoja vrátane Debian balíčka a ďalších modelov počasia.</li>
+      <li>Opravené časové zarovnanie AQI grafu pri zvolenom intervale; AQI zostáva nevyhladený a graf nemá farebné pozadie.</li>
+    </ul>
+  </div>
   
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>

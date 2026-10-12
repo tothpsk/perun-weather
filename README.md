@@ -3,6 +3,7 @@
 </p>
 
 <h1 align="center">Perun Weather</h1>
+<p align="center">Version 4.5.0</p>
 <p align="center"><em>Weather, made visible.</em></p>
 
 Perun Weather is a desktop weather application built around interactive charts.
@@ -17,14 +18,14 @@ develop over time, so you can read the data yourself and judge what it means.
   precipitation, cloud cover, wind and pressure
 - Official weather alerts worldwide, wherever official sources are available,
   with a four-level severity indicator (neutral, yellow, orange, red)
-- Air quality: AQI, particulate matter, reactive gases, dust and aerosol
-  optical depth
+- Air quality: selectable European or US AQI, particulate matter, reactive gases,
+  dust and aerosol optical depth
 - Pollen forecast
 - Sun and moon data: altitude, day and night, moon visibility and daily summary
 - Optional marine data
-- Choice of weather models, from global (ECMWF IFS, ECMWF AIFS, GFS) to
-  regional (DWD ICON D2 and ICON EU, DMI HARMONIE), plus an automatic
-  best-match blend
+- Expanded choice of global and European weather models, including ECMWF IFS/AIFS,
+  GFS/AIGFS, JMA, ICON, GEM, ARPEGE, UK Met Office, CMA, HARMONIE and CHMI ALADIN,
+  plus Best match and fallback when the selected model has no usable data
 - Save as many locations as you like and reorder them by dragging
 - Add locations by name or by entering coordinates
 - Selectable time step (1, 3 or 6 hours) and forecast range
@@ -99,7 +100,7 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-4.0.1-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-4.5.0-1.fc44.noarch.rpm
 ```
 
 `dnf` installs the required dependencies automatically.
@@ -110,7 +111,7 @@ Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo apt install ./perun-weather_4.0.1-1_all.deb
+sudo apt install ./perun-weather_4.5.0-1_all.deb
 ```
 
 Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`
@@ -145,7 +146,7 @@ them manually when running Perun Weather from source.
 Planned ideas, in no particular order:
 
 - Weather radar
-- Further weather models
+- ~~Further weather models~~ (done in 4.5)
 - Historical weather
 - A gardening and agriculture panel (soil moisture and drought information
   for hobby growers and professional farmers)

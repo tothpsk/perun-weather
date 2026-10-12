@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        4.0.1
+Version:        4.5.0
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
@@ -60,6 +60,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
+* Mon Oct 12 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.5.0-1
+- Add 13 weather models and Best match fallback
+- Add persisted EU/US AQI selection and composite air/pollen indicator
+- Add coloured weather summaries and separate precipitation types
+- Fix marine chips, missing-data smoothing and wind direction arrows
+- Update bilingual help, changelog and README
 * Sun Oct 11 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.0.1-1
 - Update the licensing notice in the help (copyright and MIT License)
 - Credit Copernicus instead of CAMS for air quality data
