@@ -58,6 +58,18 @@ develop over time, so you can read the data yourself and judge what it means.
 
 
 
+## About the name
+
+Perun is the highest god of the early Medieval Slavic pantheon, the lord of the
+sky, thunder, lightning and storms. He was also associated with rain, fertility
+and the oak, and his symbols included fire, wind, mountains, the eagle and the
+thunder axe.
+
+The name seemed fitting for an application that follows storms, rain and wind
+through the data. The name refers only to the mythological figure and has no political or religious meaning.
+
+*Source: [Perun on Wikipedia](https://en.wikipedia.org/wiki/Perun).*
+
 ## Why I made it
 
 Perun Weather is a hobby project. There are many beautiful weather
