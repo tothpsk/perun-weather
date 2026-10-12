@@ -2471,9 +2471,9 @@ function renderAlerts(d) {
 }
 function renderAir(d){const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.time)||[];const ni=nowIndex(x);const ea=arr(a,'european_aqi'),p25=arr(a,'pm2_5'),p10=arr(a,'pm10'),o3=arr(a,'ozone'),no2=arr(a,'nitrogen_dioxide'),so2=arr(a,'sulphur_dioxide'),co=arr(a,'carbon_monoxide'),nh3=arr(a,'ammonia'),dust=arr(a,'dust'),aod=arr(a,'aerosol_optical_depth'),alder=arr(a,'alder_pollen'),birch=arr(a,'birch_pollen'),grass=arr(a,'grass_pollen'),mug=arr(a,'mugwort_pollen'),rag=arr(a,'ragweed_pollen'),olive=arr(a,'olive_pollen');const dot=document.getElementById('airDot'),has=ea.length||p25.length||p10.length;dot.className='dot '+(has?aqiLevel(ea[ni]):'neutral');
     const pollenRows=[[(STRINGS[currentLang]||STRINGS.en).leg_alder,alder[ni],'alder'],[(STRINGS[currentLang]||STRINGS.en).leg_birch,birch[ni],'birch'],[(STRINGS[currentLang]||STRINGS.en).leg_grass,grass[ni],'grass'],[(STRINGS[currentLang]||STRINGS.en).leg_mugwort,mug[ni],'mugwort'],[(STRINGS[currentLang]||STRINGS.en).leg_ragweed,rag[ni],'ragweed'],[(STRINGS[currentLang]||STRINGS.en).leg_olive,olive[ni],'olive']];
-  const pollenChips=pollenRows.filter(([,v])=>v!=null).map(([n,v,k])=>chip(n,fmt(v,0),pollenLevel(v,k))).join('')||'<span class="chip">'+t('chip_pollen_no_data')+'</span>';
+  const pollenChips=pollenRows.filter(([,v])=>v!=null).map(([n,v,k])=>chip(n,fmt(v,1),pollenLevel(v,k))).join('')||'<span class="chip">'+t('chip_pollen_no_data')+'</span>';
   const sum=document.getElementById('airSummary');
-  sum.innerHTML=chip('EAQI',fmt(ea[ni]),aqiLevel(ea[ni]))+chip('PM2.5',fmt(p25[ni],1),bandLevel(p25[ni],'pm25'))+chip('PM10',fmt(p10[ni],1),bandLevel(p10[ni],'pm10'))+chip('O₃',fmt(o3[ni]),bandLevel(o3[ni],'o3'))+chip('NO₂',fmt(no2[ni]),bandLevel(no2[ni],'no2'))+chip('SO₂',fmt(so2[ni]),bandLevel(so2[ni],'so2'))+chip('NH₃',fmt(nh3[ni],1),bandLevel(nh3[ni],'nh3'))+chip('CO',fmt(co[ni]),bandLevel(co[ni],'co'))+chip((STRINGS[currentLang]||STRINGS.en).leg_dust,fmt(dust[ni],1),bandLevel(dust[ni],'dust'))+chip((STRINGS[currentLang]||STRINGS.en).leg_aod,fmt(aod[ni],2),bandLevel(aod[ni],'aod'))+pollenChips;
+  sum.innerHTML=chip('EAQI',fmt(ea[ni]),aqiLevel(ea[ni]))+chip('PM2.5',fmt(p25[ni],1),bandLevel(p25[ni],'pm25'))+chip('PM10',fmt(p10[ni],1),bandLevel(p10[ni],'pm10'))+chip('O₃',fmt(o3[ni],1),bandLevel(o3[ni],'o3'))+chip('NO₂',fmt(no2[ni],1),bandLevel(no2[ni],'no2'))+chip('SO₂',fmt(so2[ni],1),bandLevel(so2[ni],'so2'))+chip('NH₃',fmt(nh3[ni],1),bandLevel(nh3[ni],'nh3'))+chip('CO',fmt(co[ni],1),bandLevel(co[ni],'co'))+chip((STRINGS[currentLang]||STRINGS.en).leg_dust,fmt(dust[ni],1),bandLevel(dust[ni],'dust'))+chip((STRINGS[currentLang]||STRINGS.en).leg_aod,fmt(aod[ni],2),bandLevel(aod[ni],'aod'))+pollenChips;
     const mk=(y,n,c,dash='',y2=false,unit='µg/m³',dec=1)=>({
     x,y,name:n,type:'scatter',mode:'lines',
     line:{color:c,width:2,dash},
@@ -2503,12 +2503,12 @@ function renderAir(d){const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.ti
   z=proc(x,[alder,birch,grass,mug,rag,olive]);
   const pu=t('axis_pollen');
   Plotly.newPlot('pollen',[
-    mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_alder,POLLEN.alder,'',false,pu,0),
-    mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_birch,POLLEN.birch,'',false,pu,0),
-    mk(z.ss[2],(STRINGS[currentLang]||STRINGS.en).leg_grass,POLLEN.grass,'',false,pu,0),
-    mk(z.ss[3],(STRINGS[currentLang]||STRINGS.en).leg_mugwort,POLLEN.mugwort,'',false,pu,0),
-    mk(z.ss[4],(STRINGS[currentLang]||STRINGS.en).leg_ragweed,POLLEN.ragweed,'',false,pu,0),
-    mk(z.ss[5],(STRINGS[currentLang]||STRINGS.en).leg_olive,POLLEN.olive,'',false,pu,0)
+    mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_alder,POLLEN.alder,'',false,pu,1),
+    mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_birch,POLLEN.birch,'',false,pu,1),
+    mk(z.ss[2],(STRINGS[currentLang]||STRINGS.en).leg_grass,POLLEN.grass,'',false,pu,1),
+    mk(z.ss[3],(STRINGS[currentLang]||STRINGS.en).leg_mugwort,POLLEN.mugwort,'',false,pu,1),
+    mk(z.ss[4],(STRINGS[currentLang]||STRINGS.en).leg_ragweed,POLLEN.ragweed,'',false,pu,1),
+    mk(z.ss[5],(STRINGS[currentLang]||STRINGS.en).leg_olive,POLLEN.olive,'',false,pu,1)
   ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_pollen,POLLEN.grass)}),{responsive:true,displayModeBar:false})
 }
 function dir(d){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]}
