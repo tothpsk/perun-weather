@@ -230,6 +230,12 @@ const POLLUTANT_THRESHOLDS={pm25:{warn:25,bad:50},pm10:{warn:50,bad:100},o3:{war
 const POLLEN_THRESHOLDS={alder:{warn:50,bad:200},birch:{warn:50,bad:400},grass:{warn:20,bad:50},mugwort:{warn:20,bad:50},ragweed:{warn:10,bad:50},olive:{warn:50,bad:200}};
 const STRINGS = {
   en: {
+    precip_none: "none",
+    precip_rain: "Rain",
+    precip_showers: "Showers",
+    precip_snow: "Snow",
+    precip_mixed: "Mixed",
+
     app_title: "Perun Weather",
     app_badge: "production",
     loading_locations: "Loading locations…",
@@ -789,6 +795,12 @@ help_html: `
   },
 
   sk: {
+    precip_none: "žiadne",
+    precip_rain: "Dážď",
+    precip_showers: "Prehánky",
+    precip_snow: "Sneh",
+    precip_mixed: "Zmiešané",
+
     app_title: "Perun Weather",
     app_badge: "produkcia",
     loading_locations: "Načítavam lokality…",
@@ -2077,9 +2089,270 @@ function renderMarine(data) {
 function setAppState(n){state=n;currentLang=state.lang||'en';document.getElementById('unitsSelect').value=state.units||'metric';document.getElementById('rangeSelect').value=String(Math.round((state.hours||72)/24));document.getElementById('modelSelect').value=state.model||'best_match';document.getElementById('marineToggle').checked =
   state.marine_enabled === true;updateMarineVisibility();if (currentData) renderMarine(currentData);document.getElementById('intervalSelect').value=String(state.interval||3);document.getElementById('smoothingSelect').value=String(state.smoothing||0);document.getElementById('btnLangSk').classList.toggle('active',(state.lang||'en')==='sk');document.getElementById('btnLangEn').classList.toggle('active',(state.lang||'en')==='en');document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));setModelOptions();applyTranslations();renderHelp();renderSites();updateFooter();updateStatusForAutoToggle();if(currentData)renderForecast(currentData,true)}
 
+
+// BEGIN WEATHER COLOR HELP
+
+// BEGIN INLINE WEATHER COLOR HELP
+function insertWeatherColorHelp(html) {
+  const help = document.createElement('div');
+  help.innerHTML = html;
+
+  const headings = Array.from(help.querySelectorAll('h3'));
+  const weatherHeading = headings.find(h =>
+    /^3\.\s*(Počasie|Weather)\s*—/.test(h.textContent.trim())
+  );
+  const marineHeading = headings.find(h =>
+    /^4\.\s*(Morské údaje|Marine data)\s*—/.test(h.textContent.trim())
+  );
+
+  if (!weatherHeading || !marineHeading ||
+      weatherHeading.parentElement !== marineHeading.parentElement) {
+    console.error('Weather colour help: insertion point not found.');
+    return html;
+  }
+
+  const fragment = document.createElement('div');
+  fragment.innerHTML = weatherColorHelpHtml();
+  const card = fragment.querySelector('#weatherColorHelp');
+  if (!card) return html;
+
+  const title = card.querySelector('h3');
+  if (title) {
+    const subtitle = document.createElement('h4');
+    subtitle.textContent = title.textContent;
+    title.replaceWith(subtitle);
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.id = 'weatherColorHelp';
+  wrapper.style.marginTop = '16px';
+
+  while (card.firstChild) {
+    wrapper.appendChild(card.firstChild);
+  }
+
+  // NUMBERED WEATHER HELP SUBSECTIONS
+  const subheadings = Array.from(wrapper.querySelectorAll('h4'));
+  const mainSize = 14;
+  const subsectionSize = Math.min(
+    13,
+    Math.max(10, (Number.isFinite(mainSize) ? mainSize : 14) - 1)
+  );
+
+  const subsectionNumbers = {
+    'Teplota a pocitová teplota': '3.1',
+    'Temperature and feels-like temperature': '3.1',
+    'UV index': '3.2',
+    'Vietor a nárazy': '3.3',
+    'Wind and gusts': '3.3',
+    'Zrážky': '3.4',
+    'Precipitation': '3.4'
+  };
+
+  subheadings.forEach(heading => {
+    const label = heading.textContent.trim();
+    const number = subsectionNumbers[label];
+
+    heading.style.fontSize = subsectionSize + 'px';
+    heading.style.lineHeight = '1.4';
+
+    if (number) {
+      heading.textContent = number + '. ' + label;
+      heading.style.fontWeight = '600';
+      heading.style.margin = '16px 0 7px';
+      heading.style.color = 'var(--heading)';
+    } else {
+      heading.style.fontWeight = '500';
+      heading.style.margin = '0 0 8px';
+      heading.style.color = 'var(--muted)';
+    }
+  });
+
+  marineHeading.before(wrapper);
+  return help.innerHTML;
+}
+// END INLINE WEATHER COLOR HELP
+
+function weatherColorHelpHtml() {
+  const sk = state.lang === 'sk';
+  const bands = WEATHER_UV_BANDS.slice().reverse();
+
+  // UV SCALE BOUNDARY LABELS
+  const uvCells = bands.map(([lower, color]) =>
+    `<div style="flex:1;min-width:0;height:16px;background:${color}"></div>`
+  ).join('');
+
+  const uvLabels = bands.map(([lower], i) => {
+    const label = i === bands.length - 1 ? lower + '+' : String(lower);
+    const position = i * 100 / bands.length;
+    const transform = i === 0 ? 'none' : 'translateX(-50%)';
+    return `<span style="position:absolute;left:${position}%;
+      transform:${transform};white-space:nowrap">${label}</span>`;
+  }).join('');
+
+  const uvScale = `
+    <div style="margin:12px 0 8px">
+      <div style="display:flex;overflow:hidden;border-radius:4px">
+        ${uvCells}
+      </div>
+      <div style="position:relative;height:18px;margin-top:5px;
+        font-size:10px;color:var(--muted)">
+        ${uvLabels}
+      </div>
+    </div>
+  `;
+
+  const swatch = color =>
+    `<span class="swatch" style="background:${color}"></span>`;
+
+  const windRows = sk
+    ? [
+        ['Pod 50 km/h', 'Neutrálna farba'],
+        ['50 až menej ako 62 km/h', swatch('#fdd835') + 'Žltá'],
+        ['62 až menej ako 89 km/h', swatch('#fb8c00') + 'Oranžová'],
+        ['89 km/h a viac', swatch('#e53935') + 'Červená']
+      ]
+    : [
+        ['Below 50 km/h', 'Neutral colour'],
+        ['50 to below 62 km/h', swatch('#fdd835') + 'Yellow'],
+        ['62 to below 89 km/h', swatch('#fb8c00') + 'Orange'],
+        ['89 km/h and above', swatch('#e53935') + 'Red']
+      ];
+
+  const windTable = `
+    <table>
+      <thead><tr>
+        <th>${sk ? 'Rýchlosť' : 'Speed'}</th>
+        <th>${sk ? 'Farba v súhrne' : 'Summary colour'}</th>
+      </tr></thead>
+      <tbody>${windRows.map(row =>
+        `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`
+      ).join('')}</tbody>
+    </table>
+  `;
+
+  const rainLegend = `
+    <p>
+      ${swatch(CLR.rain)}${sk ? 'Dážď' : 'Rain'} &nbsp;
+      ${swatch('#2196c9')}${sk ? 'Prehánky' : 'Showers'} &nbsp;
+      ${swatch('#e8eaf0')}${sk ? 'Sneh' : 'Snow'}
+    </p>
+  `;
+
+  if (sk) {
+    return `
+      <div class="card" id="weatherColorHelp">
+        <h3>Farby v súhrne predpovede</h3>
+        <p>Farby v hlavičke sekcie Predpoveď počasia sa vzťahujú
+        na hodnoty pre čas označený ako aktuálny. Neznamenajú maximá
+        za celé obdobie predpovede. Oblačnosť, smer vetra a tlak
+        zostávajú neutrálne.</p>
+
+        <h4>Teplota a pocitová teplota</h4>
+        <p>Obe hodnoty používajú rovnakú plynulú teplotnú škálu
+        ako bodka pri názve sekcie. Teplotná škála je uvedená
+        v pomocníkovi. Pri prepnutí medzi °C a °F zostáva farba
+        tej istej fyzikálnej teploty rovnaká. Farba je orientačná,
+        nie samostatná zdravotná výstraha.</p>
+
+        <h4>UV index</h4>
+        <p>Hodnota v súhrne používa nasledujúce farebné pásma.
+        Dolná hranica patrí do pásma, horná už do nasledujúceho:
+        napríklad UV 3,3 používa farbu pásma 3–4. Farba sa vyberá
+        z nezaokrúhlenej hodnoty.</p>
+        ${uvScale}
+        <p>Rizikové kategórie: nízke pod 3, stredné od 3 do menej
+        ako 6, vysoké od 6 do menej ako 8, veľmi vysoké od 8 do
+        menej ako 11 a extrémne od 11. Označenie GFS pri hodnote
+        informuje o doplnkovom zdroji UV dát, nie o riziku.
+        UV krivka v grafe si ponecháva stálu žltú farbu.</p>
+
+        <h4>Vietor a nárazy</h4>
+        <p>Rýchlosť vetra a nárazy sa farbia samostatne podľa
+        rovnakých hraníc. Preto môže byť bežný vietor neutrálny,
+        ale nárazy farebné.</p>
+        ${windTable}
+        <p>Pri mph, m/s alebo uzloch sa hodnota pre výber farby
+        prepočíta na km/h. Ide o orientačné pásma aplikácie,
+        nie o oficiálne meteorologické výstrahy ani klasifikáciu
+        nárazov podľa Beaufortovej stupnice.</p>
+
+        <h4>Zrážky</h4>
+        ${rainLegend}
+        <p>Farba vyjadruje typ zrážok, nie ich množstvo či intenzitu.
+        Názov, hodnota a jednotka používajú farbu príslušného typu
+        z grafu. Zobrazujú sa iba typy s kladnou hodnotou.</p>
+        <p>Pri súbehu sa jednotlivé typy rozpíšu, napríklad
+        „Dážď 0,1 mm · Prehánky 0,4 mm“. Súčet sa neoznačuje
+        názvom jedného typu. Pri daždi aj snehu sa zobrazia
+        obidve položky, nie spoločná farba „zmiešané“.</p>
+        <p>„Žiadne“ označuje stav bez zrážok.
+        Chýbajúce údaje nie sú potvrdením nulových zrážok.
+        Mrznúce zrážky táto farebná legenda zatiaľ samostatne
+        nerozlišuje.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="card" id="weatherColorHelp">
+      <h3>Forecast summary colours</h3>
+      <p>Colours in the Weather forecast header apply to values
+      for the time marked as current. They do not represent maxima
+      over the entire forecast period. Cloud cover, wind direction
+      and pressure remain neutral.</p>
+
+      <h4>Temperature and feels-like temperature</h4>
+      <p>Both values use the same continuous temperature scale
+      as the dot beside the section title. The temperature scale
+      is shown in this help. Switching between °C and °F preserves
+      the colour of the same physical temperature. The colour is
+      indicative, not a separate health warning.</p>
+
+      <h4>UV index</h4>
+      <p>The summary value uses the colour bands below.
+      Each lower boundary is included; the upper boundary belongs
+      to the next band. For example, UV 3.3 uses the 3–4 colour.
+      The colour is selected using the unrounded value.</p>
+      ${uvScale}
+      <p>Risk categories: low below 3, moderate from 3 to below 6,
+      high from 6 to below 8, very high from 8 to below 11,
+      and extreme from 11. A GFS label identifies the supplementary
+      UV data source, not the risk level. The UV curve in the chart
+      retains its fixed yellow colour.</p>
+
+      <h4>Wind and gusts</h4>
+      <p>Wind speed and gusts are coloured independently using
+      the same thresholds. Ordinary wind may therefore remain
+      neutral while gusts are coloured.</p>
+      ${windTable}
+      <p>Values displayed in mph, m/s or knots are converted to
+      km/h for colour selection. These are indicative application
+      bands, not official weather warnings or a Beaufort
+      classification of gusts.</p>
+
+      <h4>Precipitation</h4>
+      ${rainLegend}
+      <p>Colour identifies precipitation type, not amount or
+      intensity. The name, value and unit use the corresponding
+      chart colour. Only types with positive values are shown.</p>
+      <p>Simultaneous types are listed separately, for example
+      “Rain 0.1 mm · Showers 0.4 mm”. Their total is not labelled
+      as a single type. Rain and snow are also listed separately,
+      rather than using a combined “mixed” colour.</p>
+      <p>“None” indicates no precipitation.
+      Missing data do not confirm zero precipitation.
+      This colour legend does not yet distinguish freezing
+      precipitation separately.</p>
+    </div>
+  `;
+}
+// END WEATHER COLOR HELP
+
 function renderHelp(){
   document.getElementById('helpTitle').textContent = t('section_help');
-  document.getElementById('helpContent').innerHTML = t('help_html');
+  document.getElementById('helpContent').innerHTML =
+    insertWeatherColorHelp(t('help_html'));
   const labels = document.querySelector('#helpContent .gradientLabels');
   if (labels) {
     const imp = state.units === 'imperial';
@@ -2550,6 +2823,71 @@ function renderAir(d){const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.ti
   ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_pollen,POLLEN.grass)}),{responsive:true,displayModeBar:false})
 }
 function dir(d){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]}
+
+// BEGIN WEATHER SUMMARY COLORS
+const WEATHER_UV_BANDS = [
+  [11, '#998CFF'], [10, '#B54CFF'], [9, '#FF0099'],
+  [8, '#D8001D'], [7, '#E82C0E'], [6, '#F85900'],
+  [5, '#F88700'], [4, '#F8B600'], [3, '#F7E400'],
+  [2, '#A0CE00'], [0, '#4EB400']
+];
+
+function weatherSummaryNumber(v) {
+  if (v == null || v === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function weatherSummaryUvColor(v) {
+  const n = weatherSummaryNumber(v);
+  if (n == null || n < 0) return null;
+  return WEATHER_UV_BANDS.find(b => n >= b[0])[1];
+}
+
+function weatherSummaryWindColor(v) {
+  const n = weatherSummaryNumber(v);
+  if (n == null || n < 0) return null;
+  const factor = {
+    imperial: 1.609344,
+    ms: 3.6,
+    knots: 1.852
+  }[state.units] || 1;
+  const kmh = n * factor;
+  if (kmh < 50) return null;
+  if (kmh < 62) return '#fdd835';
+  if (kmh < 89) return '#fb8c00';
+  return '#e53935';
+}
+
+function weatherSummaryTempColor(v) {
+  const n = weatherSummaryNumber(v);
+  return n == null ? null : tempDotColor(n);
+}
+
+function weatherSummaryPrecipType(r, sh, sn) {
+  const rain = weatherSummaryNumber(r);
+  const showers = weatherSummaryNumber(sh);
+  const snow = weatherSummaryNumber(sn);
+  const wet = (rain > 0) || (showers > 0);
+
+  if (wet && snow > 0)
+    return {key: 'precip_mixed', color: '#b388ff'};
+  if (snow > 0)
+    return {key: 'precip_snow', color: '#e8eaf0'};
+  if (rain > 0)
+    return {key: 'precip_rain', color: CLR.rain};
+  if (showers > 0)
+    return {key: 'precip_showers', color: '#2196c9'};
+  return null;
+}
+
+function weatherSummaryTint(html, color) {
+  return color
+    ? '<span style="color:' + color + '">' + html + '</span>'
+    : html;
+}
+// END WEATHER SUMMARY COLORS
+
 function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=arr(h,'temperature_2m'),feel=arr(h,'apparent_temperature'),uv=arr(h,'uv_index'),cloud=arr(h,'cloud_cover'),rain=arr(h,'rain'),show=arr(h,'showers'),snow=arr(h,'snowfall'),prec=arr(h,'precipitation'),wind=arr(h,'wind_speed_10m'),gust=arr(h,'wind_gusts_10m'),wd=arr(h,'wind_direction_10m'),press=arr(h,'pressure_msl'),u=UNITS[state.units]||UNITS.metric;
   const uvSources = Array.isArray(d.uv_sources) ? d.uv_sources : [];
   const uvSourceAt = i => uvSources[i] ||
@@ -2571,19 +2909,65 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
   // UV) -> Precipitation & cloud chart (Precipitation, Clouds) -> Wind &
   // pressure chart (Wind, Gusts, Direction, Pressure). All values read at
   // nowIndex(x) instead of a hardcoded [0].
-  document.getElementById('weatherSummary').innerHTML=
-    chip(t('chip_temp'),fmt(temp[ni])+u.temp)+
-    chip(t('chip_feels'),fmt(feel[ni])+u.temp)+
+  const precipParts = [];
+  const addPrecipPart = (key, color, value, unit) => {
+    const n = weatherSummaryNumber(value);
+    if (n != null && n > 0) {
+      precipParts.push(
+        weatherSummaryTint(
+          t(key) + ' ' + fmt(n, n < 0.1 ? 2 : 1) + ' ' + unit,
+          color
+        )
+      );
+    }
+  };
+  addPrecipPart('precip_rain', CLR.rain, rain[ni], u.precip);
+  addPrecipPart('precip_showers', '#2196c9', show[ni], u.precip);
+  addPrecipPart('precip_snow', '#e8eaf0', snow[ni],
+    u.precip === 'in' ? 'in' : 'cm');
+
+  const splitKnown = [rain[ni], show[ni], snow[ni]]
+    .some(v => weatherSummaryNumber(v) != null);
+  const totalPrecip = weatherSummaryNumber(precipVal);
+  let precipHtml;
+  if (precipParts.length) {
+    precipHtml = precipParts.join(' · ');
+  } else if (splitKnown || totalPrecip === 0) {
+    precipHtml = t('precip_none');
+  } else if (totalPrecip != null && totalPrecip > 0) {
+    precipHtml = fmt(totalPrecip, 1) + ' ' + u.precip;
+  } else {
+    precipHtml = '--';
+  }
+
+
+  document.getElementById('weatherSummary').innerHTML =
+    chip(t('chip_temp'),
+      weatherSummaryTint(fmt(temp[ni]) + u.temp,
+        weatherSummaryTempColor(temp[ni]))) +
+    chip(t('chip_feels'),
+      weatherSummaryTint(fmt(feel[ni]) + u.temp,
+        weatherSummaryTempColor(feel[ni]))) +
     chip(
       t('chip_uv') + (uvSourceAt(ni) === 'gfs' ? ' — GFS' : ''),
-      fmt(uv[ni], 1)
-    )+
-    chip(t('chip_precip'),fmt(precipVal,1)+' '+u.precip)+
-    chip(t('chip_clouds'),fmt(cloud[ni])+'%')+
-    chip(t('chip_wind'),fmt(wind[ni])+' '+u.wind)+
-    chip(t('chip_gusts'),fmt(gust[ni])+' '+u.wind)+
-    chip(t('chip_direction'),wd.length?dir(wd[ni])+' '+fmt(wd[ni])+'°':'--')+
-    chip(t('chip_pressure'), pressureValueOnly(press[ni]) + ' ' + u.pressure)
+      weatherSummaryTint(fmt(uv[ni], 1),
+        weatherSummaryUvColor(uv[ni]))
+    ) +
+    chip(t('chip_precip'), precipHtml) +
+    chip(t('chip_clouds'), fmt(cloud[ni]) + '%') +
+    chip(t('chip_wind'),
+      weatherSummaryTint(fmt(wind[ni]) + ' ' + u.wind,
+        weatherSummaryWindColor(wind[ni]))) +
+    chip(t('chip_gusts'),
+      weatherSummaryTint(fmt(gust[ni]) + ' ' + u.wind,
+        weatherSummaryWindColor(gust[ni]))) +
+    chip(t('chip_direction'),
+      weatherSummaryNumber(wd[ni]) != null
+        ? dir(Number(wd[ni])) + ' ' + fmt(wd[ni]) + '°'
+        : '--') +
+    chip(t('chip_pressure'),
+      pressureValueOnly(press[ni]) + ' ' + u.pressure);
+
   let z=proc(x,[temp,uv]);
   const uvMax=Math.max(6,...uv.filter(v=>v!=null).map(Number))*1.35;
 
