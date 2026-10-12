@@ -323,6 +323,8 @@ class App(QObject):
                 elif key == "lang":
                     self.settings.lang = value
 
+                elif key == "aqi_scale":
+                    self.settings.aqi_scale = "us" if value == "us" else "eu"
                 elif key == "marine_enabled":
                     self.settings.marine_enabled = value == "true"
                     refresh_needed = True
@@ -397,6 +399,7 @@ class App(QObject):
             "icon_models_available": icon_available,
             "lang": self.settings.lang,
             "marine_enabled": self.settings.marine_enabled,
+            "aqi_scale": self.settings.aqi_scale,
         }
 
         self.call_js(
@@ -468,7 +471,7 @@ class App(QObject):
                     print(f"Optional GFS UV fallback unavailable: {exc}")
 
             weather["uv_sources"] = uv_sources
-            
+
             marine = None
             marine_error = None
 

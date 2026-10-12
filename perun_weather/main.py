@@ -244,6 +244,8 @@ class App(Adw.Application):
                     self.redraw_from_cache()
                 elif key == "lang":
                     self.settings.lang = value
+                elif key == "aqi_scale":
+                    self.settings.aqi_scale = "us" if value == "us" else "eu"
                 elif key == "marine_enabled":
                     self.settings.marine_enabled = value == "true"
                     refresh_needed = True
@@ -303,6 +305,7 @@ class App(Adw.Application):
             "icon_models_available": icon_available,
             'lang': self.settings.lang,
             "marine_enabled": self.settings.marine_enabled,
+            "aqi_scale": self.settings.aqi_scale,
         }
         self.call_js("setAppState(" + json.dumps(payload, ensure_ascii=False) + ")")
 

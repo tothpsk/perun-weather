@@ -136,6 +136,13 @@ footer a:hover{text-decoration:underline}
   accent-color: var(--accent);
   cursor: pointer;
 }
+
+/* AQI SEGMENTED UI */
+.aqiCardHeader{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.aqiCardHeader .cardTitle{padding-bottom:0}
+.aqiSwitch{margin-left:auto}
+.aqiSwitch button{font-size:12px;padding:5px 12px}
+@media(max-width:600px){.aqiSwitch button{padding:5px 9px}}
 </style>
 </head>
 <body>
@@ -152,7 +159,7 @@ footer a:hover{text-decoration:underline}
 </label>
 </div><div class="field"><label id="lblInterval">Time interval</label><select id="intervalSelect" onchange="setSetting('interval',this.value)"><option id="optInterval1" value="1">1 hour</option><option id="optInterval3" value="3" selected>3 hours</option><option id="optInterval6" value="6">6 hours</option></select></div><div class="field"><label id="lblRange">Forecast range</label><select id="rangeSelect" onchange="setSetting('hours',String(Number(this.value)*24))"><option id="optRange3" value="3">3 days</option><option id="optRange5" value="5" selected>5 days</option><option id="optRange7" value="7">7 days</option><option id="optRange16" value="16">16 days</option></select></div><div class="field"><label id="lblUnits">Units</label><select id="unitsSelect" onchange="setSetting('units',this.value)"><option value="metric">°C · km/h · mm · hPa</option><option value="metric_mmhg">°C · km/h · mm · mmHg</option><option value="imperial">°F · mph · in · inHg</option><option value="ms">°C · m/s · mm · hPa</option><option value="knots">°C · knots · mm · hPa</option></select></div><div class="field"><label id="lblSmoothing">Line smoothing</label><select id="smoothingSelect" onchange="setSetting('smoothing',this.value)"><option id="optSmoothing0" value="0">None (raw data)</option><option id="optSmoothing1" value="1">Light</option><option id="optSmoothing2" value="2">Medium</option><option id="optSmoothing3" value="3">Strong</option></select></div><button id="refreshButton" class="btn" onclick="native('refresh')"><span id="lblRefresh">Refresh now</span></button><button id="autoButton" class="btn alt autoToggle" onclick="toggleAuto()">Auto-refresh: ON</button><span id="status" class="status toolbarStatus">Last updated: <b>--:--</b> · next auto-refresh: <b>--:--</b></span></div>
 <section class="section"><div class="sectionHead" onclick="toggleSection('alerts')"><h3><span id="alertsChevron" class="chev">▶</span><span id="alertsDot" class="dot neutral"></span> <span id="lblSectionAlerts">Active weather alerts</span></h3><div id="alertsSummary" class="summary"></div></div><div id="alertsBody" class="body"><div class="inner"><div id="alertsCards"></div><div id="alertsChart"></div></div></div></section>
-<section class="section"><div class="sectionHead" onclick="toggleSection('air')"><h3><span id="airChevron" class="chev">▶</span><span id="airDot" class="dot neutral"></span> <span id="lblSectionAir">Air quality &amp; pollen</span></h3><div id="airSummary" class="summary"></div></div><div id="airBody" class="body"><div class="inner"><div class="innerCard"><div class="cardTitle" id="lblCardAqi">AQI &amp; particulate matter</div><div id="aqi" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardGases">Reactive gases</div><div id="gases" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardAerosol">Dust &amp; aerosol optical depth</div><div id="aerosol" style="height:250px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardPollen">Pollen forecast</div><div id="pollen" style="height:285px"></div></div></div></div></section>
+<section class="section"><div class="sectionHead" onclick="toggleSection('air')"><h3><span id="airChevron" class="chev">▶</span><span id="airDot" class="dot neutral"></span> <span id="lblSectionAir">Air quality &amp; pollen</span></h3><div id="airSummary" class="summary"></div></div><div id="airBody" class="body"><div class="inner"><div class="innerCard"><div class="aqiCardHeader"><div class="cardTitle" id="lblCardAqi">AQI &amp; particulate matter</div><div class="langSwitch aqiSwitch" role="group" aria-label="AQI"><button type="button" id="btnAqiEu" onclick="changeAqiScale('eu')">Európsky AQI</button><button type="button" id="btnAqiUs" onclick="changeAqiScale('us')">Americký AQI</button></div></div><div id="aqi" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardGases">Reactive gases</div><div id="gases" style="height:265px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardAerosol">Dust &amp; aerosol optical depth</div><div id="aerosol" style="height:250px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardPollen">Pollen forecast</div><div id="pollen" style="height:285px"></div></div></div></div></section>
 <section class="section"><div class="sectionHead" onclick="toggleSection('weather')"><h3><span id="weatherChevron" class="chev open">▶</span><span id="weatherDot" class="dot neutral"></span> <span id="lblSectionWeather">Weather forecast</span></h3><div id="weatherSummary" class="summary"></div></div><div id="weatherBody" class="body open"><div class="inner"><div class="innerCard"><div class="cardTitle" id="lblCardTemp">Temperature &amp; UV index</div><div id="temperature" style="height:280px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardPrecip">Precipitation &amp; cloud cover</div><div id="precipitation" style="height:290px"></div></div><div class="innerCard"><div class="cardTitle" id="lblCardWind">Wind &amp; pressure</div><div id="wind" style="height:300px"></div></div></div></div></section>
 <section class="section">
   <div class="sectionHead" onclick="toggleSection('sunmoon')">
@@ -2086,7 +2093,7 @@ function renderMarine(data) {
   }
 }
 
-function setAppState(n){state=n;currentLang=state.lang||'en';document.getElementById('unitsSelect').value=state.units||'metric';document.getElementById('rangeSelect').value=String(Math.round((state.hours||72)/24));document.getElementById('modelSelect').value=state.model||'best_match';document.getElementById('marineToggle').checked =
+function setAppState(n){state=n;currentLang=state.lang||'en';syncAqiControl();document.getElementById('unitsSelect').value=state.units||'metric';document.getElementById('rangeSelect').value=String(Math.round((state.hours||72)/24));document.getElementById('modelSelect').value=state.model||'best_match';document.getElementById('marineToggle').checked =
   state.marine_enabled === true;updateMarineVisibility();if (currentData) renderMarine(currentData);document.getElementById('intervalSelect').value=String(state.interval||3);document.getElementById('smoothingSelect').value=String(state.smoothing||0);document.getElementById('btnLangSk').classList.toggle('active',(state.lang||'en')==='sk');document.getElementById('btnLangEn').classList.toggle('active',(state.lang||'en')==='en');document.getElementById('autoButton').textContent=(state.auto?t('btn_auto_on'):t('btn_auto_off'));setModelOptions();applyTranslations();renderHelp();renderSites();updateFooter();updateStatusForAutoToggle();if(currentData)renderForecast(currentData,true)}
 
 
@@ -2352,7 +2359,7 @@ function weatherColorHelpHtml() {
 function renderHelp(){
   document.getElementById('helpTitle').textContent = t('section_help');
   document.getElementById('helpContent').innerHTML =
-    insertWeatherColorHelp(t('help_html'));
+    insertAqiHelp(insertWeatherColorHelp(t('help_html')));
   const labels = document.querySelector('#helpContent .gradientLabels');
   if (labels) {
     const imp = state.units === 'imperial';
@@ -2780,24 +2787,73 @@ function renderAlerts(d) {
     }
   );
 }
-function renderAir(d){const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.time)||[];const ni=nowIndex(x);const ea=arr(a,'european_aqi'),p25=arr(a,'pm2_5'),p10=arr(a,'pm10'),o3=arr(a,'ozone'),no2=arr(a,'nitrogen_dioxide'),so2=arr(a,'sulphur_dioxide'),co=arr(a,'carbon_monoxide'),nh3=arr(a,'ammonia'),dust=arr(a,'dust'),aod=arr(a,'aerosol_optical_depth'),alder=arr(a,'alder_pollen'),birch=arr(a,'birch_pollen'),grass=arr(a,'grass_pollen'),mug=arr(a,'mugwort_pollen'),rag=arr(a,'ragweed_pollen'),olive=arr(a,'olive_pollen');const dot=document.getElementById('airDot'),has=ea.length||p25.length||p10.length;dot.className='dot '+(has?aqiLevel(ea[ni]):'neutral');
+
+// AQI SCALE SWITCH
+function selectedAqiScale(){return state.aqi_scale==='us'?'us':'eu'}
+function selectedAqiName(){return selectedAqiScale()==='us'?'US AQI':'EU AQI'}
+function aqiBands(scale=selectedAqiScale()){
+ const us=scale==='us';
+ const limits=us?[50,100,150,200,300,Infinity]:[20,40,60,80,100,Infinity];
+ const colors=us?['#00e400','#ffff00','#ff7e00','#ff0000','#8f3f97','#7e0023']:['#50f0e6','#50ccaa','#f0e641','#ff5050','#960032','#7d2181'];
+ const sk=currentLang==='sk';
+ const names=us?(sk?['Dobrá','Mierna','Nezdravá pre citlivé skupiny','Nezdravá','Veľmi nezdravá','Nebezpečná']:['Good','Moderate','Unhealthy for sensitive groups','Unhealthy','Very unhealthy','Hazardous']):(sk?['Dobrá','Prijateľná','Mierna','Zlá','Veľmi zlá','Extrémne zlá']:['Good','Fair','Moderate','Poor','Very poor','Extremely poor']);
+ return limits.map((upper,i)=>({upper,color:colors[i],name:names[i],level:i<2?'ok':i<4?'warn':'bad'}));
+}
+function aqiCategory(v){if(v==null||!Number.isFinite(Number(v))||Number(v)<0)return null;return aqiBands().find(b=>Number(v)<=b.upper)}
+function aqiSummaryChip(v){const b=aqiCategory(v);const value=b?`<span style="color:${b.color}" title="${b.name}">${fmt(v)}</span>`:(currentLang==='sk'?'nedostupné':'unavailable');return chip(selectedAqiName(),value)}
+function syncAqiControl(){
+ const sk=currentLang==='sk';
+ const eu=document.getElementById('btnAqiEu'),us=document.getElementById('btnAqiUs');
+ if(!eu||!us)return;
+ eu.textContent=sk?'Európsky AQI':'European AQI';
+ us.textContent=sk?'Americký AQI':'American AQI';
+ const isUs=selectedAqiScale()==='us';
+ eu.classList.toggle('active',!isUs);us.classList.toggle('active',isUs);
+ eu.setAttribute('aria-pressed',String(!isUs));us.setAttribute('aria-pressed',String(isUs));
+}
+function selectedAqiLegend(){
+ const sk=currentLang==='sk',us=selectedAqiScale()==='us';
+ return us?(sk?'Americký index kvality ovzdušia (US AQI)':'American Air Quality Index (US AQI)'):(sk?'Európsky index kvality ovzdušia (EAQI)':'European Air Quality Index (EAQI)');
+}
+function changeAqiScale(value){state.aqi_scale=value==='us'?'us':'eu';syncAqiControl();if(currentData)renderAir(currentData);setSetting('aqi_scale',state.aqi_scale)}
+function airCompositeLevel(a,ni,aqi){const levels=[aqiCategory(aqi)?.level||''];
+ const keys={pm2_5:'pm25',pm10:'pm10',ozone:'o3',nitrogen_dioxide:'no2',sulphur_dioxide:'so2',carbon_monoxide:'co',ammonia:'nh3',dust:'dust',aerosol_optical_depth:'aod'};
+ Object.entries(keys).forEach(([field,key])=>levels.push(bandLevel(arr(a,field)[ni],key)));
+ Object.keys(POLLEN_THRESHOLDS).forEach(key=>levels.push(pollenLevel(arr(a,key+'_pollen')[ni],key)));
+ return levels.includes('bad')?'bad':levels.includes('warn')?'warn':levels.includes('ok')?'ok':'neutral';
+}
+function aqiPlotLayout(x,values){const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);const top=Math.max(selectedAqiScale()==='us'?150:100,...valid)*1.08;
+ const base=layout(x,{yaxis:axis(selectedAqiName(),CLR.eaqi,{range:[0,top],rangemode:'tozero'}),yaxis2:axis(t('axis_pm'),CLR.pm25,{overlaying:'y',side:'right'})});
+ return base;
+}
+function insertAqiHelp(html){const root=document.createElement('div');root.innerHTML=html;const heading=Array.from(root.querySelectorAll('h3')).find(h=>/^2\.\s*(Kvalita ovzdušia|Air quality)/.test(h.textContent.trim()));if(!heading)return html;
+ let next=heading.nextElementSibling;while(next&&next.tagName!=='H3')next=next.nextElementSibling;
+ const sk=currentLang==='sk';const content=document.createElement('div');content.id='aqiScaleHelp';
+ const table=scale=>{const bands=aqiBands(scale);let lower=0;return '<table><tr><th>AQI</th><th>'+(sk?'Kategória':'Category')+'</th></tr>'+bands.map((b,i)=>{const range=i===0?'0–'+b.upper:Number.isFinite(b.upper)?'>'+lower+'–'+b.upper:'>'+lower;lower=b.upper;return `<tr><td>${range}</td><td><span class="swatch" style="background:${b.color}"></span>${b.name}</td></tr>`}).join('')+'</table>'};
+ content.innerHTML=sk?`<h4 style="font-size:13px">2.1. Európsky a americký AQI</h4><p>Prepínač nad grafom vyberá EU AQI alebo US AQI. Voľba sa ukladá a nezávisí od jazyka ani lokality. Mení index, jeho os, pásma a súhrn, nie koncentrácie látok. AQI nie je koncentrácia a škály nie sú priamo zameniteľné.</p><p>Ide o modelovú predpoveď CAMS poskytovanú Open-Meteo, nie meranie miestnej stanice. EU index používa hodinové koncentrácie; US index používa podľa látky aj 8- a 24-hodinové priemery. Indexy preberáme z API, neprepočítavame ich navzájom.</p><h4 style="font-size:13px">EU AQI</h4>${table('eu')}<h4 style="font-size:13px">US AQI</h4>${table('us')}<p>Číslo v súhrne má farbu zvolenej škály; slovná kategória je uvedená v hoveri grafu. Graf nemá farebné pozadie a AQI krivka zostáva žltá. Legenda uvádza celý názov zvoleného indexu. AQI sa nevyhladzuje, aby hover a kategórie vychádzali z dodaných hodnôt. Hodnoty nad 500 US AQI zostávajú v poslednej kategórii. Chýbajúci index sa nenahrádza druhou škálou.</p><h4 style="font-size:13px">2.2. Súhrnná bodka a ostatné hodnoty</h4><p>Bodka berie najzávažnejší stav zo zvoleného AQI, samostatných prahov látok a peľu. Pre príspevok AQI znamenajú prvé dve kategórie zelenú, ďalšie dve oranžovú a posledné dve červenú bodku. Táto trojfarebná bodka nie je šesťfarebná legenda AQI. Chýbajúce hodnoty sa ignorujú; bez vyhodnotiteľných dát je bodka neutrálna. Prahy koncentrácií a peľu sa prepnutím AQI nemenia.</p>`:`<h4 style="font-size:13px">2.1. European and US AQI</h4><p>The selector above the chart chooses EU AQI or US AQI. The choice is saved independently of language and location. It changes the index, its axis, bands and summary, not pollutant concentrations. AQI is not a concentration and the scales are not directly interchangeable.</p><p>This is a CAMS model forecast provided by Open-Meteo, not a local station measurement. EU AQI uses hourly concentrations; US AQI also uses 8- and 24-hour averages depending on the pollutant. Indices are taken from the API, not converted into each other.</p><h4 style="font-size:13px">EU AQI</h4>${table('eu')}<h4 style="font-size:13px">US AQI</h4>${table('us')}<p>The summary value uses the selected scale colour; the category is shown in the chart hover. The chart has no coloured background and the AQI curve remains yellow. The legend displays the full name of the selected index. AQI is not smoothed, so hover values and categories use supplied values. US AQI above 500 remains in the last category. Missing indices are not replaced with the other scale.</p><h4 style="font-size:13px">2.2. Composite dot and other values</h4><p>The dot takes the most severe state across the selected AQI, separate pollutant thresholds and pollen. For the AQI contribution, the first two categories produce green, the next two orange and the last two red. This three-colour dot is not the six-colour AQI legend. Missing values are ignored; without evaluable data the dot is neutral. Concentration and pollen thresholds do not change when switching AQI.</p>`;
+ let node=heading.nextElementSibling;while(node&&node!==next){const after=node.nextElementSibling;node.remove();node=after}
+ if(next)next.before(content);else heading.after(content);return root.innerHTML;
+}
+
+function renderAir(d){syncAqiControl();const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.time)||[];const ni=nowIndex(x);const ea=arr(a,selectedAqiScale()==='us'?'us_aqi':'european_aqi'),p25=arr(a,'pm2_5'),p10=arr(a,'pm10'),o3=arr(a,'ozone'),no2=arr(a,'nitrogen_dioxide'),so2=arr(a,'sulphur_dioxide'),co=arr(a,'carbon_monoxide'),nh3=arr(a,'ammonia'),dust=arr(a,'dust'),aod=arr(a,'aerosol_optical_depth'),alder=arr(a,'alder_pollen'),birch=arr(a,'birch_pollen'),grass=arr(a,'grass_pollen'),mug=arr(a,'mugwort_pollen'),rag=arr(a,'ragweed_pollen'),olive=arr(a,'olive_pollen');const dot=document.getElementById('airDot'),has=ea.length||p25.length||p10.length;dot.className='dot '+airCompositeLevel(a,ni,ea[ni]);
     const pollenRows=[[(STRINGS[currentLang]||STRINGS.en).leg_alder,alder[ni],'alder'],[(STRINGS[currentLang]||STRINGS.en).leg_birch,birch[ni],'birch'],[(STRINGS[currentLang]||STRINGS.en).leg_grass,grass[ni],'grass'],[(STRINGS[currentLang]||STRINGS.en).leg_mugwort,mug[ni],'mugwort'],[(STRINGS[currentLang]||STRINGS.en).leg_ragweed,rag[ni],'ragweed'],[(STRINGS[currentLang]||STRINGS.en).leg_olive,olive[ni],'olive']];
   const pollenChips=pollenRows.filter(([,v])=>v!=null).map(([n,v,k])=>chip(n,fmt(v,1),pollenLevel(v,k))).join('')||'<span class="chip">'+t('chip_pollen_no_data')+'</span>';
   const sum=document.getElementById('airSummary');
-  sum.innerHTML=chip('EAQI',fmt(ea[ni]),aqiLevel(ea[ni]))+chip('PM2.5',fmt(p25[ni],1),bandLevel(p25[ni],'pm25'))+chip('PM10',fmt(p10[ni],1),bandLevel(p10[ni],'pm10'))+chip('O₃',fmt(o3[ni],1),bandLevel(o3[ni],'o3'))+chip('NO₂',fmt(no2[ni],1),bandLevel(no2[ni],'no2'))+chip('SO₂',fmt(so2[ni],1),bandLevel(so2[ni],'so2'))+chip('NH₃',fmt(nh3[ni],1),bandLevel(nh3[ni],'nh3'))+chip('CO',fmt(co[ni],1),bandLevel(co[ni],'co'))+chip((STRINGS[currentLang]||STRINGS.en).leg_dust,fmt(dust[ni],1),bandLevel(dust[ni],'dust'))+chip((STRINGS[currentLang]||STRINGS.en).leg_aod,fmt(aod[ni],2),bandLevel(aod[ni],'aod'))+pollenChips;
+  sum.innerHTML=aqiSummaryChip(ea[ni])+chip('PM2.5',fmt(p25[ni],1),bandLevel(p25[ni],'pm25'))+chip('PM10',fmt(p10[ni],1),bandLevel(p10[ni],'pm10'))+chip('O₃',fmt(o3[ni],1),bandLevel(o3[ni],'o3'))+chip('NO₂',fmt(no2[ni],1),bandLevel(no2[ni],'no2'))+chip('SO₂',fmt(so2[ni],1),bandLevel(so2[ni],'so2'))+chip('NH₃',fmt(nh3[ni],1),bandLevel(nh3[ni],'nh3'))+chip('CO',fmt(co[ni],1),bandLevel(co[ni],'co'))+chip((STRINGS[currentLang]||STRINGS.en).leg_dust,fmt(dust[ni],1),bandLevel(dust[ni],'dust'))+chip((STRINGS[currentLang]||STRINGS.en).leg_aod,fmt(aod[ni],2),bandLevel(aod[ni],'aod'))+pollenChips;
     const mk=(y,n,c,dash='',y2=false,unit='µg/m³',dec=1)=>({
-    x,y,name:n,type:'scatter',mode:'lines',
+    x:z.x,y,name:n,type:'scatter',mode:'lines',
     line:{color:c,width:2,dash},
     yaxis:y2?'y2':'y',
     customdata:y.map(v=>fmt(v,dec)),
     hovertemplate:'%{fullData.name}: %{customdata}'+(unit?' '+unit:'')+'<extra></extra>'
   });
   let z=proc(x,[ea,p25,p10]);
+  z.ss[0]=thin(x,[ea]).ss[0];
   Plotly.newPlot('aqi',[
-    mk(z.ss[0],t('leg_eaqi'),CLR.eaqi,'',false,'',0),
+    {...mk(z.ss[0],selectedAqiLegend(),CLR.eaqi,'',false,'',1),connectgaps:false,customdata:z.ss[0].map(v=>[fmt(v,1),aqiCategory(v)?.name||(currentLang==='sk'?'nedostupné':'unavailable')]),hovertemplate:'%{fullData.name}: %{customdata[0]} · %{customdata[1]}<extra></extra>'},
     mk(z.ss[1],t('leg_pm25'),CLR.pm25,'',true),
     mk(z.ss[2],t('leg_pm10'),CLR.pm10,'',true)
-  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_aqi,CLR.eaqi),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_pm,CLR.pm25,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  ],aqiPlotLayout(x,ea),{responsive:true,displayModeBar:false});
   z=proc(x,[o3,no2,so2,nh3,co]);
   Plotly.newPlot('gases',[
     mk(z.ss[0],t('leg_o3'),CLR.o3),

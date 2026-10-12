@@ -58,6 +58,7 @@ class Settings:
     auto: bool = True
     lang: str = "sk"
     marine_enabled: bool = False
+    aqi_scale: str = "eu"
 
 def load() -> Settings:
     _migrate_legacy_config()
