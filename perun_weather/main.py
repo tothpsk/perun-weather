@@ -21,7 +21,7 @@ from .normalize import prepare
 
 ASSETS = Path(__file__).parent / "data"
 EUROPE_BOUNDS = {"min_lat": 34.0, "max_lat": 72.5, "min_lon": -25.5, "max_lon": 45.5}
-EUROPE_ONLY_MODELS = {"icon_d2", "icon_eu"}
+EUROPE_ONLY_MODELS = {"icon_d2", "icon_eu", "arpege_europe", "knmi_arome_europe", "chmi_aladin_ce_2km", "chmi_aladin_cz_1km"}
 
 _COORD_PATTERN = re.compile(
     r"^\s*"
@@ -149,7 +149,7 @@ class App(Adw.Application):
             save(self.settings)
             self.call_js(
                 "showToast(" + json.dumps(
-                    f"{unavailable.replace('_', ' ').upper()} is Europe-only. Switched to Best match."
+                    api.msg(self.settings.lang, "europe_only", model=api.MODEL_LABELS.get(unavailable, unavailable))
                 ) + ")"
             )
             return True
@@ -340,7 +340,7 @@ class App(Adw.Application):
             temperatures = hourly.get("temperature_2m") or []
 
             if not any(value is not None for value in temperatures):
-                raise RuntimeError(
+                raise api.NoModelData(
                     f"{model.replace('_', ' ').upper()} returned no hourly "
                     f"temperature data for {location.name}. Choose another weather model."
                 )
@@ -387,9 +387,46 @@ class App(Adw.Application):
             save_cache(location, payload)
             GLib.idle_add(self._finish_refresh, payload, None, generation)
 
+        except api.NoModelData:
+            if model != "best_match":
+                GLib.idle_add(self._fallback_to_best_match, model, location, generation)
+            else:
+                cached = load_cache(location)
+                GLib.idle_add(
+                    self._finish_refresh,
+                    cached,
+                    api.msg(self.settings.lang, "no_data_final", place=location.name),
+                    generation,
+                )
+        except api.ApiRequestError as exc:
+            print(f"Weather request failed: {exc}")
+            cached = load_cache(location)
+            GLib.idle_add(
+                self._finish_refresh,
+                cached,
+                api.msg(self.settings.lang, "request_failed"),
+                generation,
+            )
         except Exception as exc:
             cached = load_cache(location)
             GLib.idle_add(self._finish_refresh, cached, str(exc), generation)
+
+    def _fallback_to_best_match(self, unavailable, location, generation):
+        if generation != self.refresh_generation:
+            return False
+        if self.settings.model == unavailable:
+            self.settings.model = "best_match"
+            save(self.settings)
+            self.push_locations()
+            message = api.msg(
+                self.settings.lang,
+                "no_data",
+                model=api.MODEL_LABELS.get(unavailable, unavailable),
+                place=location.name,
+            )
+            self.call_js("showToast(" + json.dumps(message, ensure_ascii=False) + ")")
+            self.refresh()
+        return False
 
     def _finish_refresh(self, payload, error, generation):
         # Ignore late results from a location/model the user has already changed.

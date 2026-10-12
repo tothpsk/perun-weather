@@ -25,7 +25,7 @@ EUROPE_BOUNDS = {
     "min_lon": -25.5,
     "max_lon": 45.5,
 }
-EUROPE_ONLY_MODELS = {"icon_d2", "icon_eu"}
+EUROPE_ONLY_MODELS = {"icon_d2", "icon_eu", "arpege_europe", "knmi_arome_europe", "chmi_aladin_ce_2km", "chmi_aladin_cz_1km"}
 
 COORD_PATTERN = re.compile(
     r"^\s*"
@@ -116,6 +116,7 @@ class App(QObject):
 
     search_results_ready = Signal(str)
     refresh_finished = Signal(object, object, int)
+    model_fallback = Signal(str, str, int)
 
     def __init__(self):
         super().__init__()
@@ -147,6 +148,7 @@ class App(QObject):
         self.web.loadFinished.connect(self.on_loaded)
         self.search_results_ready.connect(self._render_search_results)
         self.refresh_finished.connect(self._finish_refresh)
+        self.model_fallback.connect(self._fallback_to_best_match)
 
     def start(self):
         self.window.show()
@@ -186,9 +188,10 @@ class App(QObject):
             self.settings.model = "best_match"
             save(self.settings)
 
-            message = (
-                f"{unavailable.replace('_', ' ').upper()} is Europe-only. "
-                "Switched to Best match."
+            message = api.msg(
+                self.settings.lang,
+                "europe_only",
+                model=api.MODEL_LABELS.get(unavailable, unavailable),
             )
             self.call_js("showToast(" + json.dumps(message) + ")")
             return True
@@ -443,7 +446,7 @@ class App(QObject):
             temperatures = hourly.get("temperature_2m") or []
 
             if not any(value is not None for value in temperatures):
-                raise RuntimeError(
+                raise api.NoModelData(
                     f"{model.replace('_', ' ').upper()} returned no hourly "
                     f"temperature data for {location.name}. "
                     "Choose another weather model."
@@ -499,9 +502,43 @@ class App(QObject):
             save_cache(location, payload)
             self.refresh_finished.emit(payload, None, generation)
 
+        except api.NoModelData:
+            if model != "best_match":
+                self.model_fallback.emit(model, location.name, generation)
+            else:
+                cached = load_cache(location)
+                self.refresh_finished.emit(
+                    cached,
+                    api.msg(self.settings.lang, "no_data_final", place=location.name),
+                    generation,
+                )
+        except api.ApiRequestError as exc:
+            print(f"Weather request failed: {exc}")
+            cached = load_cache(location)
+            self.refresh_finished.emit(
+                cached,
+                api.msg(self.settings.lang, "request_failed"),
+                generation,
+            )
         except Exception as exc:
             cached = load_cache(location)
             self.refresh_finished.emit(cached, str(exc), generation)
+
+    def _fallback_to_best_match(self, unavailable, place, generation):
+        if generation != self.refresh_generation:
+            return
+        if self.settings.model == unavailable:
+            self.settings.model = "best_match"
+            save(self.settings)
+            self.push_locations()
+            message = api.msg(
+                self.settings.lang,
+                "no_data",
+                model=api.MODEL_LABELS.get(unavailable, unavailable),
+                place=place,
+            )
+            self.call_js("showToast(" + json.dumps(message, ensure_ascii=False) + ")")
+            self.refresh()
 
     def _finish_refresh(self, payload, error, generation):
         if generation != self.refresh_generation:

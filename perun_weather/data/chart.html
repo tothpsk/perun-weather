@@ -141,7 +141,7 @@ footer a:hover{text-decoration:underline}
 <body>
 <div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.0.1</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
-<main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option></select>
+<main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
   <input
     id="marineToggle"
@@ -224,7 +224,7 @@ footer a:hover{text-decoration:underline}
 <script>
 const CLR={temp:'#ff6b6b',uv:'#ffd166',rain:'#4fc3f7',cloud:'#aeb4c0',wind:'#4caf50',gust:'#1b5e20',pressure:'#ba68c8',eaqi:'#fdd835',pm25:'#ff7043',pm10:'#8d6e63',o3:'#ab47bc',no2:'#ef5350',so2:'#42a5f5',co:'#ffb74d',nh3:'#66bb6a',dust:'#b0bec5',aod:'#ce93d8'};
 const POLLEN={alder:'#8d6e63',birch:'#d4e157',grass:'#66bb6a',mugwort:'#ffb74d',ragweed:'#ef5350',olive:'#9ccc65'};
-const MODELS={best_match:'Best match (auto-blend)',icon_d2:'ICON D2 (DWD, 2 km, Europe)',icon_eu:'ICON EU (DWD, 7 km, Europe)',ecmwf_ifs:'ECMWF IFS (9 km, global)',ecmwf_ifs_hres:'ECMWF IFS HRES (9 km, global)',ecmwf_aifs:'ECMWF AIFS (AI model, global)',gfs:'GFS (NOAA, global)',harmonie:'DMI Seamless (HARMONIE → ECMWF, Europe)'};
+const MODELS={best_match:'Best match (auto-blend)',icon_d2:'ICON D2 (DWD, 2 km, Europe)',icon_eu:'ICON EU (DWD, 7 km, Europe)',ecmwf_ifs:'ECMWF IFS (9 km, global)',ecmwf_ifs_hres:'ECMWF IFS HRES (9 km, global)',ecmwf_aifs:'ECMWF AIFS (AI model, global)',gfs:'GFS (NOAA, global)',harmonie:'DMI Seamless (HARMONIE → ECMWF, Europe)',cma_grapes:'CMA GRAPES (global)',aigfs:'NCEP AIGFS (AI model, global)',jma_gsm:'JMA GSM (global)',icon_seamless:'ICON Seamless (DWD, Global + EU + D2)',icon_global:'ICON Global (DWD, global)',gem_global:'GEM Global (Canada, global)',arpege_world:'ARPEGE World (Météo-France, global)',ukmo_global:'UK Met Office Global (10 km, global)',arpege_europe:'ARPEGE Europe (Météo-France, Europe)',knmi_arome_europe:'HARMONIE AROME Europe (KNMI, Europe)',chmi_aladin_seamless:'CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)',chmi_aladin_ce_2km:'CHMI ALADIN Central Europe (2 km)',chmi_aladin_cz_1km:'CHMI ALADIN CZ (1 km, Czechia)'};
 const UNITS={metric:{temp:'°C',wind:'km/h',precip:'mm',pressure:'hPa'},metric_mmhg:{temp:'°C',wind:'km/h',precip:'mm',pressure:'mmHg'},imperial:{temp:'°F',wind:'mph',precip:'in',pressure:'inHg'},ms:{temp:'°C',wind:'m/s',precip:'mm',pressure:'hPa'},knots:{temp:'°C',wind:'kn',precip:'mm',pressure:'hPa'}};
 const POLLUTANT_THRESHOLDS={pm25:{warn:25,bad:50},pm10:{warn:50,bad:100},o3:{warn:120,bad:180},no2:{warn:100,bad:200},so2:{warn:150,bad:350},co:{warn:4000,bad:10000},nh3:{warn:200,bad:1000},dust:{warn:50,bad:150},aod:{warn:0.3,bad:0.6}};
 const POLLEN_THRESHOLDS={alder:{warn:50,bad:200},birch:{warn:50,bad:400},grass:{warn:20,bad:50},mugwort:{warn:20,bad:50},ragweed:{warn:10,bad:50},olive:{warn:50,bad:200}};
@@ -300,6 +300,9 @@ moon_trend_names: {
     no_active_alerts_full: "No active weather alerts",
     alert_count: (n) => n + " alert" + (n > 1 ? "s" : ""),
     europe_only_suffix: " — Europe only",
+    model_group_global: "Global",
+    model_group_europe: "Europe",
+    model_best_match: "Best match (auto-blend)",
 
     footer_weather: "Weather:",
     footer_air: "Air quality:",
@@ -394,7 +397,7 @@ help_html: `
   <p>Perun Weather is a native Linux (GTK4 / Libadwaita) desktop application that shows a detailed weather forecast, air quality, pollen load, sun/moon position, optional marine data and official weather warnings for any number of saved locations. Data comes from <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (forecast, air quality, marine data), <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (official warnings for Europe) and the <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (official CAP warnings from authorities worldwide). Charts are rendered with Plotly.js, running in an embedded WebKit browser inside the app's own window. The interface is available in both Slovak and English, switchable directly in the app.</p>
   <div class="grid3">
     <div class="card"><h3 style="margin-top:0">🖥️ Native GTK shell</h3><p style="margin:0">Adw.ApplicationWindow with a headerbar, fully integrated into the GNOME/Fedora desktop.</p></div>
-    <div class="card"><h3 style="margin-top:0">🌦️ Multiple models</h3><p style="margin:0">Best match, ICON D2/EU, ECMWF (IFS HRES/IFS/AIFS), GFS, DMI Seamless — switchable from the toolbar.</p></div>
+    <div class="card"><h3 style="margin-top:0">🌦️ Multiple models</h3><p style="margin:0">Best match plus global and European models (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN and more) — switchable from the toolbar.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Real warnings</h3><p style="margin:0">Official MeteoAlarm warnings for Europe, official CAP warnings worldwide via the FOSS Public Alert Server, plus a local threshold-based estimate.</p></div>
   </div>
 </section>
@@ -413,13 +416,37 @@ help_html: `
   <h3>Forecast settings panel</h3>
   <table>
     <tr><th>Setting</th><th>Options</th><th>Note</th></tr>
-    <tr><td>Weather model</td><td>Best match, ICON D2, ICON EU, ECMWF IFS HRES/IFS/AIFS, GFS, DMI Seamless</td><td>ICON D2/EU only available for locations in Europe</td></tr>
+    <tr><td>Weather model</td><td>Best match, global models and European models (grouped in the list)</td><td>European models are only available for locations in Europe. If a model has no data for a location, the app switches to Best match.</td></tr>
     <tr><td>Marine data</td><td>On / Off (checkbox under the model selector)</td><td>Marine data is downloaded only when switched on, so it does not slow down other values or locations</td></tr>
     <tr><td>Time interval</td><td>1 / 3 / 6 hours</td><td>Controls chart point density</td></tr>
     <tr><td>Forecast range</td><td>3 / 5 / 7 / 16 days</td><td>Air quality capped at 7 days regardless of this setting</td></tr>
     <tr><td>Units</td><td>Metric, Metric (mmHg), Imperial, m/s, Knots</td><td>Recalculates temperature, wind, precipitation and pressure</td></tr>
     <tr><td>Line smoothing</td><td>None, Light, Medium, Strong</td><td>Moving average for smoother curves</td></tr>
   </table>
+
+  <h3>Weather models</h3>
+  <div class="card">
+    <p><b>Global and European models.</b> Global models work for any location. European models (ICON EU and D2, ARPEGE Europe, HARMONIE AROME Europe, ALADIN) are available only for locations in Europe. If a model has no data for the selected location, Perun Weather switches to Best match automatically and shows a notice.</p>
+    <p><b>Seamless.</b> A Seamless model joins several models of one provider into one continuous forecast. For example, CHMI ALADIN Seamless uses the 1 km model for Czechia where available and the 2 km model for Central Europe elsewhere, and after about 3 days continues with ECMWF IFS HRES, so it reaches about 15 days. DMI Seamless works the same way, starting with HARMONIE and continuing with ECMWF. ICON Seamless combines ICON D2 and ICON EU, where they cover the location, with ICON Global. Choose Seamless for one continuous forecast over the whole range. Choose a model without Seamless (for example ALADIN Central Europe 2 km) to see the pure output of a single model.</p>
+    <p><b>Shorter forecasts.</b> A model whose forecast is shorter than the selected range ends where its forecast ends, and the remaining days stay empty. Perun Weather never fills these gaps with invented values.</p>
+  </div>
+  <table>
+    <tr><th>Approximate forecast length</th><th>Models</th></tr>
+    <tr><td>16 days</td><td>NCEP AIGFS, NCEP GFS</td></tr>
+    <tr><td>about 15 days</td><td>ECMWF IFS HRES, ECMWF IFS 0.25°, ECMWF AIFS, DMI Seamless, CHMI ALADIN Seamless</td></tr>
+    <tr><td>about 10 days</td><td>JMA GSM, GEM Global</td></tr>
+    <tr><td>about 7.5 days</td><td>ICON Seamless, ICON Global</td></tr>
+    <tr><td>about 6 days</td><td>UK Met Office Global</td></tr>
+    <tr><td>about 5 days</td><td>ICON EU</td></tr>
+    <tr><td>about 4.5 days</td><td>CMA GRAPES</td></tr>
+    <tr><td>about 4 days</td><td>ARPEGE World, ARPEGE Europe</td></tr>
+    <tr><td>about 3 days</td><td>CHMI ALADIN Central Europe 2 km, CHMI ALADIN CZ 1 km</td></tr>
+    <tr><td>about 2.5 days</td><td>HARMONIE AROME Europe (KNMI)</td></tr>
+    <tr><td>about 2 days</td><td>ICON D2</td></tr>
+  </table>
+  <p>Lengths are approximate (measured in October 2026), depend on the model run and may change.</p>
+  <p>ICON Global and ICON EU provide hourly data for the first 78 hours and 3-hourly data afterwards. Open-Meteo interpolates the later values to hourly steps.</p>
+
 
   <h3>Auto-refresh</h3>
   <p>The <code>Auto-refresh ON/OFF</code> button. When enabled, the app refreshes data automatically every 6 hours and shows the next scheduled refresh time in the status bar. Time-dependent chart elements (e.g. the current-time marker, sun/moon position) also keep advancing continuously in the background, independent of any data refresh — including catching up correctly after the app window has been in the background for a while. All times are shown in the local time of the selected location.</p>
@@ -831,6 +858,9 @@ moon_trend_names: {
     no_active_alerts_full: "Žiadne aktívne výstrahy počasia",
     alert_count: (n) => n + " " + (n===1?"výstraha":(n>=2&&n<=4?"výstrahy":"výstrah")),
     europe_only_suffix: " — len Európa",
+    model_group_global: "Globálne",
+    model_group_europe: "Európa",
+    model_best_match: "Best match (automatický výber)",
 
     footer_weather: "Počasie:",
     footer_air: "Kvalita ovzdušia:",
@@ -925,7 +955,7 @@ help_html: `
   <p>Perun Weather je natívna Linuxová (GTK4 / Libadwaita) desktopová aplikácia, ktorá zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľové zaťaženie, polohu Slnka a Mesiaca, voliteľné morské údaje a oficiálne meteorologické výstrahy pre ľubovoľný počet uložených lokalít. Dáta pochádzajú z <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (predpoveď, kvalita ovzdušia, morské údaje), z <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (oficiálne výstrahy pre Európu) a z <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (oficiálne CAP výstrahy od úradov z celého sveta). Vykresľovanie grafov zabezpečuje knižnica Plotly.js, bežiaca vo vstavanom WebKit prehliadači priamo v okne appky. Rozhranie je dostupné v slovenčine aj angličtine, prepínateľné priamo v aplikácii.</p>
   <div class="grid3">
     <div class="card"><h3 style="margin-top:0">🖥️ Natívny GTK shell</h3><p style="margin:0">Adw.ApplicationWindow s headerbarom, plne integrovaný do GNOME/Fedora desktop prostredia.</p></div>
-    <div class="card"><h3 style="margin-top:0">🌦️ Viacero modelov</h3><p style="margin:0">Best match, ICON D2/EU, ECMWF (IFS HRES/IFS/AIFS), GFS, DMI Seamless — prepínateľné priamo v paneli nástrojov.</p></div>
+    <div class="card"><h3 style="margin-top:0">🌦️ Viacero modelov</h3><p style="margin:0">Best match a globálne aj európske modely (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN a ďalšie) — prepínateľné priamo v paneli nástrojov.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Reálne výstrahy</h3><p style="margin:0">Oficiálne výstrahy MeteoAlarm pre Európu, oficiálne CAP výstrahy z celého sveta cez FOSS Public Alert Server a k tomu lokálny odhad podľa prahových hodnôt.</p></div>
   </div>
 </section>
@@ -944,13 +974,37 @@ help_html: `
   <h3>Panel nastavení predpovede</h3>
   <table>
     <tr><th>Nastavenie</th><th>Možnosti</th><th>Poznámka</th></tr>
-    <tr><td>Model predpovede</td><td>Best match, ICON D2, ICON EU, ECMWF IFS HRES/IFS/AIFS, GFS, DMI Seamless</td><td>ICON D2/EU dostupné len pre lokality v Európe</td></tr>
+    <tr><td>Model predpovede</td><td>Best match, globálne modely a európske modely (zoskupené v zozname)</td><td>Európske modely sú dostupné len pre lokality v Európe. Ak model nemá pre lokalitu dáta, appka prepne na Best match.</td></tr>
     <tr><td>Morské údaje</td><td>Zap. / Vyp. (zaškrtávacie pole pod výberom modelu)</td><td>Morské údaje sa sťahujú, len keď sú zapnuté, takže nespomaľujú ostatné hodnoty ani lokality</td></tr>
     <tr><td>Časový interval</td><td>1 / 3 / 6 hodín</td><td>Určuje hustotu bodov v grafoch</td></tr>
     <tr><td>Rozsah predpovede</td><td>3 / 5 / 7 / 16 dní</td><td>Kvalita ovzdušia je obmedzená na max. 7 dní bez ohľadu na výber</td></tr>
     <tr><td>Jednotky</td><td>Metric, Metric (mmHg), Imperial, m/s, Knots</td><td>Prepočítava teplotu, vietor, zrážky aj tlak</td></tr>
     <tr><td>Vyhladenie čiary</td><td>Žiadne, Jemné, Stredné, Silné</td><td>Kĺzavý priemer pre plynulejšie krivky</td></tr>
   </table>
+
+  <h3>Modely predpovede</h3>
+  <div class="card">
+    <p><b>Globálne a európske modely.</b> Globálne modely fungujú pre ľubovoľnú lokalitu. Európske modely (ICON EU a D2, ARPEGE Europe, HARMONIE AROME Europe, ALADIN) sú dostupné len pre lokality v Európe. Ak model nemá pre vybranú lokalitu dáta, Perun Weather automaticky prepne na Best match a zobrazí oznam.</p>
+    <p><b>Seamless.</b> Model Seamless spája viaceré modely jedného poskytovateľa do jednej súvislej predpovede. Napríklad CHMI ALADIN Seamless použije 1 km model pre Česko, kde je dostupný, inak 2 km model pre strednú Európu, a po približne 3 dňoch pokračuje modelom ECMWF IFS HRES, takže dosiahne približne 15 dní. DMI Seamless funguje rovnako: začína modelom HARMONIE a pokračuje modelom ECMWF. ICON Seamless spája ICON D2 a ICON EU, kde pokrývajú lokalitu, s modelom ICON Global. Seamless vyber, ak chceš jednu súvislú predpoveď na celý rozsah. Model bez Seamless (napríklad ALADIN Central Europe 2 km) vyber, ak chceš vidieť čistý výstup jedného modelu.</p>
+    <p><b>Kratšie predpovede.</b> Model, ktorého predpoveď je kratšia než zvolený rozsah, sa v grafe skončí tam, kde končí jeho predpoveď, a ostatné dni zostanú prázdne. Perun Weather tieto medzery nikdy nedopĺňa vymyslenými hodnotami.</p>
+  </div>
+  <table>
+    <tr><th>Približná dĺžka predpovede</th><th>Modely</th></tr>
+    <tr><td>16 dní</td><td>NCEP AIGFS, NCEP GFS</td></tr>
+    <tr><td>približne 15 dní</td><td>ECMWF IFS HRES, ECMWF IFS 0.25°, ECMWF AIFS, DMI Seamless, CHMI ALADIN Seamless</td></tr>
+    <tr><td>približne 10 dní</td><td>JMA GSM, GEM Global</td></tr>
+    <tr><td>približne 7,5 dňa</td><td>ICON Seamless, ICON Global</td></tr>
+    <tr><td>približne 6 dní</td><td>UK Met Office Global</td></tr>
+    <tr><td>približne 5 dní</td><td>ICON EU</td></tr>
+    <tr><td>približne 4,5 dňa</td><td>CMA GRAPES</td></tr>
+    <tr><td>približne 4 dni</td><td>ARPEGE World, ARPEGE Europe</td></tr>
+    <tr><td>približne 3 dni</td><td>CHMI ALADIN Central Europe 2 km, CHMI ALADIN CZ 1 km</td></tr>
+    <tr><td>približne 2,5 dňa</td><td>HARMONIE AROME Europe (KNMI)</td></tr>
+    <tr><td>približne 2 dni</td><td>ICON D2</td></tr>
+  </table>
+  <p>Dĺžky sú približné (zmerané v októbri 2026), závisia od behu modelu a môžu sa zmeniť.</p>
+  <p>ICON Global a ICON EU poskytujú hodinové dáta na prvých 78 hodín a potom trojhodinové. Neskoršie hodnoty Open-Meteo interpoluje na hodinové kroky.</p>
+
 
   <h3>Automatické obnovovanie</h3>
   <p>Tlačidlo <code>Auto-obnova ZAP/VYP</code>. Pri zapnutí appka automaticky obnoví dáta každých 6 hodín a zobrazí čas ďalšieho plánovaného obnovenia v stavovom riadku. Časovo závislé prvky grafov (napr. zvislá čiara aktuálneho času, poloha Slnka a Mesiaca) sa navyše priebežne posúvajú aj bez manuálneho ani automatického obnovenia dát — appka ich prepočítava na pozadí, vrátane momentu, keď sa okno appky vráti z pozadia po dlhšom čase. Všetky časy sa zobrazujú v miestnom čase vybranej lokality.</p>
@@ -2055,10 +2109,11 @@ function renderHelp(){
   }
 }
 
-function setModelOptions(){const sel=document.getElementById('modelSelect');['icon_d2','icon_eu'].forEach(v=>{const o=sel.querySelector('option[value="'+v+'"]');if(o){o.disabled=!state.icon_models_available;o.textContent=MODELS[v]+(state.icon_models_available?'':' — Europe only')}})}
+function setModelOptions(){const sel=document.getElementById('modelSelect');['icon_d2','icon_eu','arpege_europe','knmi_arome_europe','chmi_aladin_ce_2km','chmi_aladin_cz_1km'].forEach(v=>{const o=sel.querySelector('option[value="'+v+'"]');if(o){o.disabled=!state.icon_models_available;o.textContent=MODELS[v]+(state.icon_models_available?'':t('europe_only_suffix'))}})}
 function applyTranslations(){
   const byId = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
   byId('lblModel', t('label_model'));
+  { const gg = document.getElementById('optGroupGlobal'), ge = document.getElementById('optGroupEurope'); if (gg) gg.label = t('model_group_global'); if (ge) ge.label = t('model_group_europe'); const bm = document.querySelector('#modelSelect option[value="best_match"]'); if (bm) bm.textContent = t('model_best_match'); }
   byId('lblMarineToggle', t('marine_toggle'));
   byId('lblSectionMarine', t('section_marine'));
   byId('marineMessage', t('marine_not_connected'));
@@ -2648,7 +2703,7 @@ Plotly.newPlot('wind',[
   yaxis2:axis(u.pressure,CLR.pressure,{overlaying:'y',side:'right',range:[pmin-pad,pmax+pad],tickmode:'array',tickvals:pTicks.tickvals,ticktext:pTicks.ticktext,automargin:true}),
 
 }),{responsive:true,displayModeBar:false});
-  if(wd.length===x.length){const arrows=x.map((q,i)=>{const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((_,i)=>i%3===0);Plotly.relayout('wind',{annotations:[...labels(x),...arrows]})}}
+  if(wd.length===x.length){const arrows=x.map((q,i)=>{if(wd[i]==null||!Number.isFinite(Number(wd[i])))return null;const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((a,i)=>a&&i%3===0);Plotly.relayout('wind',{annotations:[...labels(x),...arrows]})}}
 function tempDotColor(t){
   if(t==null || !Number.isFinite(t)) return '#5b6577';
   if(state.units === 'imperial') t = (t - 32) * 5 / 9;

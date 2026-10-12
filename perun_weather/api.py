@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -28,6 +29,19 @@ GENERIC_MODEL_MAP = {
     "icon_eu": "icon_eu",
     "gfs": "gfs_seamless",
     "harmonie": "dmi_seamless",
+    "cma_grapes": "cma_grapes_global",
+    "aigfs": "ncep_aigfs025",
+    "jma_gsm": "jma_gsm",
+    "icon_global": "dwd_icon_global",
+    "gem_global": "cmc_gem_gdps",
+    "arpege_world": "meteofrance_arpege_world",
+    "ukmo_global": "ukmo_global_deterministic_10km",
+    "arpege_europe": "meteofrance_arpege_europe",
+    "knmi_arome_europe": "knmi_harmonie_arome_europe",
+    "chmi_aladin_seamless": "chmi_aladin_seamless",
+    "chmi_aladin_ce_2km": "chmi_aladin_central_europe_2km",
+    "chmi_aladin_cz_1km": "chmi_aladin_cz_1km",
+    "icon_seamless": "dwd_icon_seamless",
 }
 
 # Models that must be routed through the dedicated /v1/ecmwf endpoint
@@ -51,10 +65,56 @@ MODEL_LABELS = {
     "ecmwf_aifs": "ECMWF AIFS (AI model, global, 6h native)",
     "gfs": "GFS (NOAA, global)",
     "harmonie": "DMI Seamless (HARMONIE → ECMWF, Europe)",
+    "cma_grapes": "CMA GRAPES (global)",
+    "aigfs": "NCEP AIGFS (AI model, global)",
+    "jma_gsm": "JMA GSM (global)",
+    "icon_global": "ICON Global (DWD, global)",
+    "gem_global": "GEM Global (Canada, global)",
+    "arpege_world": "ARPEGE World (Météo-France, global)",
+    "ukmo_global": "UK Met Office Global (10 km, global)",
+    "arpege_europe": "ARPEGE Europe (Météo-France, Europe)",
+    "knmi_arome_europe": "HARMONIE AROME Europe (KNMI, Europe)",
+    "chmi_aladin_seamless": "CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)",
+    "chmi_aladin_ce_2km": "CHMI ALADIN Central Europe (2 km)",
+    "chmi_aladin_cz_1km": "CHMI ALADIN CZ (1 km, Czechia)",
+    "icon_seamless": "ICON Seamless (DWD, Global + EU + D2)",
 }
 
 # UV index is not available at all via the dedicated ECMWF endpoint.
 ECMWF_MODELS = set(ECMWF_MODEL_MAP.keys())
+
+
+class NoModelData(RuntimeError):
+    """Raised when a weather model returns no usable data for a location."""
+
+
+class ApiRequestError(RuntimeError):
+    """HTTP or network failure while calling an API."""
+
+    def __init__(self, message: str, status: int | None = None):
+        super().__init__(message)
+        self.status = status
+
+
+MESSAGES = {
+    "en": {
+        "europe_only": "{model} is only available in Europe. Switched to Best match.",
+        "no_data": "{model} has no data for {place}. Switched to Best match.",
+        "no_data_final": "No forecast data is available for {place}.",
+        "request_failed": "Could not load data from Open-Meteo. Check your connection and try again.",
+    },
+    "sk": {
+        "europe_only": "Model {model} je dostupný len v Európe. Prepnuté na Best match.",
+        "no_data": "Model {model} nemá dáta pre lokalitu {place}. Prepnuté na Best match.",
+        "no_data_final": "Pre lokalitu {place} nie sú dostupné dáta predpovede.",
+        "request_failed": "Nepodarilo sa načítať dáta z Open-Meteo. Skontroluj pripojenie a skús to znova.",
+    },
+}
+
+
+def msg(lang: str, key: str, **values) -> str:
+    table = MESSAGES.get(lang) or MESSAGES["en"]
+    return table[key].format(**values)
 
 
 def request(url: str, parameters: dict) -> dict:
@@ -62,8 +122,10 @@ def request(url: str, parameters: dict) -> dict:
     try:
         with urlopen(req, timeout=30) as response:
             return json.loads(response.read().decode("utf-8"))
+    except HTTPError as e:
+        raise ApiRequestError(f"API request failed: {e}", e.code)
     except Exception as e:
-        raise RuntimeError(f"API request failed: {e}")
+        raise ApiRequestError(f"API request failed: {e}")
 
 
 def geocode(query: str) -> list[dict]:
@@ -169,6 +231,12 @@ def fetch_weather(location, units: str, hours: int, model: str = "best_match") -
     model_value = GENERIC_MODEL_MAP.get(model)
     if model_value:
         params["models"] = model_value
+        try:
+            return request(FORECAST, params)
+        except ApiRequestError as exc:
+            if exc.status is not None and 400 <= exc.status < 500 and exc.status != 429:
+                raise NoModelData(str(exc)) from exc
+            raise
     return request(FORECAST, params)
 
 def fetch_gfs_uv(location, hours: int) -> dict:
