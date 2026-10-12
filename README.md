@@ -138,7 +138,7 @@ Planned ideas, in no particular order:
 - A gardening and agriculture panel (soil moisture and drought information
   for hobby growers and professional farmers)
 - Themes
-- *.deb version
+- ~~.deb version~~ (done in 4.0.1)
 - A web version and a mobile app
 
 ## Feedback
