@@ -2686,7 +2686,8 @@ function manualTicks(minVal,maxVal,decimals=0){
   for(let v=start;v<=maxVal;v+=step) vals.push(Math.round(v/step)*step);
   return {tickvals:vals,ticktext:vals.map(v=>fmt(v,decimals))};
 }
-function toggleSection(n){const b=document.getElementById(n+'Body'),c=document.getElementById(n+'Chevron');b.classList.toggle('open');c.classList.toggle('open');if(b.classList.contains('open'))setTimeout(()=>{if(n==='air')['aqi','gases','aerosol','pollen'].forEach(id=>Plotly.Plots.resize(id));if(n==='weather')['temperature','precipitation','wind'].forEach(id=>Plotly.Plots.resize(id));if(n=='sunmoon')['sunmoonAltitude','sunmoonGantt'].forEach(id=>Plotly.Plots.resize(id));if (n === "marine") {
+function closeOtherSections(n){['alerts','air','weather','sunmoon','marine','help'].forEach(o=>{if(o===n)return;const b=document.getElementById(o+'Body'),c=document.getElementById(o+'Chevron');if(b)b.classList.remove('open');if(c)c.classList.remove('open')})}
+function toggleSection(n){closeOtherSections(n);const b=document.getElementById(n+'Body'),c=document.getElementById(n+'Chevron');b.classList.toggle('open');c.classList.toggle('open');if(b.classList.contains('open'))setTimeout(()=>{if(n==='air')['aqi','gases','aerosol','pollen'].forEach(id=>Plotly.Plots.resize(id));if(n==='weather')['temperature','precipitation','wind'].forEach(id=>Plotly.Plots.resize(id));if(n=='sunmoon')['sunmoonAltitude','sunmoonGantt'].forEach(id=>Plotly.Plots.resize(id));if (n === "marine") {
   ["seaTemperature", "seaLevel", "marineWaves"].forEach((id) => {
     const chart = document.getElementById(id);
     if (chart && chart.data && chart.offsetWidth > 0) {
