@@ -2992,6 +2992,37 @@ function weatherSummaryTint(html, color) {
 }
 // END WEATHER SUMMARY COLORS
 
+
+// WIND AND PRESSURE AXES SHARE GRID
+function niceAxisStep(raw, multipliers) {
+  if (!Number.isFinite(raw) || raw <= 0) return multipliers[0];
+  const exponent = Math.floor(Math.log10(raw));
+  for (let e = exponent - 1; e <= exponent + 2; e++) {
+    const base = Math.pow(10, e);
+    for (const m of multipliers) {
+      const step = m * base;
+      if (step >= raw * (1 - 1e-9)) return step;
+    }
+  }
+  return raw;
+}
+function alignedAxisLow(min, max, step) {
+  const precision = Math.max(0, Math.ceil(-Math.log10(step)) + 2);
+  const clean = v => Number(v.toFixed(precision));
+  const first = Math.floor(min / step) * step;
+  const center = (min + max) / 2;
+  let best = null;
+  for (let k = 0; k <= 4; k++) {
+    const low = first - k * step;
+    const high = low + 4 * step;
+    if (low <= min + 1e-9 && high >= max - 1e-9) {
+      const distance = Math.abs(center - (low + 2 * step));
+      if (!best || distance < best.distance) best = {low, distance};
+    }
+  }
+  return clean(best ? best.low : first);
+}
+
 function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=arr(h,'temperature_2m'),feel=arr(h,'apparent_temperature'),uv=arr(h,'uv_index'),cloud=arr(h,'cloud_cover'),rain=arr(h,'rain'),show=arr(h,'showers'),snow=arr(h,'snowfall'),prec=arr(h,'precipitation'),wind=arr(h,'wind_speed_10m'),gust=arr(h,'wind_gusts_10m'),wd=arr(h,'wind_direction_10m'),press=arr(h,'pressure_msl'),u=UNITS[state.units]||UNITS.metric;
   const uvSources = Array.isArray(d.uv_sources) ? d.uv_sources : [];
   const uvSourceAt = i => uvSources[i] ||
@@ -3116,10 +3147,13 @@ const precipTop=Math.max(precipMinTop,precipStackMax*1.15);
 Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain,{range:[0,precipTop],rangemode:'tozero'}),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
   z = proc(x, [gust, wind, press]);
 
-  const top = Math.max(
-    12,
-    ...gust.filter(v => v != null).map(Number)
-  ) * 1.15;
+  // WIND AND PRESSURE AXES SHARE GRID
+  const windValues = [...gust, ...z.ss[1]]
+    .filter(v => v != null && Number.isFinite(Number(v)))
+    .map(Number);
+  const windNeeded = Math.max(12, ...windValues) * 1.05;
+  const windStep = niceAxisStep(windNeeded / 4, [1, 2, 3, 4, 5, 10]);
+  const top = windStep * 4;
 
   const pv = press
     .filter(v => v != null)
@@ -3127,17 +3161,22 @@ Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:
 
   const pmin = pv.length ? Math.min(...pv) : 990;
   const pmax = pv.length ? Math.max(...pv) : 1030;
-  const pad = Math.max((pmax - pmin) * 0.2, 3);
+  const pressureScale = Math.abs(pressure(1000) / 1000) || 1;
+  const pressureSpan = Math.max((pmax - pmin) * 1.2, 8 * pressureScale);
+  const pressureStep = niceAxisStep(pressureSpan / 4, [1, 2, 5, 10]);
+  const pressureLow = alignedAxisLow(pmin, pmax, pressureStep);
+  const pLo = pressureLow;
+  const pHi = pressureLow + pressureStep * 4;
 
   const pSeries = z.ss[2].map(v =>
     v == null ? null : pressure(v)
   );
 const N_TICKS=5;
-const windTickvals=Array.from({length:N_TICKS},(_,i)=>Math.round(top*i/(N_TICKS-1)));
+const windTickvals=Array.from({length:N_TICKS},(_,i)=>windStep*i);
 const windTicktext=windTickvals.map(v=>fmt(v,0));
-const pLo=pmin-pad,pHi=pmax+pad;
-const pressureTickvals=Array.from({length:N_TICKS},(_,i)=>pLo+(pHi-pLo)*i/(N_TICKS-1));
-const pTicks={tickvals:pressureTickvals,ticktext:pressureTickvals.map(v=>fmt(v,0))};
+const pressureTickvals=Array.from({length:N_TICKS},(_,i)=>pLo+pressureStep*i);
+const pressureDecimals=Math.max(0,Math.ceil(-Math.log10(pressureStep)-1e-9));
+const pTicks={tickvals:pressureTickvals,ticktext:pressureTickvals.map(v=>fmt(v,pressureDecimals))};
 Plotly.newPlot('wind',[
   {
     x:z.x,
@@ -3176,7 +3215,7 @@ Plotly.newPlot('wind',[
 ], layout(x,{
   margin:{l:64,r:82,t:92,b:days()>7?70:28},
   yaxis:axis(u.wind,CLR.wind,{range:[0,top],tickmode:'array',tickvals:windTickvals,ticktext:windTicktext}),
-  yaxis2:axis(u.pressure,CLR.pressure,{overlaying:'y',side:'right',range:[pmin-pad,pmax+pad],tickmode:'array',tickvals:pTicks.tickvals,ticktext:pTicks.ticktext,automargin:true}),
+  yaxis2:axis(u.pressure,CLR.pressure,{overlaying:'y',side:'right',range:[pLo,pHi],tickmode:'array',tickvals:pTicks.tickvals,ticktext:pTicks.ticktext,automargin:true}),
 
 }),{responsive:true,displayModeBar:false});
   if(wd.length===x.length){const arrows=x.map((q,i)=>{if(wd[i]==null||!Number.isFinite(Number(wd[i])))return null;const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((a,i)=>a&&i%3===0);Plotly.relayout('wind',{annotations:[...labels(x),...arrows]})}}
