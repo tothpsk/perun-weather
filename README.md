@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Perun Weather</h1>
-<p align="center">Version 4.5.0</p>
+<p align="center">Version 4.5.1</p>
 <p align="center"><em>Weather, made visible.</em></p>
 
 Perun Weather is a desktop weather application built around interactive charts.
@@ -100,7 +100,7 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-4.5.0-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-4.5.1-1.fc44.noarch.rpm
 ```
 
 `dnf` installs the required dependencies automatically.
@@ -111,7 +111,7 @@ Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo apt install ./perun-weather_4.5.0-1_all.deb
+sudo apt install ./perun-weather_4.5.1-1_all.deb
 ```
 
 Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`

@@ -1,3 +1,12 @@
+perun-weather (4.5.1-1) unstable; urgency=medium
+
+  * New upstream release 4.5.1.
+  * Fix precipitation baseline and wind/pressure axes.
+  * Add bilingual air indicator and styled AOD tooltips.
+  * Update summary formatting, bilingual help and release metadata.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Tue, 13 Oct 2026 19:13:13 +0200
+
 perun-weather (4.5.0-1) unstable; urgency=medium
 
   * New upstream release 4.5.0.

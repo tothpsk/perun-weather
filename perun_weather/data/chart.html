@@ -165,7 +165,7 @@ footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.5.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
+<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.5.1</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
 <main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
@@ -705,6 +705,19 @@ help_html: `
 
 <section>
   <h2>Changelog</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4.5.1 · 2026-10-13 <span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Fixed the precipitation axis to start at zero, including periods without precipitation, on Linux and Windows.</li>
+      <li>Aligned wind and pressure axes to a shared grid with readable ticks for hPa, mmHg and inHg.</li>
+      <li>Normal pollutant and pollen values remain off-white; warning colours and the selected AQI colour scale are preserved.</li>
+      <li>Added a bilingual tooltip explaining the air/pollen indicator and the values responsible for its colour.</li>
+      <li>Shortened the aerosol optical depth summary label to AOD and added a matching styled explanatory tooltip.</li>
+      <li>AQI in the indicator tooltip uses integer formatting, matching the summary; other variables retain their units and precision.</li>
+      <li>Polished README wording and updated release metadata.</li>
+    </ul>
+  </div>
 
   <div class="changelog-entry">
     <div class="ver">4.5.0 · 2026-10-12 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
@@ -1286,6 +1299,19 @@ help_html: `
 
 <section>
   <h2>História zmien</h2>
+
+  <div class="changelog-entry">
+    <div class="ver">4.5.1 · 2026-10-13 <span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Opravená os zrážok: začína od nuly aj v obdobiach bez zrážok na Linuxe aj Windows.</li>
+      <li>Zarovnané osi vetra a tlaku do spoločnej mriežky s čitateľnými krokmi pre hPa, mmHg a inHg.</li>
+      <li>Normálne hodnoty látok a peľu sú belavé; zachované sú farby upozornení a zvolená škála AQI.</li>
+      <li>Pridaný dvojjazyčný tooltip bodky s hodnotami, ktoré spôsobujú jej zafarbenie.</li>
+      <li>Skrátený názov v súhrne na AOD a pridaný vysvetľujúci tooltip v rovnakom štýle.</li>
+      <li>AQI v tooltipe používa celé číslo rovnako ako súhrn; ostatné veličiny si zachovávajú jednotky a presnosť.</li>
+      <li>Upravená štylistika README a aktualizované údaje o vydaní.</li>
+    </ul>
+  </div>
 
   <div class="changelog-entry">
     <div class="ver">4.5.0 · 2026-10-12 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
