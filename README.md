@@ -67,7 +67,7 @@ and the oak, and his symbols included fire, wind, mountains, the eagle and the
 thunder axe.
 
 The name seemed fitting for an application that follows storms, rain and wind
-through the data. The name refers only to the mythological figure and has no political or religious meaning.
+through the data. It refers only to the mythological figure and has no political or religious meaning.
 
 *Source: [Perun on Wikipedia](https://en.wikipedia.org/wiki/Perun).*
 
