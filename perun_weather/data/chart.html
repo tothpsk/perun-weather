@@ -3108,7 +3108,12 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
       fixedrange:true
     })
   }),{responsive:true,displayModeBar:false});
-  z=proc(x,[cloud,rain,show,snow,prec]);const split=rain.length||show.length||snow.length;const bars=split?[{x:z.x,y:z.ss[1],name:t('leg_rain'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[2],name:t('leg_showers'),type:'bar',marker:{color:'#2196c9'},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[3],name:t('leg_snow'),type:'bar',marker:{color:'#e8eaf0'},hovertemplate:hv(u.precip)}]:[{x:z.x,y:z.ss[4],name:t('leg_precipitation'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)}];Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
+  z=proc(x,[cloud,rain,show,snow,prec]);const split=rain.length||show.length||snow.length;const bars=split?[{x:z.x,y:z.ss[1],name:t('leg_rain'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[2],name:t('leg_showers'),type:'bar',marker:{color:'#2196c9'},hovertemplate:hv(u.precip)},{x:z.x,y:z.ss[3],name:t('leg_snow'),type:'bar',marker:{color:'#e8eaf0'},hovertemplate:hv(u.precip)}]:[{x:z.x,y:z.ss[4],name:t('leg_precipitation'),type:'bar',marker:{color:CLR.rain},hovertemplate:hv(u.precip)}];// PRECIPITATION AXIS STARTS AT ZERO
+const precipSeries=split?[z.ss[1],z.ss[2],z.ss[3]]:[z.ss[4]];
+const precipStackMax=Math.max(0,...z.x.map((_,i)=>precipSeries.reduce((sum,s)=>{const v=Number(s&&s[i]);return sum+(Number.isFinite(v)&&v>0?v:0)},0)));
+const precipMinTop=state.units==='imperial'?0.04:1;
+const precipTop=Math.max(precipMinTop,precipStackMax*1.15);
+Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain,{range:[0,precipTop],rangemode:'tozero'}),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
   z = proc(x, [gust, wind, press]);
 
   const top = Math.max(
