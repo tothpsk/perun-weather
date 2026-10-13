@@ -148,6 +148,20 @@ footer a:hover{text-decoration:underline}
 #airSummary .chip.ok b {
   color: var(--heading);
 }
+
+/* AIR INDICATOR TOOLTIP PREVIEW */
+.airIndicatorTooltip{position:fixed;z-index:500;max-width:min(360px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;background:var(--deep);border:1px solid var(--border);border-radius:9px;padding:12px 14px;color:var(--text);font-size:12px;line-height:1.5;box-shadow:0 5px 20px #0006;pointer-events:none}
+.airIndicatorTooltip[hidden]{display:none}
+.airTipTitle{display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px}
+.airTipGroup{margin-top:10px;font-size:11px;color:var(--muted)}
+.airIndicatorTooltip ul{margin:4px 0;padding-left:17px}
+.airIndicatorTooltip li{margin:4px 0}
+.airIndicatorTooltip p{margin:8px 0 0}
+.airTipNote{color:var(--muted);font-size:10px}
+#airDot:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+
+
+#airSummary [data-aod-tooltip]:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 </style>
 </head>
 <body>
@@ -2853,11 +2867,10 @@ function selectedAqiLegend(){
  return us?(sk?'Americký index kvality ovzdušia (US AQI)':'American Air Quality Index (US AQI)'):(sk?'Európsky index kvality ovzdušia (EAQI)':'European Air Quality Index (EAQI)');
 }
 function changeAqiScale(value){state.aqi_scale=value==='us'?'us':'eu';syncAqiControl();if(currentData)renderAir(currentData);setSetting('aqi_scale',state.aqi_scale)}
-function airCompositeLevel(a,ni,aqi){const levels=[aqiCategory(aqi)?.level||''];
- const keys={pm2_5:'pm25',pm10:'pm10',ozone:'o3',nitrogen_dioxide:'no2',sulphur_dioxide:'so2',carbon_monoxide:'co',ammonia:'nh3',dust:'dust',aerosol_optical_depth:'aod'};
- Object.entries(keys).forEach(([field,key])=>levels.push(bandLevel(arr(a,field)[ni],key)));
- Object.keys(POLLEN_THRESHOLDS).forEach(key=>levels.push(pollenLevel(arr(a,key+'_pollen')[ni],key)));
- return levels.includes('bad')?'bad':levels.includes('warn')?'warn':levels.includes('ok')?'ok':'neutral';
+function airCompositeLevel(a,ni,aqi){
+  const result=airIndicatorAssessment(a,ni,aqi);
+  updateAirIndicatorTooltip(document.getElementById('airDot'),result);
+  return result.level;
 }
 function aqiPlotLayout(x,values){const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);const top=Math.max(selectedAqiScale()==='us'?150:100,...valid)*1.08;
  const base=layout(x,{yaxis:axis(selectedAqiName(),CLR.eaqi,{range:[0,top],rangemode:'tozero'}),yaxis2:axis(t('axis_pm'),CLR.pm25,{overlaying:'y',side:'right'})});
@@ -2874,13 +2887,120 @@ function insertAqiHelp(html){const root=document.createElement('div');root.inner
 
 
 // COMPACT AOD SUMMARY CHIP
+
+// STYLED AOD TOOLTIP
+(function(){
+ let active=null;
+ const hide=()=>{const tip=document.getElementById('aodSummaryTooltip');if(tip)tip.hidden=true;active=null;};
+ const show=target=>{
+  let tip=document.getElementById('aodSummaryTooltip');
+  if(!tip){tip=document.createElement('div');tip.id='aodSummaryTooltip';tip.className='airIndicatorTooltip';tip.setAttribute('role','tooltip');document.body.appendChild(tip);}
+  tip.replaceChildren();
+  const title=document.createElement('div');title.className='airTipTitle';title.textContent=currentLang==='sk'?'Optická hrúbka aerosólu (AOD)':'Aerosol optical depth (AOD)';
+  const p=document.createElement('p');p.textContent=target.getAttribute('data-aod-tooltip');tip.append(title,p);tip.hidden=false;active=target;target.setAttribute('aria-describedby',tip.id);
+  const rect=target.getBoundingClientRect(),margin=10;
+  tip.style.left=Math.max(margin,Math.min(rect.left,window.innerWidth-tip.offsetWidth-margin))+'px';
+  const below=rect.bottom+10;
+  tip.style.top=Math.max(margin,below+tip.offsetHeight<=window.innerHeight-margin?below:rect.top-tip.offsetHeight-10)+'px';
+ };
+ const chip=e=>e.target instanceof Element?e.target.closest('#airSummary [data-aod-tooltip]'):null;
+ document.addEventListener('mouseover',e=>{const target=chip(e);if(target&&target!==active)show(target);});
+ document.addEventListener('mouseout',e=>{const target=chip(e);if(target&&!(e.relatedTarget instanceof Node&&target.contains(e.relatedTarget)))hide();});
+ document.addEventListener('focusin',e=>{const target=chip(e);if(target)show(target);});
+ document.addEventListener('focusout',e=>{if(chip(e))hide();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});
+ window.addEventListener('scroll',hide,true);window.addEventListener('resize',hide);
+ new MutationObserver(()=>{if(active&&!active.isConnected)hide();}).observe(document.getElementById('airSummary'),{childList:true});
+})();
+
 function aodSummaryChip(value) {
   const explanation = currentLang === 'sk'
     ? 'Optická hrúbka aerosólu (AOD). Bezrozmerná miera zoslabovania slnečného svetla aerosólmi v celom stĺpci atmosféry. Vyššia hodnota znamená väčšie zoslabovanie svetla; nejde o priamu koncentráciu častíc pri zemi.'
     : 'Aerosol optical depth (AOD). A dimensionless measure of sunlight attenuation by aerosols throughout the atmospheric column. Higher values indicate greater attenuation; this is not a direct measure of particle concentration at ground level.';
 
   return chip('AOD', fmt(value, 2), bandLevel(value, 'aod'))
-    .replace('<span ', '<span title="' + explanation + '" ');
+    .replace('<span ', '<span data-aod-tooltip="' + explanation + '" tabindex="0" ');
+}
+
+
+// AIR INDICATOR TOOLTIP PREVIEW
+function airIndicatorAssessment(a,ni,aqi){
+  const sk=currentLang==='sk';
+  const causes=[],levels=[];
+  const numeric=v=>v!=null&&Number.isFinite(Number(v))?Number(v):null;
+  const index=numeric(aqi),category=aqiCategory(index);
+  if(category){
+    levels.push(category.level);
+    if(category.level!=='ok')causes.push({level:category.level,text:selectedAqiName()+': '+fmt(index,0)+' — '+category.name});
+  }
+  const pollutants=[
+    ['pm2_5','pm25','PM2.5','µg/m³'],['pm10','pm10','PM10','µg/m³'],
+    ['ozone','o3','O₃','µg/m³'],['nitrogen_dioxide','no2','NO₂','µg/m³'],
+    ['sulphur_dioxide','so2','SO₂','µg/m³'],['carbon_monoxide','co','CO','µg/m³'],
+    ['ammonia','nh3','NH₃','µg/m³'],['dust','dust',t('leg_dust'),'µg/m³'],
+    ['aerosol_optical_depth','aod','AOD','']
+  ];
+  const assess=(v,key,label,unit,thresholds)=>{
+    const n=numeric(v),limits=thresholds[key];
+    if(n==null||!limits)return;
+    const level=n>=limits.bad?'bad':n>=limits.warn?'warn':'ok';
+    levels.push(level);
+    if(level!=='ok'){
+      const threshold=level==='bad'?limits.bad:limits.warn;
+      const thresholdName=level==='bad'?(sk?'vyšší prah':'higher threshold'):(sk?'prah upozornenia':'warning threshold');
+      const dec=key==='aod'?2:1;
+      causes.push({level,text:label+': '+fmt(n,dec)+(unit?' '+unit:'')+' — '+thresholdName+' ≥ '+fmt(threshold,dec)});
+    }
+  };
+  pollutants.forEach(([field,key,label,unit])=>assess(arr(a,field)[ni],key,label,unit,POLLUTANT_THRESHOLDS));
+  Object.keys(POLLEN_THRESHOLDS).forEach(key=>assess(arr(a,key+'_pollen')[ni],key,t('leg_'+key),t('axis_pollen'),POLLEN_THRESHOLDS));
+  const level=levels.includes('bad')?'bad':levels.includes('warn')?'warn':levels.includes('ok')?'ok':'neutral';
+  return {level,causes};
+}
+function updateAirIndicatorTooltip(dot,result){
+  const sk=currentLang==='sk';
+  const titles=sk?{bad:'Vysoké hodnoty',warn:'Zvýšené hodnoty',ok:'Bez prekročenia prahov',neutral:'Údaje nie sú dostupné'}:{bad:'High values',warn:'Elevated values',ok:'No threshold exceedances',neutral:'Data unavailable'};
+  let tip=document.getElementById('airIndicatorTooltip');
+  if(!tip){
+    tip=document.createElement('div');tip.id='airIndicatorTooltip';tip.className='airIndicatorTooltip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
+  }
+  tip.replaceChildren();
+  const title=document.createElement('div');title.className='airTipTitle';
+  const bullet=document.createElement('span');bullet.className='dot '+result.level;title.appendChild(bullet);
+  title.appendChild(document.createTextNode(titles[result.level]));tip.appendChild(title);
+  if(result.causes.length){
+    ['bad','warn'].forEach(level=>{
+      const list=result.causes.filter(c=>c.level===level);
+      if(!list.length)return;
+      const group=document.createElement('div');group.className='airTipGroup';
+      group.textContent=level==='bad'?(sk?'Vyššia úroveň':'Higher level'):(sk?'Úroveň upozornenia':'Warning level');tip.appendChild(group);
+      const ul=document.createElement('ul');list.forEach(c=>{const li=document.createElement('li');li.textContent=c.text;ul.appendChild(li)});tip.appendChild(ul);
+    });
+  }else{
+    const p=document.createElement('p');p.textContent=result.level==='ok'?(sk?'Dostupné hodnoty neprekračujú nastavené prahy.':'Available values do not exceed the configured thresholds.'):(sk?'Pre aktuálnu hodinu nie sú dostupné vyhodnotiteľné údaje.':'No evaluable data are available for the current hour.');tip.appendChild(p);
+  }
+  if(result.level!=='neutral'){
+    const note=document.createElement('p');note.className='airTipNote';note.textContent=sk?'Aktuálna hodina · aplikačné hodnotenie, nie oficiálna výstraha. Chýbajúce hodnoty sa nevyhodnocujú.':'Current hour · application assessment, not an official warning. Missing values are not assessed.';tip.appendChild(note);
+  }
+  dot.setAttribute('tabindex','0');dot.setAttribute('role','img');
+  dot.setAttribute('aria-label',(sk?'Kvalita ovzdušia a peľ: ':'Air quality and pollen: ')+titles[result.level]);
+  dot.setAttribute('aria-describedby',tip.id);
+  const place=()=>{
+    const rect=dot.getBoundingClientRect(),margin=10;
+    tip.style.left=Math.max(margin,Math.min(rect.left,window.innerWidth-tip.offsetWidth-margin))+'px';
+    const below=rect.bottom+10;
+    tip.style.top=Math.max(margin,below+tip.offsetHeight<=window.innerHeight-margin?below:rect.top-tip.offsetHeight-10)+'px';
+  };
+  if(!dot.dataset.airTipBound){
+    const show=()=>{tip.hidden=false;place()};
+    const hide=()=>{tip.hidden=true};
+    dot.addEventListener('mouseenter',show);dot.addEventListener('mouseleave',hide);
+    dot.addEventListener('focus',show);dot.addEventListener('blur',hide);
+    dot.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});
+    window.addEventListener('scroll',hide,true);window.addEventListener('resize',hide);
+    dot.dataset.airTipBound='true';
+  }
+  if(!tip.hidden)place();
 }
 
 function renderAir(d){syncAqiControl();const a=(d.air&&d.air.hourly)||{},x=(d.hourly&&d.hourly.time)||[];const ni=nowIndex(x);const ea=arr(a,selectedAqiScale()==='us'?'us_aqi':'european_aqi'),p25=arr(a,'pm2_5'),p10=arr(a,'pm10'),o3=arr(a,'ozone'),no2=arr(a,'nitrogen_dioxide'),so2=arr(a,'sulphur_dioxide'),co=arr(a,'carbon_monoxide'),nh3=arr(a,'ammonia'),dust=arr(a,'dust'),aod=arr(a,'aerosol_optical_depth'),alder=arr(a,'alder_pollen'),birch=arr(a,'birch_pollen'),grass=arr(a,'grass_pollen'),mug=arr(a,'mugwort_pollen'),rag=arr(a,'ragweed_pollen'),olive=arr(a,'olive_pollen');const dot=document.getElementById('airDot'),has=ea.length||p25.length||p10.length;dot.className='dot '+airCompositeLevel(a,ni,ea[ni]);
