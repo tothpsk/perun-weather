@@ -248,7 +248,7 @@ footer a:hover{text-decoration:underline}
 </section>
 <footer id="footerInfo">Connected to Open-Meteo API</footer></main></div></div><div id="toast" class="toast"></div>
 <script>
-const CLR={temp:'#ff6b6b',uv:'#ffd166',rain:'#4fc3f7',cloud:'#aeb4c0',wind:'#4caf50',gust:'#1b5e20',pressure:'#ba68c8',eaqi:'#fdd835',pm25:'#ff7043',pm10:'#8d6e63',o3:'#ab47bc',no2:'#ef5350',so2:'#42a5f5',co:'#ffb74d',nh3:'#66bb6a',dust:'#b0bec5',aod:'#ce93d8'};
+const CLR={temp:'#ff6b6b',uv:'#ffd166',rain:'#4fc3f7',cloud:'#aeb4c0',wind:'#4caf50',gust:'#1b5e20',pressure:'#ba68c8',eaqi:'#fdd835',pm25:'#ff7043',pm10:'#8d6e63',o3:'#ab47bc',no2:'#ef5350',so2:'#42a5f5',co:'#ffb74d',nh3:'#66bb6a',dust:'#d6bd78',aod:'#ce93d8'};
 const POLLEN={alder:'#8d6e63',birch:'#d4e157',grass:'#66bb6a',mugwort:'#ffb74d',ragweed:'#ef5350',olive:'#9ccc65'};
 const MODELS={best_match:'Best match (auto-blend)',icon_d2:'ICON D2 (DWD, 2 km, Europe)',icon_eu:'ICON EU (DWD, 7 km, Europe)',ecmwf_ifs:'ECMWF IFS (9 km, global)',ecmwf_ifs_hres:'ECMWF IFS HRES (9 km, global)',ecmwf_aifs:'ECMWF AIFS (AI model, global)',gfs:'GFS (NOAA, global)',harmonie:'DMI Seamless (HARMONIE → ECMWF, Europe)',cma_grapes:'CMA GRAPES (global)',aigfs:'NCEP AIGFS (AI model, global)',jma_gsm:'JMA GSM (global)',icon_seamless:'ICON Seamless (DWD, Global + EU + D2)',icon_global:'ICON Global (DWD, global)',gem_global:'GEM Global (Canada, global)',arpege_world:'ARPEGE World (Météo-France, global)',ukmo_global:'UK Met Office Global (10 km, global)',arpege_europe:'ARPEGE Europe (Météo-France, Europe)',knmi_arome_europe:'HARMONIE AROME Europe (KNMI, Europe)',chmi_aladin_seamless:'CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)',chmi_aladin_ce_2km:'CHMI ALADIN Central Europe (2 km)',chmi_aladin_cz_1km:'CHMI ALADIN CZ (1 km, Czechia)'};
 const UNITS={metric:{temp:'°C',wind:'km/h',precip:'mm',pressure:'hPa'},metric_mmhg:{temp:'°C',wind:'km/h',precip:'mm',pressure:'mmHg'},imperial:{temp:'°F',wind:'mph',precip:'in',pressure:'inHg'},ms:{temp:'°C',wind:'m/s',precip:'mm',pressure:'hPa'},knots:{temp:'°C',wind:'kn',precip:'mm',pressure:'hPa'}};
@@ -1646,7 +1646,7 @@ function renderSeaTemperature(marine) {
   const mu = marineUnits();
   z.ss[0] = z.ss[0].map(mu.temp);
 
-  Plotly.newPlot(
+  framedNewPlot(
     target,
     [{
       x: z.x,
@@ -1756,7 +1756,7 @@ function renderSeaLevel(marine) {
     i = end + 1;
   }
 
-  Plotly.newPlot(
+  framedNewPlot(
     target,
       [
       {
@@ -1952,7 +1952,7 @@ function renderMarineWaves(marine) {
     });
   }
 
-  Plotly.newPlot(
+  framedNewPlot(
     target,
     traces,
     waveLayout,
@@ -2630,7 +2630,49 @@ a.push({
 });
 return a}
 function xDtick(){const n=days(),stepHours=Number(state.interval)||1;if(n<=3)return Math.max(stepHours,3)*3600000;if(n<=7)return 21600000;if(n<=10)return 43200000;return 86400000}
-function axis(title,c,e={}){return Object.assign({title:{text:title,font:{color:c,size:13}},tickfont:{color:c,size:12},gridcolor:'#363c4a'},e)}
+// NICE SHARED AXIS TICKS
+// DUST COLOUR AND TOP FRAME
+function raisedChartDates(annotations){
+  return (annotations||[]).map(a=>a.yref==='paper' && a.y>1 && /<br>/.test(a.text||'') ? {...a,yshift:(a.yshift||0)+8} : a);
+}
+function framedNewPlot(target,data,plotLayout,config){
+  const id=typeof target==='string'?target:target.id;
+  const charts=['aqi','gases','aerosol','pollen','temperature','precipitation','wind','seaTemperature','seaLevel','marineWaves','sunmoonAltitude'];
+  if(charts.includes(id)){
+    plotLayout={...plotLayout,
+      shapes:plotLayout.shapes, // TOP FRAME REMOVED
+      annotations:raisedChartDates(plotLayout.annotations)};
+  }
+  return Plotly.newPlot(target,data,plotLayout,config);
+}
+
+function axis(title,c,e={}){
+  const a=Object.assign({title:{text:title,font:{color:c,size:13},standoff:12},tickfont:{color:c,size:12},gridcolor:'#363c4a',ticks:'outside',ticklen:6,tickwidth:1,tickcolor:'#9aa3b2',showline:true,linecolor:'#9aa3b2',linewidth:1,automargin:true},e);
+  if(a.range && a.range[0]===0 && a.range[1]>0 && a.tickmode!=='array'){
+    const step=niceAxisStep(a.range[1]/4,[1,2,2.5,5,10]);
+    Object.assign(a,axisTickSpec(0,step));
+  }
+  return a;
+}
+function axisTickSpec(low,step){
+  const clean=v=>Number(v.toPrecision(12));
+  const vals=Array.from({length:5},(_,i)=>clean(low+i*step));
+  let decimals=0;
+  while(decimals<8 && Math.abs(step*10**decimals-Math.round(step*10**decimals))>1e-7)decimals++;
+  return {range:[vals[0],vals[4]],tickmode:'array',tickvals:vals,ticktext:vals.map(v=>fmt(v,decimals)),autorange:false};
+}
+function temperatureTickSpec(values){
+  const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);
+  if(!valid.length)return axisTickSpec(0,5);
+  const lo=Math.min(...valid),hi=Math.max(...valid),pad=Math.max(0.5,(hi-lo)*0.08);
+  const min=lo-pad,max=hi+pad;
+  let step=niceAxisStep((max-min)/4,[1,2,2.5,5,10]);
+  let low=Math.floor(min/step)*step;
+  while(low+4*step<max-1e-9){step=niceAxisStep(step*1.01,[1,2,2.5,5,10]);low=Math.floor(min/step)*step;}
+  return axisTickSpec(low,step);
+} // AXIS TICKS OUTSIDE
+// NONNEGATIVE AXIS RANGES
+function posTop(series,minTop,pad){pad=pad||1.1;let m=0;(series||[]).forEach(s=>(s||[]).forEach(v=>{const n=Number(v);if(v!=null&&Number.isFinite(n)&&n>m)m=n}));return Math.max(minTop,m*pad)}
 function hv(unit, dec = 1, extra = '') {
   return '%{fullData.name}: %{y:,.' + dec + 'f}' +
     (unit ? ' ' + unit : '') + extra + '<extra></extra>';
@@ -2649,7 +2691,24 @@ function marineUnits() {
       .replace('(m)', '(' + lenUnit + ')'),
   };
 }
-function layout(x,e={}){const rotated=days()>7;return Object.assign({paper_bgcolor:'#1a1d24',plot_bgcolor:'#1a1d24',font:{color:'#e8eaf0',size:10},margin:{l:64,r:74,t:92,b:rotated?70:28},hovermode:'x unified',hoverlabel:{font:{size:12},namelength:-1}, showlegend:true,legend:{orientation:'h',x:0,y:1.62,font:{size:11}},xaxis:{hoverformat:'%d.%m. %H:%M',gridcolor:'#363c4a',tickformat:'%H:%M',tickfont:{size:11},dtick:xDtick(),tickangle:rotated?-90:0,range:range(x)},yaxis:{},annotations:labels(x),shapes:shapes(x)},e)}
+function layout(x,e={}){const rotated=days()>7;const result=Object.assign({paper_bgcolor:'#1a1d24',plot_bgcolor:'#1a1d24',font:{color:'#e8eaf0',size:10},margin:{l:70,r:80,t:92,b:rotated?76:34},hovermode:'x unified',hoverlabel:{font:{size:12},namelength:-1}, showlegend:true,legend:{orientation:'h',x:0,y:1.62,font:{size:11}},xaxis:{hoverformat:'%d.%m. %H:%M',gridcolor:'#363c4a',tickformat:'%H:%M',tickfont:{size:11},dtick:xDtick(),tickangle:rotated?-90:0,range:range(x),ticks:'outside',ticklen:6,tickwidth:1,tickcolor:'#9aa3b2',showline:true,linecolor:'#9aa3b2',linewidth:1},yaxis:{},annotations:labels(x),shapes:shapes(x)},e);
+// DISABLE MIRRORED AXIS FRAME
+['xaxis', 'yaxis', 'yaxis2'].forEach(key => {
+  if (result[key]) result[key].mirror = false;
+});
+// HIDE TOP GRIDLINE ONLY
+['yaxis','yaxis2'].forEach((key,index)=>{
+ const a=result[key];
+ if(!a || a.showgrid===false || a.tickmode!=='array' || !a.range || !a.tickvals)return;
+ const lo=Number(a.range[0]),hi=Number(a.range[1]);
+ if(!Number.isFinite(lo)||!Number.isFinite(hi)||hi<=lo)return;
+ a.showgrid=false;
+ const eps=Math.max(1,Math.abs(hi-lo))*1e-9;
+ const lines=a.tickvals.filter(v=>Number(v)>=lo-eps&&Number(v)<hi-eps).map(v=>({type:'line',xref:'paper',x0:0,x1:1,yref:index?'y2':'y',y0:v,y1:v,layer:'below',line:{color:a.gridcolor||'#363c4a',width:a.gridwidth||1}}));
+ result.shapes=[...(result.shapes||[]),...lines];
+});
+return result;
+}
 function chip(label,value,level=''){return'<span class="chip '+level+'">'+label+' <b>'+value+'</b></span>'}
 function bandLevel(v,key){const t=POLLUTANT_THRESHOLDS[key];if(v==null||!t)return'';return v>=t.bad?'bad':v>=t.warn?'warn':'ok'}
 function pollenLevel(v,key){const t=POLLEN_THRESHOLDS[key];if(v==null||!t)return'';return v>=t.bad?'bad':v>=t.warn?'warn':'ok'}
@@ -2822,7 +2881,7 @@ function renderAlerts(d) {
     ? currentData.hourly.time
     : alerts.flatMap(a => [a.start, a.end]);
 
-  Plotly.newPlot(
+  framedNewPlot(
     chart,
     traces,
     {
@@ -2898,8 +2957,8 @@ function airCompositeLevel(a,ni,aqi){
   updateAirIndicatorTooltip(document.getElementById('airDot'),result);
   return result.level;
 }
-function aqiPlotLayout(x,values){const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);const top=Math.max(selectedAqiScale()==='us'?150:100,...valid)*1.08;
- const base=layout(x,{yaxis:axis(selectedAqiName(),CLR.eaqi,{range:[0,top],rangemode:'tozero'}),yaxis2:axis(t('axis_pm'),CLR.pm25,{overlaying:'y',side:'right'})});
+function aqiPlotLayout(x,values,pmSeries=[]){const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);const top=Math.max(selectedAqiScale()==='us'?150:100,...valid)*1.08;
+ const base=layout(x,{yaxis:axis(selectedAqiName(),CLR.eaqi,{range:[0,top],rangemode:'tozero'}),yaxis2:axis(t('axis_pm'),CLR.pm25,{overlaying:'y',side:'right',range:[0,posTop(pmSeries,5)],rangemode:'tozero'})});
  return base;
 }
 function insertAqiHelp(html){const root=document.createElement('div');root.innerHTML=html;const heading=Array.from(root.querySelectorAll('h3')).find(h=>/^2\.\s*(Kvalita ovzdušia|Air quality)/.test(h.textContent.trim()));if(!heading)return html;
@@ -3043,34 +3102,34 @@ function renderAir(d){syncAqiControl();const a=(d.air&&d.air.hourly)||{},x=(d.ho
   });
   let z=proc(x,[ea,p25,p10]);
   z.ss[0]=thin(x,[ea]).ss[0];
-  Plotly.newPlot('aqi',[
+  framedNewPlot('aqi',[
     {...mk(z.ss[0],selectedAqiLegend(),CLR.eaqi,'',false,'',1),connectgaps:false,customdata:z.ss[0].map(v=>[fmt(v,1),aqiCategory(v)?.name||(currentLang==='sk'?'nedostupné':'unavailable')]),hovertemplate:'%{fullData.name}: %{customdata[0]} · %{customdata[1]}<extra></extra>'},
     mk(z.ss[1],t('leg_pm25'),CLR.pm25,'',true),
     mk(z.ss[2],t('leg_pm10'),CLR.pm10,'',true)
-  ],aqiPlotLayout(x,ea),{responsive:true,displayModeBar:false});
+  ],aqiPlotLayout(x,ea,[z.ss[1],z.ss[2]]),{responsive:true,displayModeBar:false});
   z=proc(x,[o3,no2,so2,nh3,co]);
-  Plotly.newPlot('gases',[
+  framedNewPlot('gases',[
     mk(z.ss[0],t('leg_o3'),CLR.o3),
     mk(z.ss[1],t('leg_no2'),CLR.no2),
     mk(z.ss[2],t('leg_so2'),CLR.so2),
     mk(z.ss[3],t('leg_nh3'),CLR.nh3),
     mk(z.ss[4],t('leg_co'),CLR.co,'dash',true)
-  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_gas,CLR.o3),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_co,CLR.co,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_gas,CLR.o3,{range:[0,posTop([z.ss[0],z.ss[1],z.ss[2],z.ss[3]],10)],rangemode:'tozero'}),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_co,CLR.co,{overlaying:'y',side:'right',range:[0,posTop([z.ss[4]],100)],rangemode:'tozero'})}),{responsive:true,displayModeBar:false});
   z=proc(x,[dust,aod]);
-  Plotly.newPlot('aerosol',[
+  framedNewPlot('aerosol',[
     mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_dust,CLR.dust),
     mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_aod,CLR.aod,'',true,'',2)
-  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_dust,CLR.dust),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_aod,CLR.aod,{overlaying:'y',side:'right'})}),{responsive:true,displayModeBar:false});
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_dust,CLR.dust,{range:[0,posTop([z.ss[0]],1)],rangemode:'tozero'}),yaxis2:axis((STRINGS[currentLang]||STRINGS.en).axis_aod,CLR.aod,{overlaying:'y',side:'right',range:[0,posTop([z.ss[1]],0.1)],rangemode:'tozero'})}),{responsive:true,displayModeBar:false});
   z=proc(x,[alder,birch,grass,mug,rag,olive]);
   const pu=t('axis_pollen');
-  Plotly.newPlot('pollen',[
+  framedNewPlot('pollen',[
     mk(z.ss[0],(STRINGS[currentLang]||STRINGS.en).leg_alder,POLLEN.alder,'',false,pu,1),
     mk(z.ss[1],(STRINGS[currentLang]||STRINGS.en).leg_birch,POLLEN.birch,'',false,pu,1),
     mk(z.ss[2],(STRINGS[currentLang]||STRINGS.en).leg_grass,POLLEN.grass,'',false,pu,1),
     mk(z.ss[3],(STRINGS[currentLang]||STRINGS.en).leg_mugwort,POLLEN.mugwort,'',false,pu,1),
     mk(z.ss[4],(STRINGS[currentLang]||STRINGS.en).leg_ragweed,POLLEN.ragweed,'',false,pu,1),
     mk(z.ss[5],(STRINGS[currentLang]||STRINGS.en).leg_olive,POLLEN.olive,'',false,pu,1)
-  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_pollen,POLLEN.grass)}),{responsive:true,displayModeBar:false})
+  ],layout(x,{yaxis:axis((STRINGS[currentLang]||STRINGS.en).axis_pollen,POLLEN.grass,{range:[0,posTop(z.ss,1)],rangemode:'tozero'})}),{responsive:true,displayModeBar:false})
 }
 function dir(d){return['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(d/22.5)%16]}
 
@@ -3252,7 +3311,7 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
   let z=proc(x,[temp,uv]);
   const uvMax=Math.max(6,...uv.filter(v=>v!=null).map(Number))*1.35;
 
-  Plotly.newPlot('temperature',[
+  framedNewPlot('temperature',[
     {
       x:z.x,
       y:z.ss[0],
@@ -3277,7 +3336,7 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
       hovertemplate:hv('', 1, '<br>%{customdata}')
     }
   ],layout(x,{
-    yaxis:axis(u.temp,CLR.temp),
+    yaxis:axis(u.temp,CLR.temp,temperatureTickSpec(z.ss[0])),
     yaxis2:axis(t('axis_uv'),CLR.uv,{
       overlaying:'y',
       side:'right',
@@ -3290,7 +3349,7 @@ const precipSeries=split?[z.ss[1],z.ss[2],z.ss[3]]:[z.ss[4]];
 const precipStackMax=Math.max(0,...z.x.map((_,i)=>precipSeries.reduce((sum,s)=>{const v=Number(s&&s[i]);return sum+(Number.isFinite(v)&&v>0?v:0)},0)));
 const precipMinTop=state.units==='imperial'?0.04:1;
 const precipTop=Math.max(precipMinTop,precipStackMax*1.15);
-Plotly.newPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain,{range:[0,precipTop],rangemode:'tozero'}),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
+framedNewPlot('precipitation',[{x:z.x,y:z.ss[0],name:t('leg_cloud_cover'),type:'scatter',mode:'lines',yaxis:'y2',line:{color:CLR.cloud},fill:'tozeroy',fillcolor:'rgba(174,180,192,.25)',hovertemplate:hv('%', 0)},...bars],layout(x,{barmode:'stack',yaxis:axis(u.precip,CLR.rain,{range:[0,precipTop],rangemode:'tozero'}),yaxis2:axis(t('axis_cloudcover'),CLR.cloud,{overlaying:'y',side:'right',range:[0,100]})}),{responsive:true,displayModeBar:false});
   z = proc(x, [gust, wind, press]);
 
   // WIND AND PRESSURE AXES SHARE GRID
@@ -3323,7 +3382,7 @@ const windTicktext=windTickvals.map(v=>fmt(v,0));
 const pressureTickvals=Array.from({length:N_TICKS},(_,i)=>pLo+pressureStep*i);
 const pressureDecimals=Math.max(0,Math.ceil(-Math.log10(pressureStep)-1e-9));
 const pTicks={tickvals:pressureTickvals,ticktext:pressureTickvals.map(v=>fmt(v,pressureDecimals))};
-Plotly.newPlot('wind',[
+framedNewPlot('wind',[
   {
     x:z.x,
     y:z.ss[0],
@@ -3364,7 +3423,7 @@ Plotly.newPlot('wind',[
   yaxis2:axis(u.pressure,CLR.pressure,{overlaying:'y',side:'right',range:[pLo,pHi],tickmode:'array',tickvals:pTicks.tickvals,ticktext:pTicks.ticktext,automargin:true}),
 
 }),{responsive:true,displayModeBar:false});
-  if(wd.length===x.length){const arrows=x.map((q,i)=>{if(wd[i]==null||!Number.isFinite(Number(wd[i])))return null;const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((a,i)=>a&&i%3===0);Plotly.relayout('wind',{annotations:[...labels(x),...arrows]})}}
+  if(wd.length===x.length){const arrows=x.map((q,i)=>{if(wd[i]==null||!Number.isFinite(Number(wd[i])))return null;const r=wd[i]*Math.PI/180;return{x:q,y:top*.84,xref:'x',yref:'y',ax:Math.sin(r)*20,ay:-Math.cos(r)*20,axref:'pixel',ayref:'pixel',showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:1.6,arrowcolor:'#ffd166',text:''}}).filter((a,i)=>a&&i%3===0);Plotly.relayout('wind',{annotations:[...raisedChartDates(labels(x)),...arrows]})}}
 function tempDotColor(t){
   if(t==null || !Number.isFinite(t)) return '#5b6577';
   if(state.units === 'imperial') t = (t - 32) * 5 / 9;
@@ -3766,7 +3825,7 @@ const phaseMarkerTrace = {
   hovertemplate:'%{text}<extra></extra>',
 };
 
-  Plotly.newPlot('sunmoonAltitude', traces.concat(positionMarkers).concat([phaseMarkerTrace]), {
+  framedNewPlot('sunmoonAltitude', traces.concat(positionMarkers).concat([phaseMarkerTrace]), {
     paper_bgcolor:'#1a1d24', plot_bgcolor:'#1a1d24', font:{color:'#e8eaf0',size:10},
     margin:{l:54,r:20,t:92,b:28},
     hovermode:'x unified', hoverlabel:{font:{size:12},namelength:-1}, showlegend:true,
@@ -3825,7 +3884,7 @@ const ganttPhaseMarkerTrace = {
   hovertemplate:'%{text}<extra></extra>',
 };
 
-Plotly.newPlot('sunmoonGantt', ganttTraces.concat(ganttPositionMarkers).concat([ganttPhaseMarkerTrace]), {
+framedNewPlot('sunmoonGantt', ganttTraces.concat(ganttPositionMarkers).concat([ganttPhaseMarkerTrace]), {
   paper_bgcolor:'#1a1d24', plot_bgcolor:'#1a1d24', font:{color:'#e8eaf0',size:11},
   margin:{l:70,r:20,t:92,b:28},
   xaxis:{gridcolor:'#363c4a', tickformat:'%H:%M', tickfont:{size:11}, dtick:xDtick(), range:[rangeStart, rangeEnd]},
