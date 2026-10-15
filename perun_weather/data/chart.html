@@ -1634,6 +1634,36 @@ function marineHasData(marine) {
   );
 }
 
+
+// MARINE AXIS TICKS
+function marineTickSpec(seriesList,options={}){
+  const zero=!!options.zero,includeZero=!!options.includeZero,minTop=Number(options.minTop)||1,minSpan=Number(options.minSpan)||1,padRatio=options.pad==null?0.1:Number(options.pad);
+  const values=[];
+  (seriesList||[]).forEach(series=>(series||[]).forEach(v=>{if(v==null)return;const n=Number(v);if(Number.isFinite(n))values.push(n)}));
+  if(!values.length)return zero?axisTickSpec(0,minTop/4):axisTickSpec(0,minSpan/4);
+  const multipliers=Array.isArray(options.multipliers)&&options.multipliers.length?options.multipliers:[1,2,2.5,5,10];
+  if(zero){
+    const top=Math.max(minTop,Math.max(0,...values)*(1+padRatio));
+    return axisTickSpec(0,niceAxisStep(top/4,multipliers));
+  }
+  let lo=Math.min(...values),hi=Math.max(...values);
+  if(includeZero){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+  if(hi-lo<minSpan){
+    const centre=(lo+hi)/2;
+    lo=centre-minSpan/2;hi=centre+minSpan/2;
+    if(includeZero){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+  }
+  const pad=(hi-lo)*padRatio;
+  lo-=pad;hi+=pad;
+  let step=niceAxisStep((hi-lo)/4,multipliers);
+  let low=Math.floor(lo/step+1e-9)*step;
+  for(let guard=0;low+4*step<hi-1e-9&&guard<20;guard++){
+    step=niceAxisStep(step*1.01,multipliers);
+    low=Math.floor(lo/step+1e-9)*step;
+  }
+  return axisTickSpec(low,step);
+}
+
 function renderSeaTemperature(marine) {
   const target = document.getElementById("seaTemperature");
   const hourly = marine && marine.hourly;
@@ -1675,6 +1705,7 @@ function renderSeaTemperature(marine) {
         yaxis: axis(
           mu.label(t("axis_sea_temperature")),
           CLR.temp,
+          marineTickSpec([z.ss[0]],{minSpan:Math.abs(mu.temp(2)-mu.temp(0))||2,pad:0.05}),
         ),
       }
     ),
@@ -1812,6 +1843,11 @@ function renderSeaLevel(marine) {
     ],
     layout(z.x, {
        yaxis: axis(mu.label(t("axis_sea_level")), "#2f7fa8", {
+        ...marineTickSpec([
+          z.ss[0].map(mu.len),
+          highs.map((point) => mu.len(point.y)),
+          lows.map((point) => mu.len(point.y)),
+        ],{includeZero:true,minSpan:mu.len(0.4),pad:0.05,multipliers:[1,2,3,4,5,6,8,10]}),
         zeroline: true,
         zerolinecolor: "#5b6577",
         zerolinewidth: 1,
@@ -1902,12 +1938,14 @@ function renderMarineWaves(marine) {
   const waveLayout = layout(z.x, {
     yaxis: axis(mu.label(t("axis_marine_wave_height")), "#4fc3f7", {
       rangemode: "tozero",
+      ...marineTickSpec([z.ss[0].map(mu.len)],{zero:true,minTop:mu.len(0.5)}),
     }),
     yaxis2: axis(t("axis_marine_wave_period"), "#469d4a", {
       overlaying: "y",
       side: "right",
       rangemode: "tozero",
       showgrid: false,
+      ...marineTickSpec([z.ss[1]],{zero:true,minTop:4}),
     }),
   });
 
@@ -1951,18 +1989,6 @@ function renderMarineWaves(marine) {
     ...arrows,
   ];
 
-    if (arrows.length) {
-    traces.push({
-      x: [null],
-      y: [null],
-      name: '<span style="color:#ffd166">➤</span> ' + t("leg_marine_wave_direction"),
-      type: "scatter",
-      mode: "markers",
-      marker: {size: 1, color: "rgba(0,0,0,0)"},
-      hoverinfo: "skip",
-      showlegend: true,
-    });
-  }
 
   framedNewPlot(
     target,
@@ -2548,7 +2574,7 @@ function fmt(v,d=0){if(v==null||!Number.isFinite(Number(v)))return'--';const n=N
 function pressure(v){if(v==null)return null;if(state.units==='metric_mmhg')return v*0.750061683;if(state.units==='imperial')return v*0.0295299831;return v}
 function pressureText(v){const p=pressure(v);return p==null?'--':fmt(p,0)+' '+(UNITS[state.units]||UNITS.metric).pressure}
 function pressureValueOnly(v){const p=pressure(v);return p==null?'--':fmt(p,0)}
-function thin(x,ss){const h=Number(state.interval)||1;if(h<=1||!x.length)return{x,ss};const m=h*3600000,t0=new Date(x[0]).getTime(),ox=[],os=ss.map(()=>[]);x.forEach((t,i)=>{if((new Date(t).getTime()-t0)%m===0){ox.push(t);ss.forEach((s,j)=>os[j].push(s[i]))}});return ox.length>1?{x:ox,ss:os}:{x,ss}}function smooth(y){const n=Number(state.smoothing)||0;if(!n)return y;const w=n===1?3:n===2?5:9,half=Math.floor(w/2);return y.map((v,i)=>{if(v==null)return null;let s=0,c=0;for(let k=-half;k<=half;k++){const z=y[i+k];if(z!=null){s+=z;c++}}return c?s/c:null})}function proc(x,ss){const t=thin(x,ss);return{x:t.x,ss:t.ss.map(smooth)}}function days(){return Math.max(1,Math.round((state.hours||72)/24))}function range(x){if(!x.length)return undefined;const d=new Date(x[0]);d.setHours(0,0,0,0);return[d,new Date(d.getTime()+days()*86400000)]}function labels(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const full=days()<=7;return Array.from({length:days()},(_,i)=>{const q=new Date(d.getTime()+i*86400000);return{x:new Date(q.getTime()+43200000),y:1.28,xref:'x',yref:'paper',text:q.toLocaleDateString(currentLang==='sk'?'sk-SK':'en-GB',{weekday:full?'long':'short'})+'<br>'+q.getDate()+'.'+(q.getMonth()+1)+'.',showarrow:false,font:{size:12,color:'#c9d0dc'}}})}
+function thin(x,ss){const h=Number(state.interval)||1;if(h<=1||!x.length)return{x,ss};const m=h*3600000,t0=new Date(x[0]).getTime(),ox=[],os=ss.map(()=>[]);x.forEach((t,i)=>{if((new Date(t).getTime()-t0)%m===0){ox.push(t);ss.forEach((s,j)=>os[j].push(s[i]))}});return ox.length>1?{x:ox,ss:os}:{x,ss}}function smooth(y){const n=Number(state.smoothing)||0;if(!n)return y;const w=n===1?3:n===2?5:9,half=Math.floor(w/2);return y.map((v,i)=>{if(v==null)return null;let s=0,c=0;for(let k=-half;k<=half;k++){const z=y[i+k];if(z!=null){s+=z;c++}}return c?s/c:null})}function proc(x,ss){const t=thin(x,ss);return{x:t.x,ss:t.ss.map(smooth)}}function days(){return Math.max(1,Math.round((state.hours||72)/24))}function range(x){if(!x.length)return undefined;const d=new Date(x[0]);d.setHours(0,0,0,0);return[d,new Date(d.getFullYear(),d.getMonth(),d.getDate()+days())]}function labels(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const full=days()<=7;return Array.from({length:days()},(_,i)=>{const q=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i);return{x:new Date(q.getFullYear(),q.getMonth(),q.getDate(),12),y:1.28,xref:'x',yref:'paper',text:q.toLocaleDateString(currentLang==='sk'?'sk-SK':'en-GB',{weekday:full?'long':'short'})+'<br>'+q.getDate()+'.'+(q.getMonth()+1)+'.',showarrow:false,font:{size:12,color:'#c9d0dc'}}})}
 function nowMarker(){const offsetSec=(currentData&&currentData.utc_offset_seconds)||0;const nowLocal=new Date(Date.now()+offsetSec*1000);return new Date(nowLocal.getUTCFullYear(),nowLocal.getUTCMonth(),nowLocal.getUTCDate(),nowLocal.getUTCHours(),nowLocal.getUTCMinutes(),nowLocal.getUTCSeconds())}
 // Finds the hourly-array index whose timestamp is closest to "now" in the
 // displayed location's own local time (same basis as nowMarker()/the dashed
@@ -2625,7 +2651,7 @@ function nowIndex(times){
   }
   return bestIdx;
 }
-function shapes(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const a=[];for(let i=0;i<=days();i++){const q=new Date(d.getTime()+i*86400000);a.push({type:'line',xref:'x',yref:'paper',x0:q,x1:q,y0:0,y1:1,line:{color:'#697080',width:1.7}})}const now = nowMarker();
+function shapes(x){if(!x.length)return[];const d=new Date(x[0]);d.setHours(0,0,0,0);const a=[];for(let i=0;i<=days();i++){const q=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i);a.push({type:'line',xref:'x',yref:'paper',x0:q,x1:q,y0:0,y1:1,line:{color:'#697080',width:1.7}})}const now = nowMarker();
 
 a.push({
   type: "line",
@@ -2667,7 +2693,7 @@ function axis(title,c,e={}){
   return a;
 }
 function axisTickSpec(low,step){
-  const clean=v=>Number(v.toPrecision(12));
+  const clean=v=>{const c=Number(v.toPrecision(12));return Math.abs(c)<Math.abs(step)*1e-9?0:c};
   const vals=Array.from({length:5},(_,i)=>clean(low+i*step));
   let decimals=0;
   while(decimals<8 && Math.abs(step*10**decimals-Math.round(step*10**decimals))>1e-7)decimals++;
@@ -3798,7 +3824,7 @@ function renderSunMoon(d){
   const a = [];
 
   for (let i = 0; i <= dayCount; i++) {
-    const q = new Date(dd.getTime() + i * 86400000);
+    const q = new Date(dd.getFullYear(), dd.getMonth(), dd.getDate() + i);
 
     a.push({
       type: "line",
@@ -3828,7 +3854,7 @@ function renderSunMoon(d){
   function dayLabels(){
     const dd = new Date(rangeStart); dd.setHours(0,0,0,0);
     return Array.from({length:dayCount},(_,i)=>{
-      const q = new Date(dd.getTime()+i*86400000+43200000);
+      const q = new Date(dd.getFullYear(), dd.getMonth(), dd.getDate()+i, 12);
       return {
         x:q, y:1.28, xref:'x', yref:'paper',
         text:q.toLocaleDateString(currentLang==='sk'?'sk-SK':'en-GB',{weekday: dayCount<=10 ? 'long':'short'})+'<br>'+q.getDate()+'.'+(q.getMonth()+1)+'.',
