@@ -355,7 +355,7 @@ moon_trend_names: {
     footer_air_value: "Open-Meteo (Copernicus)",
 
     chip_temp: "Temp", chip_feels: "Feels", chip_uv: "UV",
-    chip_precip: "Precipitation", chip_clouds: "Clouds",
+    chip_precip: "Precipitation", chip_precip_prob: "Precipitation probability", chip_clouds: "Clouds",
     chip_wind: "Wind", chip_gusts: "Gusts", chip_direction: "Direction",
     chip_pressure: "Pressure",
     chip_pollen_no_data: "Pollen No data",
@@ -949,7 +949,7 @@ moon_trend_names: {
     footer_air_value: "Open-Meteo (Copernicus)",
 
     chip_temp: "Teplota", chip_feels: "Pocitová teplota", chip_uv: "UV",
-    chip_precip: "Zrážky", chip_clouds: "Oblačnosť",
+    chip_precip: "Zrážky", chip_precip_prob: "Pravdepodobnosť zrážok", chip_clouds: "Oblačnosť",
     chip_wind: "Vietor", chip_gusts: "Nárazový vietor", chip_direction: "Smer vetra",
     chip_pressure: "Tlak",
     chip_pollen_no_data: "Peľ - žiadne dáta",
@@ -2702,12 +2702,21 @@ function axisTickSpec(low,step){
 function temperatureTickSpec(values){
   const valid=values.filter(v=>v!=null&&Number.isFinite(Number(v))).map(Number);
   if(!valid.length)return axisTickSpec(0,5);
-  const lo=Math.min(...valid),hi=Math.max(...valid),pad=Math.max(0.5,(hi-lo)*0.08);
-  const min=lo-pad,max=hi+pad;
-  let step=niceAxisStep((max-min)/4,[1,2,2.5,5,10]);
-  let low=Math.floor(min/step)*step;
-  while(low+4*step<max-1e-9){step=niceAxisStep(step*1.01,[1,2,2.5,5,10]);low=Math.floor(min/step)*step;}
-  return axisTickSpec(low,step);
+  let lo=Math.min(...valid),hi=Math.max(...valid);
+  const minSpan=state.units==='imperial'?8:4;
+  if(hi-lo<minSpan){const centre=(lo+hi)/2;lo=centre-minSpan/2;hi=centre+minSpan/2}
+  const margin=Math.max((hi-lo)*0.03,0.2);
+  const needLo=lo-margin,needHi=hi+margin;
+  const exponent=Math.floor(Math.log10(Math.max((needHi-needLo)/4,1e-9)));
+  for(let e=exponent-1;e<=exponent+3;e++){
+    const base=Math.pow(10,e);
+    for(const multiplier of [1,2,2.5,5,10]){
+      const step=multiplier*base;
+      const low=alignedAxisLow(needLo,needHi,step);
+      if(low<=needLo+1e-9&&low+4*step>=needHi-1e-9)return axisTickSpec(low,step);
+    }
+  }
+  return axisTickSpec(Math.floor(needLo),Math.ceil((needHi-needLo)/4));
 } // AXIS TICKS OUTSIDE
 // NONNEGATIVE AXIS RANGES
 function posTop(series,minTop,pad){pad=pad||1.1;let m=0;(series||[]).forEach(s=>(s||[]).forEach(v=>{const n=Number(v);if(v!=null&&Number.isFinite(n)&&n>m)m=n}));return Math.max(minTop,m*pad)}
@@ -3386,6 +3395,10 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
     precipHtml = '--';
   }
 
+  const precipProbabilityValue = weatherSummaryNumber(arr(h, 'precipitation_probability')[ni]);
+  const precipProbabilityHtml = precipProbabilityValue != null && precipProbabilityValue >= 0 && precipProbabilityValue <= 100
+    ? fmt(precipProbabilityValue) + '%'
+    : '--';
 
   document.getElementById('weatherSummary').innerHTML =
     chip(t('chip_temp'),
@@ -3400,6 +3413,7 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
         weatherSummaryUvColor(uv[ni]))
     ) +
     chip(t('chip_precip'), precipHtml) +
+    chip(t('chip_precip_prob'), precipProbabilityHtml) +
     chip(t('chip_clouds'), fmt(cloud[ni]) + '%') +
     chip(t('chip_wind'),
       weatherSummaryTint(fmt(wind[ni]) + ' ' + u.wind,
