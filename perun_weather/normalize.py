@@ -176,6 +176,7 @@ def prepare(location, weather, air, units: str = "metric", official_alerts: list
             "apparent_temperature": _get(w, "apparent_temperature"),
             "uv_index": _get(w, "uv_index"),
             "precipitation": _get(w, "precipitation"),
+            "precipitation_probability": _get(w, "precipitation_probability"),
             "rain": _get(w, "rain"),
             "showers": _get(w, "showers"),
             "snowfall": _get(w, "snowfall"),

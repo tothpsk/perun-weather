@@ -182,6 +182,19 @@ def _days_from_hours(hours: int, max_days: int) -> int:
     return min(days, max_days)
 
 
+
+# OPTIONAL PRECIPITATION PROBABILITY
+def _request_weather_probability(endpoint: str, params: dict) -> dict:
+    extra = dict(params)
+    extra["hourly"] = params["hourly"] + ",precipitation_probability"
+    try:
+        return request(endpoint, extra)
+    except ApiRequestError as exc:
+        if exc.status is not None and 400 <= exc.status < 500 and exc.status != 429:
+            return request(endpoint, params)
+        raise
+
+
 def fetch_weather(location, units: str, hours: int, model: str = "best_match") -> dict:
     """Fetch weather forecast. Matches main.py signature.
 
@@ -220,24 +233,24 @@ def fetch_weather(location, units: str, hours: int, model: str = "best_match") -
             "ecmwf_ifs" if model == "ecmwf_ifs_hres"
             else "ecmwf_ifs025"
         )
-        return request(FORECAST, params)
+        return _request_weather_probability(FORECAST, params)
 
     if is_ecmwf:
         model_value = ECMWF_MODEL_MAP.get(model)
         if model_value:
             params["models"] = model_value
-        return request(ECMWF, params)
+        return _request_weather_probability(ECMWF, params)
 
     model_value = GENERIC_MODEL_MAP.get(model)
     if model_value:
         params["models"] = model_value
         try:
-            return request(FORECAST, params)
+            return _request_weather_probability(FORECAST, params)
         except ApiRequestError as exc:
             if exc.status is not None and 400 <= exc.status < 500 and exc.status != 429:
                 raise NoModelData(str(exc)) from exc
             raise
-    return request(FORECAST, params)
+    return _request_weather_probability(FORECAST, params)
 
 def fetch_gfs_uv(location, hours: int) -> dict:
     """Fetch only UV index from GFS Seamless for an optional fallback."""
