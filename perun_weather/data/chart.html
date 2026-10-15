@@ -174,10 +174,15 @@ footer a:hover{text-decoration:underline}
 .precipProbCell:focus-visible,.precipProbCell:hover{outline:1px solid #e8eaf0;outline-offset:1px;z-index:2}
 .precipProbTip{position:fixed;z-index:600;pointer-events:none;background:var(--deep);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;max-width:300px;color:var(--text);box-shadow:0 5px 20px #0006}
 .precipProbTip[hidden]{display:none}
+
+#helpContent details.changelogOlder{margin-top:6px}
+#helpContent details.changelogOlder summary{cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;margin:8px 0 14px;user-select:none}
+#helpContent details.changelogOlder summary:hover{text-decoration:underline}
+#helpContent details.changelogOlder summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 </style>
 </head>
 <body>
-<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.5.1</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
+<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.6.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
 <main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
@@ -719,6 +724,18 @@ help_html: `
   <h2>Changelog</h2>
 
   <div class="changelog-entry">
+    <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
+    <ul>
+      <li>Added a precipitation probability strip below the precipitation and cloud cover chart, where colour intensity shows probability; the value is also shown in the weather summary.</li>
+      <li>Applied readable five-tick axes with outward ticks to forecast, air quality, pollen and marine charts; non-negative data start at zero, cloud cover stays at 0–100 %, and UV starts at zero.</li>
+      <li>The temperature axis now follows the visible minimum and maximum with readable values.</li>
+      <li>Tuned marine charts, including finer one-decimal tide steps, and removed the wave-direction entry from the legend while keeping the arrows.</li>
+      <li>Fixed duplicate dates and doubled day dividers when daylight-saving time changes.</li>
+      <li>Kept the same spacing below charts for every forecast range and unified tooltip typography.</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
     <div class="ver">4.5.1 · 2026-10-13 <span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
     <ul>
       <li>Fixed the precipitation axis to start at zero, including periods without precipitation, on Linux and Windows.</li>
@@ -746,6 +763,9 @@ help_html: `
       <li>Updated AQI chart time alignment for selected intervals; kept AQI values unsmoothed and removed coloured chart backgrounds.</li>
     </ul>
   </div>
+
+  <details class="changelogOlder">
+    <summary>Older versions</summary>
 
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
@@ -841,6 +861,7 @@ help_html: `
       <li>First connection to live Open-Meteo data and a working native bridge between WebKit (JS) and the GTK/Python layer</li>
     </ul>
   </div>
+  </details>
 </section>
 
 <section>
@@ -1313,6 +1334,18 @@ help_html: `
   <h2>História zmien</h2>
 
   <div class="changelog-entry">
+    <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
+    <ul>
+      <li>Pridaný pás pravdepodobnosti zrážok pod grafom zrážok a oblačnosti; intenzita farby vyjadruje pravdepodobnosť a hodnota je aj v súhrne počasia.</li>
+      <li>Čitateľné osi s piatimi značkami smerom von pre predpoveď, kvalitu ovzdušia, peľ aj morské grafy; nezáporné údaje začínajú od nuly, oblačnosť zostáva 0–100 % a UV začína od nuly.</li>
+      <li>Os teploty sleduje zobrazené minimum a maximum a používa čitateľné hodnoty.</li>
+      <li>Upravené morské grafy vrátane jemnejších krokov príliv a odlivu s jedným desatinným miestom; z legendy je odstránený smer vĺn, šípky v grafe zostali.</li>
+      <li>Opravené zdvojené dátumy a zdvojené čiary dní pri zmene letného a zimného času.</li>
+      <li>Rovnaké odsadenie pod grafmi pre všetky rozsahy predpovede a zjednotené písmo tooltipov.</li>
+    </ul>
+  </div>
+
+  <div class="changelog-entry">
     <div class="ver">4.5.1 · 2026-10-13 <span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
     <ul>
       <li>Opravená os zrážok: začína od nuly aj v obdobiach bez zrážok na Linuxe aj Windows.</li>
@@ -1341,6 +1374,9 @@ help_html: `
     </ul>
   </div>
   
+  <details class="changelogOlder">
+    <summary>Staršie verzie</summary>
+
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
     <ul>
@@ -1435,6 +1471,7 @@ help_html: `
       <li>Prvé naviazanie na živé dáta Open-Meteo a funkčný natívny most medzi WebKit (JS) a GTK/Python vrstvou</li>
     </ul>
   </div>
+  </details>
 </section>
 
 <section>

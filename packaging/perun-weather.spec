@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        4.5.1
+Version:        4.6.0
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
@@ -60,6 +60,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
+* Thu Oct 15 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.6.0-1
+- Add precipitation probability strip and summary value
+- Apply readable five-tick axes to forecast, air, pollen and marine charts
+- Fit temperature and tide axes to visible data
+- Fix daylight-saving day boundaries and unify chart spacing
 * Tue Oct 13 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.5.1-1
 - Fix precipitation baseline and align wind/pressure axes
 - Add bilingual air indicator and styled AOD tooltips

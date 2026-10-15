@@ -1,3 +1,12 @@
+perun-weather (4.6.0-1) unstable; urgency=medium
+
+  * New upstream release 4.6.0.
+  * Add precipitation probability strip and summary value.
+  * Apply readable axes to forecast, air, pollen and marine charts.
+  * Fix daylight-saving day boundaries and unify chart spacing.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Thu, 15 Oct 2026 14:04:59 +0200
+
 perun-weather (4.5.1-1) unstable; urgency=medium
 
   * New upstream release 4.5.1.
