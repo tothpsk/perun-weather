@@ -179,12 +179,64 @@ footer a:hover{text-decoration:underline}
 #helpContent details.changelogOlder summary{cursor:pointer;color:var(--accent);font-size:13px;font-weight:600;margin:8px 0 14px;user-select:none}
 #helpContent details.changelogOlder summary:hover{text-decoration:underline}
 #helpContent details.changelogOlder summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+/* PERUN OVERVIEW STEP 1 */
+#pwOverview{margin-bottom:18px;font-size:16px;line-height:1.5}#pwOverview *{box-sizing:border-box}.pwHero{padding:26px;border:1px solid #46556b;border-radius:22px;background:radial-gradient(ellipse at top right,#43516b66,transparent 65%),linear-gradient(120deg,#283748,#262b36)}.pwLocation{font-size:28px;font-weight:650}.pwMuted{color:#b4bdcc;font-size:13px}.pwMain{display:grid;grid-template-columns:1fr 1.7fr;gap:24px;margin-top:22px;align-items:center}.pwReading{display:flex;align-items:center;gap:22px}.pwTemp{font-size:110px;line-height:1.1;letter-spacing:-5px}.pwWeatherIcon{width:150px;height:150px}.pwCondition{font-size:22px}.pwFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pwFact{padding:14px;background:#1a1d2466;border:1px solid #465064;border-radius:14px;min-width:0}.pwLabel{display:flex;align-items:center;gap:8px;color:#bac4d4;font-size:13px;margin-bottom:7px}.pwValue{font-size:23px;font-weight:600}.pwDot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#5b6577;flex-shrink:0}.pwCompass{width:86px;height:86px;vertical-align:middle}.pwWind{display:flex;align-items:center;justify-content:space-between;gap:4px}.pwLower{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:12px;margin-top:12px}.pwCard{padding:18px;border:1px solid var(--border);border-radius:15px;background:var(--panel)}.pwCard h2{font-size:17px;margin:0 0 12px;display:flex;gap:9px;align-items:center}.pwLink{border:1px solid var(--border);border-radius:8px;background:var(--deep);color:var(--accent);min-height:44px;padding:8px 12px;margin-top:10px;cursor:pointer;font:inherit;font-size:14px}.pwLink:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.pwBar{height:6px;border-radius:6px;background:#414958;margin-top:9px;overflow:hidden}.pwBar span{display:block;height:100%;border-radius:6px}.pwPollenRow{margin-bottom:9px}.pwPollenRow .pwBar{height:4px;margin-top:4px}.pwMiniIcon{width:28px;height:28px;float:right}.pwAqiScale{display:flex;height:7px;gap:3px;margin:12px 0}.pwAqiScale span{flex:1;border-radius:3px}.pwSun{display:flex;align-items:center;gap:5px;margin:6px 0}.pwEmpty{padding:20px;color:var(--muted)}@media(max-width:1250px){.pwMain{grid-template-columns:1fr}.pwLower{grid-template-columns:1fr 1fr}.pwLower>.pwCard:last-child{grid-column:1/-1}}@media(max-width:650px){.pwFacts{grid-template-columns:1fr 1fr}.pwLower{grid-template-columns:1fr}.pwHero{padding:18px}.pwTemp{font-size:88px}.pwWeatherIcon{width:110px;height:110px}.pwLocation{font-size:24px}}
+
+
+/* PERUN OVERVIEW MOCKUP TYPOGRAPHY V1 */
+#pwOverview{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5;color:#e8eaf0}
+#pwOverview button{font-family:inherit}
+#pwOverview .pwHero{padding:28px;border-radius:24px;border-color:#526073;background:radial-gradient(ellipse at 85% 0%,#45526780,transparent 60%),linear-gradient(120deg,#283748,#252d39)}
+#pwOverview .pwEyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#c3cedd;font-weight:400}
+#pwOverview .pwLocation{font-size:31px;font-weight:700;line-height:1.25;margin:2px 0 5px;letter-spacing:normal}
+#pwOverview .pwDate{font-size:16px;line-height:1.5;color:#bbc4d2}
+#pwOverview .pwSource{font-size:12px;line-height:1.5;color:#bbc4d2;margin-top:6px}
+#pwOverview .pwMain{gap:30px;margin-top:24px}
+#pwOverview .pwTemp{font-size:120px;font-weight:650;line-height:1.1;letter-spacing:-6px}
+#pwOverview .pwWeatherIcon{width:150px;height:150px;flex-shrink:0}
+#pwOverview .pwCondition{font-size:24px;font-weight:400}
+#pwOverview .pwValue{font-size:24px;font-weight:650;margin-top:6px}
+#pwOverview .pwLabel{font-size:13px;color:#bbc4d2}
+#pwOverview .pwMuted{color:#bbc4d2}
+#pwOverview .pwFact{background:#19212d75;border-color:#4b586c}
+#pwOverview .pwCard{border-radius:17px}
+#pwOverview .pwDot{border:1px solid #ffffff35}
+@media(max-width:650px){#pwOverview .pwHero{padding:20px}#pwOverview .pwTemp{font-size:94px}#pwOverview .pwWeatherIcon{width:120px;height:120px}#pwOverview .pwLocation{font-size:29px}#pwOverview .pwReading{gap:16px;flex-wrap:wrap}}
+
+
+/* PERUN COMPACT OVERVIEW V2 */
+#pwOverview{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,300px);gap:14px;align-items:start}
+#pwOverview .pwLower{display:flex;flex-direction:column;gap:10px;margin:0;min-width:0}
+#pwOverview .pwLower>.pwCard{padding:15px;min-width:0}
+#pwOverview .pwHero{padding:22px;min-width:0}
+#pwOverview .pwMain{grid-template-columns:minmax(200px,.9fr) minmax(0,1.3fr);gap:18px;margin-top:18px}
+#pwOverview .pwFacts{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#pwOverview .pwFact{padding:12px;min-width:0}
+#pwOverview .pwFact:last-child{grid-column:1/-1}
+#pwOverview .pwSource{display:none}
+#pwOverview .pwTemp{font-size:104px}
+#pwOverview .pwWeatherIcon{width:126px;height:126px}
+#pwOverview .pwReading{gap:10px;flex-wrap:wrap}
+#pwOverview .pwCompass{width:82px;height:82px}
+#pwOverview .pwGraphic{display:block;width:100%;max-width:155px;height:86px;margin:0 auto}
+#pwOverview .pwGraphicText{text-align:center;font-size:24px;font-weight:650}
+#pwOverview .pwSolarGraphic{width:100%;height:82px;display:block}
+#pwOverview .pwDayRange{font-size:15px;line-height:1.5;margin-top:9px}
+#pwOverview .pwDayRange .pwDot{margin-right:6px}
+#pwOverview .pwSunTimes{display:flex;gap:18px;justify-content:space-between;flex-wrap:wrap}
+#pwOverview .pwSunTimes .pwSun{margin:0}
+#pwOverview .pwPollenRow{margin-bottom:7px}
+@media(max-width:1200px){#pwOverview .pwMain{grid-template-columns:1fr}#pwOverview .pwReading{flex-wrap:nowrap}#pwOverview .pwTemp{font-size:94px}}
+@media(max-width:900px){#pwOverview{grid-template-columns:1fr}#pwOverview .pwMain{grid-template-columns:minmax(200px,.9fr) minmax(0,1.3fr)}#pwOverview .pwLower{display:grid;grid-template-columns:1fr 1fr}#pwOverview .pwLower>.pwCard:last-child{grid-column:1/-1}}
+@media(max-width:620px){#pwOverview .pwMain{grid-template-columns:1fr}#pwOverview .pwLower{display:flex}#pwOverview .pwHero{padding:18px}#pwOverview .pwTemp{font-size:92px}#pwOverview .pwWeatherIcon{width:115px;height:115px}}
+
 </style>
 </head>
 <body>
 <div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v4.6.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
-<main><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
+<main><section id="pwOverview" aria-label="Weather overview"><div class="pwEmpty">Loading…</div></section><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
   <input
     id="marineToggle"
@@ -3036,7 +3088,7 @@ function selectedAqiLegend(){
  const sk=currentLang==='sk',us=selectedAqiScale()==='us';
  return us?(sk?'Americký index kvality ovzdušia (US AQI)':'American Air Quality Index (US AQI)'):(sk?'Európsky index kvality ovzdušia (EAQI)':'European Air Quality Index (EAQI)');
 }
-function changeAqiScale(value){state.aqi_scale=value==='us'?'us':'eu';syncAqiControl();if(currentData)renderAir(currentData);setSetting('aqi_scale',state.aqi_scale)}
+function changeAqiScale(value){state.aqi_scale=value==='us'?'us':'eu';syncAqiControl();if(currentData){renderAir(currentData);renderOverview(currentData);}setSetting('aqi_scale',state.aqi_scale)}
 function airCompositeLevel(a,ni,aqi){
   const result=airIndicatorAssessment(a,ni,aqi);
   updateAirIndicatorTooltip(document.getElementById('airDot'),result);
@@ -3641,6 +3693,7 @@ function renderForecast(d, keep = false) {
   renderAir(d);
   renderWeather(d);
   renderSunMoon(d);
+  renderOverview(d);
 
   requestAnimationFrame(() => {
     [
@@ -4104,6 +4157,86 @@ function _sunAltitudeLowPrecision(date, latDeg, lonDeg) {
   return _equatorialToAltitude(ra, dec, date, latDeg, lonDeg);
 }
 
+
+// PERUN MEMORY OPTIMIZATION V1
+const PW_CHART_PANEL={alertsChart:'alerts',aqi:'air',gases:'air',aerosol:'air',pollen:'air',temperature:'weather',precipitation:'weather',wind:'weather',sunmoonAltitude:'sunmoon',sunmoonGantt:'sunmoon',seaTemperature:'marine',seaLevel:'marine',marineWaves:'marine'};
+const PW_PANEL_CHARTS=Object.entries(PW_CHART_PANEL).reduce((o,[id,sec])=>{(o[sec]=o[sec]||[]).push(id);return o},{});
+const PW_PANEL_RENDER={alerts:d=>renderAlerts(d),air:d=>renderAir(d),weather:d=>renderWeather(d),sunmoon:d=>renderSunMoon(d),marine:d=>renderMarine(d)};
+const PW_LIGHT_PANELS=new Set(['alerts','air','weather']);
+let pwLightTick=false,pwTickCount=0;
+function pwPanelOpen(sec){const b=document.getElementById(sec+'Body');return !!(b&&b.classList.contains('open'))}
+function pwChartElement(id){return document.getElementById(id)}
+function pwPurgeChart(id){const el=pwChartElement(id);if(!el)return;if(el.data||el._fullLayout){try{Plotly.purge(el)}catch(error){console.warn('[Perun Weather] Chart cleanup failed:',id,error)}}el._nowPulseAttached=false}
+const pwOriginalFramedNewPlot=framedNewPlot;
+framedNewPlot=function(target,data,plotLayout,config){
+  const id=typeof target==='string'?target:target&&target.id,sec=PW_CHART_PANEL[id],el=typeof target==='string'?pwChartElement(target):target;
+  if(sec&&!pwPanelOpen(sec)){pwPurgeChart(id);return Promise.resolve()}
+  if(sec&&pwLightTick&&PW_LIGHT_PANELS.has(sec)&&el&&el.data)return Promise.resolve();
+  return pwOriginalFramedNewPlot(target,data,plotLayout,config);
+};
+const pwOriginalRelayout=Plotly.relayout;
+Plotly.relayout=function(gd,...rest){
+  const el=typeof gd==='string'?pwChartElement(gd):gd,sec=el&&PW_CHART_PANEL[el.id];
+  if(sec&&(!pwPanelOpen(sec)||(pwLightTick&&PW_LIGHT_PANELS.has(sec))))return Promise.resolve();
+  return pwOriginalRelayout.apply(Plotly,[gd,...rest]);
+};
+const pwOriginalToggleSection=toggleSection;
+toggleSection=function(n){
+  const wasOpen=Object.keys(PW_PANEL_RENDER).filter(pwPanelOpen);
+  const result=pwOriginalToggleSection.apply(this,arguments);
+  wasOpen.forEach(sec=>{if(!pwPanelOpen(sec))(PW_PANEL_CHARTS[sec]||[]).forEach(pwPurgeChart)});
+  if(PW_PANEL_RENDER[n]&&pwPanelOpen(n)&&currentData){
+    PW_PANEL_RENDER[n](currentData);
+    requestAnimationFrame(()=>(PW_PANEL_CHARTS[n]||[]).forEach(attachNowPulseDot));
+  }
+  return result;
+};
+function pwMoveNowLines(){
+  const now=nowMarker();
+  Object.entries(PW_CHART_PANEL).forEach(([id,sec])=>{
+    if(!PW_LIGHT_PANELS.has(sec)||!pwPanelOpen(sec))return;
+    const gd=pwChartElement(id),items=gd&&gd.layout&&gd.layout.shapes;
+    if(!Array.isArray(items))return;
+    const update={};
+    items.forEach((shape,i)=>{if(shape&&shape.type==='line'&&shape.line&&shape.line.color==='#4fc3f7'){update['shapes['+i+'].x0']=now;update['shapes['+i+'].x1']=now}});
+    if(!Object.keys(update).length)return;
+    Plotly.relayout(gd,update).then(()=>placeNowPulseDot(gd)).catch(error=>console.warn('[Perun Weather] Now-line update failed:',id,error));
+  });
+}
+startNowTick=function(){
+  if(nowTickTimer)clearInterval(nowTickTimer);
+  nowTickTimer=setInterval(()=>{
+    if(!currentData||document.hidden)return;
+    pwTickCount=(pwTickCount+1)%15;
+    if(pwTickCount===0){pwRenderForecastNow(currentData,true);return}
+    pwLightTick=true;
+    try{pwRenderForecastNow(currentData,true)}finally{pwLightTick=false}
+    pwMoveNowLines();
+  },60000);
+};
+
+
+// PERUN MEMORY OPTIMIZATION V2
+const pwRenderForecastNow=renderForecast;
+let pwRenderTimer=null,pwRenderData=null,pwRenderKeep=true,pwLocationKey='',pwFullRenderCount=0;
+function pwLocationKeyOf(d){return d?[d.name,d.latitude,d.longitude].join('|'):''}
+function pwPurgeAllCharts(){Object.keys(PW_CHART_PANEL).forEach(pwPurgeChart)}
+renderForecast=function(d,keep=false){
+  if(!d)return;
+  pwRenderKeep=pwRenderTimer===null?!!keep:(pwRenderKeep&&!!keep);
+  pwRenderData=d;currentData=d;
+  if(pwRenderTimer!==null)clearTimeout(pwRenderTimer);
+  pwRenderTimer=setTimeout(()=>{
+    pwRenderTimer=null;
+    const data=pwRenderData,keepSubtitle=pwRenderKeep;
+    pwRenderData=null;pwRenderKeep=true;
+    const key=pwLocationKeyOf(data);
+    pwFullRenderCount++;
+    if(key!==pwLocationKey||pwFullRenderCount%40===0){pwPurgeAllCharts();pwLocationKey=key}
+    pwRenderForecastNow(data,keepSubtitle);
+  },80);
+};
+
 startNowTick();
 
 document.addEventListener('visibilitychange', () => {
@@ -4121,6 +4254,121 @@ document.addEventListener('keydown', function (e) {
     e.preventDefault();
   }
 });
+
+
+// PERUN OVERVIEW STEP 1: reuse existing data, units and assessment functions.
+function pwIcon(kind,night=false){
+ const sun='<g stroke="#ffd166" stroke-width="4" stroke-linecap="round"><path d="M50 8v10m0 64v10M8 50h10m64 0h10M20 20l7 7m46 46l7 7M20 80l7-7m46-46l7-7"/></g><circle cx="50" cy="50" r="23" fill="#ffd166"/>';
+ const moon='<path d="M70 15A38 38 0 1 0 85 72 34 34 0 0 1 70 15" fill="#d2def5"/>';
+ const cloud='<path d="M23 73a18 18 0 0 1-2-36 27 27 0 0 1 51-5 21 21 0 0 1 7 41Z" fill="#cbd7e7"/>';
+ let body=kind==='clear'?(night?moon:sun):kind==='part'?`<g transform="scale(.75)">${night?moon:sun}</g><g transform="translate(15 20) scale(.85 .8)">${cloud}</g>`:cloud;
+ if(kind==='rain')body='<g transform="translate(0 -12)">'+cloud+'</g><path d="M28 75l-5 12m28-12l-5 12m28-12l-5 12" stroke="#70d0ff" stroke-width="5" stroke-linecap="round"/>';
+ if(kind==='snow')body+='<g fill="#e8eaf0"><circle cx="27" cy="88" r="4"/><circle cx="50" cy="91" r="4"/><circle cx="73" cy="88" r="4"/></g>';
+ if(kind==='storm')body+='<path d="M52 60L35 83h15l-6 16 26-27H54l8-12Z" fill="#ffd166"/>';
+ if(kind==='fog')body+='<path d="M12 82h75M18 92h63" stroke="#cbd7e7" stroke-width="4" stroke-linecap="round"/>';
+ return `<svg class="pwWeatherIcon" viewBox="0 0 100 105" aria-hidden="true">${body}</svg>`;
+}
+
+
+function pwOverviewDate(date,sk){
+  if(!(date instanceof Date)||!Number.isFinite(date.getTime()))return '—';
+  const locale=sk?'sk-SK':'en-GB';
+  const weekday=new Intl.DateTimeFormat(locale,{weekday:'long'}).format(date);
+  const calendar=new Intl.DateTimeFormat(locale,{day:'numeric',month:'long'}).format(date);
+  const time=new Intl.DateTimeFormat(locale,{hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
+  return weekday.charAt(0).toLocaleUpperCase(locale)+weekday.slice(1)+' '+calendar+' · '+time;
+}
+
+function pwOpen(section){const body=document.getElementById(section+'Body');if(!body)return;if(!body.classList.contains('open'))toggleSection(section);body.parentElement.scrollIntoView({block:'start'});}
+
+// PERUN COMPACT OVERVIEW V2
+function pwCompactOverview(d,root){
+ const sk=currentLang==='sk',L=(a,b)=>sk?a:b,E=escapeHtml,N=weatherSummaryNumber;
+ const h=d.hourly||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),valid=times[i]&&Math.abs(new Date(times[i])-now)<=3600000;
+ const at=k=>valid?N(arr(h,k)[i]):null,u=UNITS[state.units]||UNITS.metric;
+ const hero=root.querySelector('.pwHero');if(!hero)return;
+ const source=hero.querySelector('.pwSource');if(source)source.remove();
+ // Support the pre-typography first patch too: remove only its exact source label.
+ if(!source){const first=hero.querySelector('.pwMuted');if(first&&/Modelová predpoveď pre aktuálnu hodinu|Model forecast for the current hour/.test(first.textContent))first.remove()}
+ const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+ const samples=times.map((ts,j)=>({ts,v:N(arr(h,'temperature_2m')[j])})).filter(r=>r.ts.slice(0,10)===day&&r.v!=null);
+ const complete=samples.length===24&&samples[0].ts.slice(11,16)==='00:00'&&samples[23].ts.slice(11,16)==='23:00';
+ const feels=hero.querySelector('.pwMain>div:first-child');
+ if(feels){const old=[...feels.children].find(e=>e.tagName==='DIV'&&e.querySelector('.pwDot'));if(old){
+ const feel=at('apparent_temperature'),temp=at('temperature_2m');
+ old.className='pwDayRange';old.style.marginTop='9px';
+ old.innerHTML=`<span class="pwDot" style="background:${tempDotColor(temp)}"></span>${E(t('chip_feels'))} ${weatherSummaryTint(feel==null?'—':fmt(feel)+' '+E(u.temp),weatherSummaryTempColor(feel))}`;
+ if(samples.length){const vals=samples.map(r=>r.v),lo=Math.min(...vals),hi=Math.max(...vals);old.innerHTML+=` · ${E(complete?L('dnes','today'):L('dostupná časť dňa','available part of day'))} ${fmt(lo)} ${E(L('až','to'))} ${fmt(hi)} ${E(u.temp)}`}
+ }}
+ const facts=root.querySelectorAll('.pwFacts>.pwFact');if(facts.length!==5)return;
+ const compass=facts[0].querySelector('.pwCompass path');if(compass)compass.setAttribute('fill','#88dca1');
+ const svg=(body,label,cls='pwGraphic',view='0 0 160 100')=>`<svg class="${cls}" viewBox="${view}" role="img" aria-label="${E(label)}"><title>${E(label)}</title>${body}</svg>`;
+ const uv=at('uv_index'),uvColor=weatherSummaryUvColor(uv)||'#5b6577';
+ const arc=(start,end)=>{const pt=p=>[80-62*Math.cos(p*Math.PI),78-62*Math.sin(p*Math.PI)];const a=pt(start),b=pt(end);return `M${a[0]} ${a[1]}A62 62 0 ${end-start>0.5?1:0} 1 ${b[0]} ${b[1]}`};
+ let gauge=`<path d="${arc(0,1)}" fill="none" stroke="#414958" stroke-width="11" stroke-linecap="round"/>`;
+ if(uv!=null&&uv>=0){let extent=Math.min(1,uv/11);for(let k=0;k<110;k++){let a=k/110,b=Math.min((k+1)/110,extent);if(b>a)gauge+=`<path d="${arc(a,b)}" fill="none" stroke="${weatherSummaryUvColor((a+b)*11/2)||uvColor}" stroke-width="11"/>`}}
+ gauge+='<text x="13" y="97" fill="#bbc4d2" font-size="12">0</text><text x="132" y="97" fill="#bbc4d2" font-size="12">11+</text>';
+ const uvLabel=facts[1].querySelector('.pwLabel').outerHTML;
+ facts[1].innerHTML=uvLabel+svg(gauge,L('UV index, stupnica 0 až 11 a viac','UV index, scale 0 to 11 plus'))+`<div class="pwGraphicText" style="color:${uvColor}">${uv==null?'—':fmt(uv)}</div>`;
+ const cloudPath='M35 77a22 22 0 0 1-4-44 31 31 0 0 1 59-7 25 25 0 0 1 10 51Z';
+ const cloudGraphic=(fraction,color,id,label,extra='')=>{let y=78-Math.max(0,Math.min(1,fraction))*62;return svg(`<defs><clipPath id="${id}"><path d="${cloudPath}"/></clipPath></defs><path d="${cloudPath}" fill="#1a1d24"/><rect x="0" y="${y}" width="160" height="100" fill="${color}" clip-path="url(#${id})"/><path d="${cloudPath}" fill="none" stroke="#bbc4d2" stroke-width="2"/>${extra}`,label)};
+ const cloud=at('cloud_cover'),cc=cloud!=null&&cloud>=0&&cloud<=100?cloud:null;
+ facts[2].innerHTML=facts[2].querySelector('.pwLabel').outerHTML+cloudGraphic(cc==null?0:cc/100,'#8294ad','pwCloudCoverClip',L('Celková oblačnosť','Total cloud cover'))+`<div class="pwGraphicText">${cc==null?'—':fmt(cc)+' %'}</div>`;
+ const total=at('precipitation'),ptype=weatherSummaryPrecipType(at('rain'),at('showers'),at('snowfall'));
+ const precColor=ptype?.color||CLR.rain,mm=total==null?null:total*(state.units==='imperial'?25.4:1);
+ const precipBody=facts[3];let oldValue=precipBody.querySelector('.pwValue');
+ const graphic=cloudGraphic(mm==null?0:mm/10,precColor,'pwRainClip',L('Množstvo zrážok: vizuálna stupnica 0 až 10 mm za hodinu','Precipitation amount: visual scale 0 to 10 mm per hour'));
+ if(oldValue){oldValue.insertAdjacentHTML('beforebegin',graphic);if(total===0)oldValue.textContent=t('precip_none');else if(total==null)oldValue.textContent='—';}
+ const small=[...precipBody.querySelectorAll('.pwMuted')];if(total===0&&small[0])small[0].textContent='';
+ const daily=d.daily||{},di=arr(daily,'time').indexOf(day),rise=di>=0?arr(daily,'sunrise')[di]:null,set=di>=0?arr(daily,'sunset')[di]:null;
+ const sun=facts[4],sunLabel=sun.querySelector('.pwLabel').outerHTML,oldTimes=[...sun.querySelectorAll('.pwSun')].map(e=>e.outerHTML).join('');
+ const toUTC=iso=>{const dt=new Date(iso);return new Date(Date.UTC(dt.getFullYear(),dt.getMonth(),dt.getDate(),dt.getHours(),dt.getMinutes(),dt.getSeconds())-(Number(d.utc_offset_seconds)||0)*1000)};
+ const lat=N(d.latitude),lon=N(d.longitude);let sunGraphic='';
+ if(rise&&set&&lat!=null&&lon!=null){const start=toUTC(rise).getTime(),end=toUTC(set).getTime();if(end>start){
+ const pos=time=>{const alt=_sunAltitudeLowPrecision(new Date(time),lat,lon);return [18+224*(time-start)/(end-start),78-Math.max(0,Math.min(90,alt))*0.7]};
+ const points=Array.from({length:49},(_,j)=>pos(start+(end-start)*j/48).join(',')).join(' ');
+ const instant=Date.now(),daylight=instant>=start&&instant<=end;let body=`<path d="M18 79H242" stroke="#657185" stroke-dasharray="3 4"/><polyline points="${points}" fill="none" stroke="#ffd166" stroke-width="2.5"/>`;
+ if(daylight){const [x,y]=pos(instant);body+=`<circle cx="${x}" cy="${y}" r="7" fill="#ffd166"/><circle cx="${x}" cy="${y}" r="11" fill="none" stroke="#ffd166" opacity=".3"/>`}
+ else body+=`<text x="130" y="37" text-anchor="middle" fill="#bbc4d2" font-size="12">${E(L('Slnko pod obzorom','Sun below horizon'))}</text>`;
+ sunGraphic=svg(body,L('Dnešná výška Slnka nad obzorom a aktuálna poloha','Today’s solar altitude above the horizon and current position'),'pwSolarGraphic','0 0 260 90');
+ }}
+ sun.innerHTML=sunLabel+(sunGraphic||`<div class="pwMuted">${E(L('Dráha Slnka nie je dostupná','Solar path unavailable'))}</div>`)+`<div class="pwSunTimes">${oldTimes}</div>`;
+}
+
+function renderOverview(d){
+ const root=document.getElementById('pwOverview');if(!root)return;
+ const sk=currentLang==='sk',L=(a,b)=>sk?a:b,E=escapeHtml,N=weatherSummaryNumber;
+ const h=d.hourly||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),stamp=times[i];
+ const valid=stamp&&Math.abs(new Date(stamp)-now)<=3600000;
+ const get=k=>valid?N(arr(h,k)[i]):null;
+ const u=UNITS[state.units]||UNITS.metric,day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+ const daily=d.daily||{},di=arr(daily,'time').indexOf(day),rise=di>=0?arr(daily,'sunrise')[di]:null,set=di>=0?arr(daily,'sunset')[di]:null;
+ const night=rise&&set?(now<new Date(rise)||now>=new Date(set)):false;
+ const temp=get('temperature_2m'),feel=get('apparent_temperature'),wind=get('wind_speed_10m'),gust=get('wind_gusts_10m'),wd=get('wind_direction_10m'),uv=get('uv_index'),cloud=get('cloud_cover'),prec=get('precipitation'),rawProb=get('precipitation_probability'),prob=rawProb!=null&&rawProb>=0&&rawProb<=100?rawProb:null;
+ const code=get('weather_code');let kind='cloud',condition=L('Údaj nedostupný','Unavailable');
+ if(code!=null){if(code===0){kind='clear';condition=L('Jasno','Clear')}else if(code<=2){kind='part';condition=L('Polojasno','Partly cloudy')}else if(code===3){condition=L('Zamračené','Overcast')}else if([45,48].includes(code)){kind='fog';condition=L('Hmla','Fog')}else if(code>=95){kind='storm';condition=L('Búrka','Thunderstorm')}else if([71,73,75,77,85,86].includes(code)){kind='snow';condition=L('Sneženie','Snow')}else if(code>=51){kind='rain';condition=L('Zrážky','Precipitation')}}
+ const dot=(color,title)=>`<span class="pwDot" style="background:${color||'#5b6577'}" title="${E(title||'')}"></span>`;
+ const val=(v,unit='',dec=0)=>v==null?'—':fmt(v,dec)+(unit?' '+E(unit):'');
+ const fact=(label,body,color,extra='')=>`<div class="pwFact"><div class="pwLabel">${dot(color,label)}${E(label)}</div>${body}${extra}</div>`;
+ const value=(v,unit='',color=null,dec=0)=>`<div class="pwValue">${weatherSummaryTint(val(v,unit,dec),color)}</div>`;
+ const windColor=weatherSummaryWindColor(wind),uvColor=weatherSummaryUvColor(uv),ptype=weatherSummaryPrecipType(get('rain'),get('showers'),get('snowfall'));
+ const compass=wd==null||wind===0?'':`<svg class="pwCompass" viewBox="0 0 90 90" role="img" aria-label="${E(L('Vietor prichádza z','Wind from')+' '+dir(wd)+' '+fmt(wd)+'°')}"><title>${E(dir(wd)+' '+fmt(wd)+'°')}</title><circle cx="45" cy="45" r="32" fill="none" stroke="#8c9bb2"/><text x="45" y="14" fill="#e8eaf0" text-anchor="middle" font-size="11">${sk?'S':'N'}</text><path d="M45 22L35 58L45 51L55 58Z" transform="rotate(${wd} 45 45)" fill="${windColor||'#4fc3f7'}"/></svg>`;
+ const uvIcon=pwIcon('clear').replace('pwWeatherIcon','pwMiniIcon'),cloudIcon=pwIcon('cloud').replace('pwWeatherIcon','pwMiniIcon');
+ const bar=(p,color)=>`<div class="pwBar"><span style="width:${Math.max(0,Math.min(100,p))}%;background:${color}"></span></div>`;
+ const source=(d.uv_sources||[])[i]==='gfs'?' · GFS':'';
+ const air=(d.air&&d.air.hourly)||{},at=k=>valid?N(arr(air,k)[i]):null,aq=at(selectedAqiScale()==='us'?'us_aqi':'european_aqi'),cat=aqiCategory(aq);
+ const levelColor=l=>({ok:'#66d17a',warn:'#ffb74d',bad:'#ff6b6b'}[l]||'#9aa3b2');
+ const pm=(label,key,threshold)=>`${E(label)} ${weatherSummaryTint(val(at(key),'µg/m³',1),at(key)==null?null:levelColor(bandLevel(at(key),threshold)))}`;
+ const pkeys=['alder','birch','grass','mugwort','ragweed','olive'];
+ const known=pkeys.filter(k=>at(k+'_pollen')!=null),active=known.filter(k=>at(k+'_pollen')>0).sort((a,b)=>({ok:0,warn:1,bad:2}[pollenLevel(at(b+'_pollen'),b)]-({ok:0,warn:1,bad:2}[pollenLevel(at(a+'_pollen'),a)])));
+ const ptext=active.map(k=>{const v=at(k+'_pollen'),l=pollenLevel(v,k),threshold=POLLEN_THRESHOLDS[k],name=t('leg_'+k),description=l==='bad'?L('vysoká','high'):l==='warn'?L('zvýšená','elevated'):L('nízka','low');return `<div class="pwPollenRow">${dot(levelColor(l),description)} ${E(name)} · ${E(description)}<div class="pwMuted">${val(v,t('axis_pollen'),1)}</div>${bar(v/threshold.bad*100,levelColor(l))}</div>`}).join('')||`<p class="pwMuted">${known.length?L('V dostupných údajoch je koncentrácia nulová.','Available concentrations are zero.'):L('Údaje nie sú dostupné.','Data unavailable.')}</p>`;
+ const alerts=(d.alerts||[]).filter(a=>new Date(a.end)>=now),highest=highestAlertLevel(alerts);
+ const alertText=alerts.length?alerts.map(a=>`<div style="margin:8px 0">${dot(ALERT_COLORS[alertLevel(a)])} <strong>${E(alertEvent(a))}</strong><div class="pwMuted">${E(alertIssuer(a))}<br>${E(a.start||'')} → ${E(a.end||'')}</div></div>`).join(''):`<p>${E(t('no_active_alerts'))}</p>`;
+ const link=(section,label)=>`<button type="button" class="pwLink" data-pw-open="${section}">${E(label)} ↗</button>`;
+ root.innerHTML=`<div class="pwHero"><div class="pwEyebrow">${E(L('Počasie na prvý pohľad','Weather at a glance'))}</div><div class="pwLocation">${E(d.name||'')}</div><div class="pwDate">${E(pwOverviewDate(now,sk))}</div><div class="pwSource">${E(L('Modelová predpoveď pre aktuálnu hodinu','Model forecast for the current hour'))} · ${E(stamp&&valid?stamp.replace('T',' '):L('Údaje mimo aktuálneho času','No current time data'))}</div><div class="pwMain"><div><div class="pwReading"><div class="pwTemp">${temp==null?'—':fmt(temp)+'°'}</div>${code==null?'':pwIcon(kind,night)}</div><div class="pwCondition">${E(condition)}</div><div style="margin-top:8px">${dot(tempDotColor(temp))} ${E(t('chip_feels'))} ${weatherSummaryTint(val(feel,u.temp),weatherSummaryTempColor(feel))}</div>${link('weather',L('Podrobná predpoveď','Detailed forecast'))}</div><div class="pwFacts">${fact(t('chip_wind'),`<div class="pwWind">${value(wind,u.wind,windColor)}${compass}</div><div class="pwMuted">${E(t('chip_gusts'))} ${weatherSummaryTint(val(gust,u.wind),weatherSummaryWindColor(gust))}</div>`,windColor)}${fact(t('chip_uv'),uvIcon+value(uv,'',uvColor,1)+`<div class="pwMuted">${E(source)}</div>`,uvColor)}${fact(t('chip_clouds'),cloudIcon+value(cloud,'%'),null)}${fact(t('chip_precip'),value(prec,u.precip,ptype?.color,1)+`<div class="pwMuted">${ptype?E(t(ptype.key)):prec===0?E(t('precip_none')):'—'}</div><div class="pwMuted">${E(t('chip_precip_prob'))}: ${val(prob,'%')}</div>${prob==null?'':bar(prob,probabilityColour(prob))}`,ptype?.color)}${fact(L('Slnko dnes','Sun today'),`<div class="pwSun">${smIcon('sunrise')}${smIconDir('up')}${E(smFmtHM(rise))}</div><div class="pwSun">${smIcon('sunset')}${smIconDir('down')}${E(smFmtHM(set))}</div>`,null)}</div></div></div><div class="pwLower"><section class="pwCard"><h2>${dot(cat?.color,cat?.name)}${E(L('Kvalita vzduchu','Air quality'))}</h2>${value(aq,selectedAqiName(),cat?.color)}<div class="pwMuted">${E(cat?.name||L('Údaje nie sú dostupné','Data unavailable'))}</div><div class="pwAqiScale" aria-hidden="true">${aqiBands().map(b=>`<span style="background:${b.color};${b===cat?'outline:2px solid white;outline-offset:2px':''}"></span>`).join('')}</div><p>${pm('PM2.5','pm2_5','pm25')}<br>${pm('PM10','pm10','pm10')}</p>${link('air',L('Vzduch podrobne','Air details'))}</section><section class="pwCard"><h2>${dot(active.length?levelColor(pollenLevel(at(active[0]+'_pollen'),active[0])):null)}${E(L('Peľ aktuálne','Current pollen'))}</h2>${ptext}<div class="pwMuted">${E(L('Pásiky: koncentrácia vzhľadom na existujúci vysoký prah pre daný druh.','Bars: concentration relative to the existing high threshold for each species.'))}</div>${link('air',L('Peľ podrobne','Pollen details'))}</section><section class="pwCard"><h2>${dot(ALERT_COLORS[highest])}${E(L('Výstrahy a lokálne odhady','Alerts and local estimates'))}</h2>${alertText}${link('alerts',L('Zdroj a platnosť','Source and validity'))}</section></div>`;
+ pwCompactOverview(d,root);
+ root.querySelectorAll('[data-pw-open]').forEach(b=>b.onclick=()=>pwOpen(b.dataset.pwOpen));
+}
 
 </script>
 </body>
