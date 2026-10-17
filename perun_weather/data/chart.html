@@ -231,6 +231,175 @@ footer a:hover{text-decoration:underline}
 @media(max-width:900px){#pwOverview{grid-template-columns:1fr}#pwOverview .pwMain{grid-template-columns:minmax(200px,.9fr) minmax(0,1.3fr)}#pwOverview .pwLower{display:grid;grid-template-columns:1fr 1fr}#pwOverview .pwLower>.pwCard:last-child{grid-column:1/-1}}
 @media(max-width:620px){#pwOverview .pwMain{grid-template-columns:1fr}#pwOverview .pwLower{display:flex}#pwOverview .pwHero{padding:18px}#pwOverview .pwTemp{font-size:92px}#pwOverview .pwWeatherIcon{width:115px;height:115px}}
 
+
+/* PERUN OVERVIEW V3 */
+#pwOverview.pw3{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,330px);gap:14px;align-items:stretch;margin-bottom:18px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45;color:#e8eaf0}
+#pwOverview.pw3 *{box-sizing:border-box}
+.pw3-hero{display:grid;grid-template-columns:minmax(250px,.72fr) minmax(0,2fr);gap:20px;padding:22px;border:1px solid #526073;border-radius:24px;background:radial-gradient(ellipse at 85% 0%,#45526780,transparent 60%),linear-gradient(120deg,#283748,#252d39);min-width:0}
+.pw3-main{display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-width:0}
+.pw3-eyebrow{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:#c3cedd}
+.pw3-location{font-size:31px;font-weight:700;line-height:1.2;margin:2px 0}
+.pw3-date{font-size:15px;color:#bbc4d2}
+.pw3-reading{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pw3-temp{font-size:106px;font-weight:650;line-height:1.05;letter-spacing:-6px}
+.pw3-icon{width:176px;height:176px;flex-shrink:0;margin-left:-4px}
+.pw3-condition{font-size:23px;line-height:1.2}
+.pw3-feels{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#e8eaf0;font-size:15px}
+.pw3-dot{display:inline-block;width:11px;height:11px;border-radius:50%;border:1px solid #ffffff35;background:#5b6577;flex-shrink:0}
+.pw3-btn{align-self:flex-start;min-height:40px;padding:8px 14px;border:1px solid var(--border);border-radius:10px;background:#1a1d24;color:var(--accent);font:inherit;font-size:14px;cursor:pointer}
+.pw3-btn:hover{border-color:var(--accent)}
+.pw3-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pw3-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;min-width:0}
+.pw3-tile{padding:12px 14px;background:#19212d75;border:1px solid #4b586c;border-radius:14px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.pw3-tile.wide{grid-column:span 2}
+.pw3-label{display:flex;align-items:center;gap:8px;color:#bbc4d2;font-size:13px}
+.pw3-big{font-size:24px;font-weight:650;line-height:1.2}
+.pw3-muted{color:#bbc4d2;font-size:13px}
+.pw3-windbody{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:1}
+.pw3-compass{width:min(116px,38%);aspect-ratio:1;flex-shrink:0}
+.pw3-center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;flex:1}
+.pw3-gauge{width:min(150px,100%);height:auto;display:block}
+.pw3-cloud{width:min(112px,100%);height:auto;display:block}
+.pw3-cloudtext{font-size:23px;font-weight:700;fill:#fff;paint-order:stroke;stroke:#1a1d24;stroke-width:4px;stroke-linejoin:round}
+.pw3-layers{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:12px;color:#bbc4d2}
+.pw3-bar{width:100%;height:5px;border-radius:5px;background:#414958;overflow:hidden;margin-top:3px}
+.pw3-bar span{display:block;height:100%;border-radius:5px}
+.pw3-sun{width:100%;height:auto;display:block}
+.pw3-side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.pw3-card{flex:1 1 0;display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--panel);border:1px solid var(--border);border-radius:17px;min-width:0}
+.pw3-cardhead{display:flex;align-items:center;gap:9px;justify-content:space-between}
+.pw3-cardtitle{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:650}
+.pw3-link{min-height:32px;padding:4px 9px;border:1px solid var(--border);border-radius:8px;background:#1a1d24;color:var(--accent);font:inherit;font-size:12px;cursor:pointer}
+.pw3-link:hover{border-color:var(--accent)}
+.pw3-airbody{display:flex;align-items:center;gap:12px;flex:1}
+.pw3-airtext{display:flex;flex-direction:column;gap:2px}
+.pw3-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0}
+.pw3-row span:first-child{display:flex;align-items:center;gap:8px;min-width:0}
+@media(max-width:1150px){#pwOverview.pw3{grid-template-columns:1fr}.pw3-side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.pw3-hero{grid-template-columns:1fr}.pw3-side{grid-template-columns:1fr 1fr}.pw3-side .pw3-card:last-child{grid-column:1/-1}}
+@media(max-width:620px){.pw3-hero{padding:16px}.pw3-tiles{grid-template-columns:1fr 1fr}.pw3-tile.wide{grid-column:1/-1}.pw3-side{display:flex}.pw3-temp{font-size:88px}.pw3-icon{width:130px;height:130px}.pw3-location{font-size:27px}}
+
+
+/* PERUN OVERVIEW V4 */
+.pw4-hero{display:flex;flex-direction:column;gap:12px;padding:20px 22px;border:1px solid #526073;border-radius:24px;background:radial-gradient(ellipse at 85% 0%,#45526780,transparent 60%),linear-gradient(120deg,#283748,#252d39);min-width:0}
+.pw4-top{display:flex;align-items:center;gap:8px 22px;flex-wrap:wrap}
+.pw4-place{flex:1 1 210px;min-width:0}
+.pw4-reading{display:flex;align-items:center;gap:2px;flex:0 0 auto}
+.pw4-temp{font-size:92px;font-weight:650;line-height:1;letter-spacing:-5px}
+.pw4-hero .pw3-icon{width:116px;height:116px;margin-left:0}
+.pw4-now{display:flex;flex-direction:column;align-items:flex-start;gap:8px;flex:1 1 190px;min-width:0}
+.pw4-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-width:0}
+.pw4-tile{padding:12px 14px;background:#19212d75;border:1px solid #4b586c;border-radius:14px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.pw4-label{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:650;color:#e8eaf0}
+.pw4-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;text-align:center;min-width:0}
+.pw4-tile .pw3-gauge{width:min(140px,100%)}
+.pw4-tile .pw3-cloud{width:min(108px,100%)}
+.pw4-big{font-size:24px;font-weight:650;line-height:1.2;white-space:nowrap}
+.pw4-windbody{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:1;min-width:0}
+.pw4-windtext{min-width:0}
+.pw4-compass{width:min(96px,40%);aspect-ratio:1;flex-shrink:0}
+.pw4-gust{white-space:nowrap;color:#bbc4d2;font-size:13px}
+.pw4-prob{display:flex;align-items:center;justify-content:center;gap:7px;font-size:16px;font-weight:650}
+.pw4-umbrella{width:24px;height:24px;flex-shrink:0}
+.pw4-strip{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px;width:100%;margin-top:4px}
+.pw4-cell{height:14px;border-radius:3px;background:#303845;min-width:0}
+.pw4-cell.current{outline:1px solid #e8eaf0;outline-offset:1px}
+.pw4-cell.missing{background:repeating-linear-gradient(135deg,#2b303a 0 3px,#697080 3px 4px)}
+.pw4-striplabels{display:flex;justify-content:space-between;width:100%;font-size:11px;color:#bbc4d2}
+.pw4-sun{padding-bottom:6px}
+.pw4-sunsvg{display:block;width:100%;height:auto;max-height:104px}
+.pw4-detail{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;font-size:12px}
+@media(min-width:1500px){.pw4-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:1150px) and (min-width:820px){.pw4-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:620px){.pw4-hero{padding:16px}.pw4-temp{font-size:78px}.pw4-hero .pw3-icon{width:96px;height:96px}}
+
+
+/* PERUN OVERVIEW V5 */
+#pwOverview.pw5{--pw5-value:26px;--pw5-text:15px}
+#pwOverview.pw5 .pw3-row{font-size:var(--pw5-text)}
+#pwOverview.pw5 .pw3-muted,#pwOverview.pw5 .pw5-text{font-size:var(--pw5-text);color:#bbc4d2}
+.pw5-hero{display:grid;grid-template-columns:minmax(230px,.62fr) minmax(0,2fr);gap:20px;padding:22px;border:1px solid #526073;border-radius:24px;background:radial-gradient(ellipse at 85% 0%,#45526780,transparent 60%),linear-gradient(120deg,#283748,#252d39);min-width:0}
+.pw5-main{display:flex;flex-direction:column;justify-content:space-between;gap:12px;min-width:0}
+.pw5-reading{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.pw5-temp{font-size:92px;font-weight:650;line-height:1.05;letter-spacing:-5px}
+.pw5-hero .pw3-icon{width:112px;height:112px;margin-left:0}
+.pw5-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;min-width:0}
+.pw5-tile{padding:12px 14px;background:#19212d75;border:1px solid #4b586c;border-radius:14px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.pw5-tile.wide{grid-column:span 2}
+.pw5-label{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:650;color:#e8eaf0}
+.pw5-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:1;text-align:center;min-width:0}
+.pw5-value{font-size:var(--pw5-value);font-weight:650;line-height:1.2;white-space:nowrap}
+.pw5-gauge{display:block;width:166px;max-width:100%;height:auto;flex-shrink:1}
+.pw5-tile .pw3-cloud{width:134px;max-width:100%}
+.pw5-windbody{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 14px;flex:1;min-width:0}
+.pw5-windtext{text-align:center;min-width:0}
+.pw5-compass{width:120px;max-width:100%;aspect-ratio:1;flex-shrink:1}
+.pw5-prob{display:flex;align-items:center;justify-content:center;gap:7px;font-size:var(--pw5-text);font-weight:650}
+.pw5-umbrella{width:22px;height:22px;flex-shrink:0}
+.pw5-sunsvg{display:block;width:100%;height:auto;max-height:150px}
+.pw5-airgauge{display:block;width:166px;max-width:100%;height:auto;flex-shrink:1;min-width:0}
+#pwOverview.pw5 .pw3-airbody{gap:10px;flex-wrap:wrap}
+#pwOverview.pw5 .pw3-airtext b{font-size:var(--pw5-text)}
+@media(max-width:1400px){.pw5-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.pw5-hero{grid-template-columns:1fr}}
+@media(max-width:620px){.pw5-hero{padding:16px}.pw5-tile.wide{grid-column:1/-1}.pw5-temp{font-size:78px}.pw5-hero .pw3-icon{width:96px;height:96px}}
+
+
+/* PERUN OVERVIEW V6 */
+.pw6-gauge{position:relative;display:block;margin:0 auto}
+.pw6-gauge svg{display:block;width:100%;height:auto}
+.pw6-gval{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-size:var(--pw5-value);font-weight:650;line-height:1.1;pointer-events:none}
+.pw5-gauge.pw6-gauge,.pw5-airgauge.pw6-gauge{width:166px;max-width:100%}
+.pw5-tiles>.pw5-tile:nth-child(1) .pw5-body{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-items:center;justify-items:start;text-align:left}
+.pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>svg{grid-column:2;grid-row:1 / span 3;width:min(124px,100%)}
+.pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>:not(svg){grid-column:1;min-width:0}
+.pw5-tiles>.pw5-tile:nth-child(1) .pw5-prob{justify-content:flex-start}
+.pw5-windbody{flex-wrap:nowrap;justify-content:space-between;gap:10px}
+.pw5-windtext{text-align:left}
+.pw5-compass{flex:0 1 120px;width:auto;min-width:72px}
+.pw5-tiles>.pw5-tile:nth-child(3) .pw5-body>.pw5-text{font-size:var(--pw5-value);line-height:1.2}
+#pwOverview.pw5 .pw3-airtext b{font-size:var(--pw5-value);line-height:1.2}
+.pw5-tile.wide{padding-bottom:8px}
+.pw5-tile.wide .pw5-sunsvg{width:100%;height:auto;max-height:none}
+
+
+/* PERUN OVERVIEW V7 */
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body{grid-template-columns:minmax(0,1fr) clamp(100px,42%,130px)}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>svg{width:100%;max-width:none;height:auto}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-prob,#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-prob span{white-space:nowrap}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(3) .pw5-body>.pw5-text{font-size:var(--pw5-value);line-height:1.2}
+@media(max-width:1800px){.pw5-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* PERUN OVERVIEW V8 */
+#pwOverview.pw5{--pw5-value:clamp(21px,1.35vw,26px)}
+.pw5-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:700px){.pw5-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1151px){#pwOverview.pw3{grid-template-columns:minmax(0,1fr) minmax(240px,290px)}}
+@media(min-width:901px){.pw5-hero{grid-template-columns:minmax(190px,.5fr) minmax(0,2fr);gap:16px;padding:20px}.pw5-temp{font-size:clamp(64px,5vw,92px)}}
+.pw5-tile{padding:12px}
+.pw6-gauge .pw6-gval{top:66%!important}
+.pw5-airgauge.pw6-gauge{width:150px}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body{grid-template-columns:minmax(0,1fr) clamp(84px,40%,130px)}
+.pw5-tile.wide .pw5-sunsvg{max-height:200px}
+
+
+/* PERUN OVERVIEW V9 */
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body{grid-template-rows:1fr auto auto auto 1fr;row-gap:4px;align-items:center}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>svg{grid-row:1 / 6;align-self:center}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>.pw5-value{grid-row:2}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>.pw5-text{grid-row:3}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile:nth-child(1) .pw5-body>.pw5-prob{grid-row:4}
+@media(min-width:1151px){#pwOverview.pw3{grid-template-columns:minmax(0,1fr) minmax(280px,340px)}}
+#pwOverview.pw5 .pw3-card{padding:16px 18px;gap:10px}
+#pwOverview.pw5 .pw3-row{padding:5px 0}
+#pwOverview.pw5 .pw3-row>span:first-child{display:block;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#pwOverview.pw5 .pw3-row>span:first-child .pw3-dot{display:inline-block;vertical-align:middle;margin-right:8px}
+#pwOverview.pw5 .pw3-airbody{flex-direction:column;align-items:center;justify-content:center;gap:2px}
+#pwOverview.pw5 .pw3-airtext{align-items:center;text-align:center}
+#pwOverview.pw5 .pw3-airtext .pw3-muted{display:none}
+#pwOverview.pw5 .pw5-airgauge.pw6-gauge{width:170px}
+
 </style>
 </head>
 <body>
@@ -4236,6 +4405,590 @@ renderForecast=function(d,keep=false){
     pwRenderForecastNow(data,keepSubtitle);
   },80);
 };
+
+
+// PERUN OVERVIEW V3
+let pw3Renders=0;
+function pwDiag(){
+  return {
+    elements:document.getElementsByTagName('*').length,
+    svgElements:document.querySelectorAll('svg').length,
+    plotlyGraphs:document.querySelectorAll('.js-plotly-plot').length,
+    overviewRenders:pw3Renders,
+    fullRenders:typeof pwFullRenderCount==='number'?pwFullRenderCount:null
+  };
+}
+function pw3Icon(kind,night){
+  const sun='<g stroke="#ffd166" stroke-width="4" stroke-linecap="round"><path d="M50 8v10m0 64v10M8 50h10m64 0h10M20 20l7 7m46 46l7 7M20 80l7-7m46-46l7-7"/></g><circle cx="50" cy="50" r="23" fill="#ffd166"/>';
+  const moon='<path d="M70 15A38 38 0 1 0 85 72 34 34 0 0 1 70 15" fill="#d2def5"/>';
+  const cloud='<path d="M23 73a18 18 0 0 1-2-36 27 27 0 0 1 51-5 21 21 0 0 1 7 41Z" fill="#cbd7e7"/>';
+  let body=kind==='clear'?(night?moon:sun):kind==='part'?'<g transform="scale(.75)">'+(night?moon:sun)+'</g><g transform="translate(15 20) scale(.85 .8)">'+cloud+'</g>':cloud;
+  if(kind==='rain')body='<g transform="translate(0 -12)">'+cloud+'</g><path d="M28 75l-5 12m28-12l-5 12m28-12l-5 12" stroke="#70d0ff" stroke-width="5" stroke-linecap="round"/>';
+  if(kind==='snow')body+='<g fill="#e8eaf0"><circle cx="27" cy="88" r="4"/><circle cx="50" cy="91" r="4"/><circle cx="73" cy="88" r="4"/></g>';
+  if(kind==='storm')body+='<path d="M52 60L35 83h15l-6 16 26-27H54l8-12Z" fill="#ffd166"/>';
+  if(kind==='fog')body+='<path d="M12 82h75M18 92h63" stroke="#cbd7e7" stroke-width="4" stroke-linecap="round"/>';
+  return '<svg class="pw3-icon" viewBox="0 0 100 105" aria-hidden="true">'+body+'</svg>';
+}
+function pw3GaugeArc(a,b){
+  const point=p=>[80-62*Math.cos(p*Math.PI),80-62*Math.sin(p*Math.PI)];
+  const from=point(a),to=point(b);
+  return 'M'+from[0].toFixed(2)+' '+from[1].toFixed(2)+'A62 62 0 0 1 '+to[0].toFixed(2)+' '+to[1].toFixed(2);
+}
+function pw3Gauge(value,max,colorAt,text,label,minLabel,maxLabel){
+  let body='<path d="'+pw3GaugeArc(0,1)+'" fill="none" stroke="#414958" stroke-width="13" stroke-linecap="round"/>';
+  if(value!=null&&Number.isFinite(value)&&value>0){
+    const extent=Math.max(0,Math.min(1,value/max)),steps=Math.max(2,Math.ceil(extent*70));
+    for(let i=0;i<steps;i++){
+      const a=extent*i/steps,b=extent*(i+1)/steps;
+      body+='<path d="'+pw3GaugeArc(a,b)+'" fill="none" stroke="'+colorAt((a+b)/2*max)+'" stroke-width="13"/>';
+    }
+  }
+  body+='<text x="80" y="76" text-anchor="middle" font-size="34" font-weight="700" fill="'+(text.color||'#e8eaf0')+'">'+escapeHtml(text.value)+'</text>';
+  body+='<text x="14" y="94" fill="#bbc4d2" font-size="11" text-anchor="middle">'+escapeHtml(minLabel)+'</text><text x="146" y="94" fill="#bbc4d2" font-size="11" text-anchor="middle">'+escapeHtml(maxLabel)+'</text>';
+  return '<svg class="pw3-gauge" viewBox="0 0 160 98" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title>'+body+'</svg>';
+}
+function pw3CloudSvg(id,fraction,color,center,label,precip){
+  const path='M35 77a22 22 0 0 1-4-44 31 31 0 0 1 59-7 25 25 0 0 1 10 51Z';
+  const top=8,bottom=77,y=bottom-Math.max(0,Math.min(1,fraction))*(bottom-top);
+  let extra='';
+  if(precip==='rain')extra='<path d="M42 84l-5 11m22-11l-5 11m22-11l-5 11" stroke="'+color+'" stroke-width="4" stroke-linecap="round"/>';
+  if(precip==='snow')extra='<g fill="'+color+'"><circle cx="40" cy="88" r="3.5"/><circle cx="62" cy="94" r="3.5"/><circle cx="84" cy="88" r="3.5"/></g>';
+  return '<svg class="pw3-cloud" viewBox="0 0 124 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title><defs><clipPath id="'+id+'"><path d="'+path+'"/></clipPath></defs><path d="'+path+'" fill="#1a1d24"/><rect x="0" y="'+y.toFixed(1)+'" width="124" height="100" fill="'+color+'" clip-path="url(#'+id+')"/><path d="'+path+'" fill="none" stroke="#bbc4d2" stroke-width="2"/>'+extra+(center?'<text class="pw3-cloudtext" x="62" y="62" text-anchor="middle">'+escapeHtml(center)+'</text>':'')+'</svg>';
+}
+function pw3Sun(d,now,lang){
+  const N=weatherSummaryNumber,lat=N(d.latitude),lon=N(d.longitude),offset=Number(d.utc_offset_seconds)||0;
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},di=arr(daily,'time').indexOf(day),rise=di>=0?arr(daily,'sunrise')[di]:null,set=di>=0?arr(daily,'sunset')[di]:null;
+  const parse=iso=>{const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000,rs=rise?parse(rise):null,ss=set?parse(set):null,instant=Date.now();
+  const isDay=rs!=null&&ss!=null?(instant>=rs&&instant<ss):null;
+  if(lat==null||lon==null||typeof _sunAltitudeLowPrecision!=='function')return {isDay,svg:'<div class="pw3-muted">'+escapeHtml(lang==='sk'?'Dráha Slnka nie je dostupná':'Solar path unavailable')+'</div>'};
+  const samples=Array.from({length:97},(_,i)=>{const ts=start+(end-start)*i/96;return {ts,alt:_sunAltitudeLowPrecision(new Date(ts),lat,lon)}});
+  const maxAlt=Math.max(...samples.map(p=>p.alt)),scaleTop=Math.max(maxAlt,15),yH=62,xAt=ts=>16+(ts-start)/(end-start)*328;
+  const yAt=alt=>yH-Math.max(-0.4,Math.min(1,alt/scaleTop))*48;
+  const points=samples.map(p=>xAt(p.ts).toFixed(1)+','+yAt(p.alt).toFixed(1)).join(' ');
+  const area='M16,'+yH+' L'+points.replace(/ /g,' L')+' L344,'+yH+' Z';
+  let svg='<svg class="pw3-sun" viewBox="0 0 360 112" role="img" aria-label="'+escapeHtml(lang==='sk'?'Dnešná dráha Slnka nad a pod obzorom':'Today’s sun path above and below the horizon')+'"><defs><clipPath id="pw3SunUp"><rect x="0" y="0" width="360" height="'+yH+'"/></clipPath><clipPath id="pw3SunDown"><rect x="0" y="'+yH+'" width="360" height="50"/></clipPath></defs>';
+  svg+='<path d="'+area+'" fill="#ffd16644" clip-path="url(#pw3SunUp)"/><path d="'+area+'" fill="#2b355099" clip-path="url(#pw3SunDown)"/><polyline points="'+points+'" fill="none" stroke="#ffd166" stroke-width="2.4" clip-path="url(#pw3SunUp)"/><polyline points="'+points+'" fill="none" stroke="#6b7280" stroke-width="1.8" clip-path="url(#pw3SunDown)"/><path d="M16 '+yH+'H344" stroke="#657185" stroke-dasharray="3 4"/>';
+  if(instant>=start&&instant<=end){
+    const alt=_sunAltitudeLowPrecision(new Date(instant),lat,lon),x=xAt(instant),y=yAt(alt);
+    svg+='<path d="M'+x.toFixed(1)+' 8V'+(yH+28)+'" stroke="#4fc3f7" stroke-width="1.5" stroke-dasharray="4 4"/><circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="6.5" fill="'+(alt>0?'#ffd166':'#9aa3b2')+'" stroke="#1a1d24" stroke-width="1.5"/>';
+  }
+  const label=(ts,original,arrow,color)=>{
+    if(ts==null||ts<start||ts>end)return '';
+    const x=Math.max(34,Math.min(326,xAt(ts)));
+    return '<path d="M'+xAt(ts).toFixed(1)+' '+(yH-5)+'V'+(yH+5)+'" stroke="'+color+'" stroke-width="2"/><text x="'+x.toFixed(1)+'" y="'+(yH+28)+'" text-anchor="middle" font-size="14" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(original))+'</text>';
+  };
+  svg+=label(rs,rise,'↑','#66d17a')+label(ss,set,'↓','#ff8a65')+'</svg>';
+  return {isDay,svg};
+}
+function pw3Render(d){
+  const root=document.getElementById('pwOverview');if(!root||!d)return;
+  pw3Renders++;
+  const sk=currentLang==='sk',L=(a,b)=>sk?a:b,E=escapeHtml,N=weatherSummaryNumber;
+  const h=d.hourly||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),stamp=times[i];
+  const valid=!!stamp&&Math.abs(new Date(stamp)-now)<=3600000;
+  const get=k=>valid?N(arr(h,k)[i]):null,u=UNITS[state.units]||UNITS.metric;
+  const temp=get('temperature_2m'),feel=get('apparent_temperature'),wind=get('wind_speed_10m'),gust=get('wind_gusts_10m'),wd=get('wind_direction_10m'),uv=get('uv_index');
+  const cloud=get('cloud_cover'),cc=cloud!=null&&cloud>=0&&cloud<=100?cloud:null,total=get('precipitation'),prob0=get('precipitation_probability'),prob=prob0!=null&&prob0>=0&&prob0<=100?prob0:null;
+  const dot=(color,title)=>'<span class="pw3-dot" style="background:'+(color||'#5b6577')+'" title="'+E(title||'')+'"></span>';
+  const val=(v,unit,dec)=>v==null?'—':fmt(v,dec||0)+(unit?' '+E(unit):'');
+  const sun=pw3Sun(d,now,currentLang),isDay=sun.isDay;
+  const night=isDay===false;
+  const code=get('weather_code');let kind='cloud',condition=L('Údaj nedostupný','Unavailable');
+  if(code!=null){
+    if(code===0){kind='clear';condition=L('Jasno','Clear')}else if(code<=2){kind='part';condition=L('Polojasno','Partly cloudy')}else if(code===3){condition=L('Zamračené','Overcast')}
+    else if(code===45||code===48){kind='fog';condition=L('Hmla','Fog')}else if(code>=95){kind='storm';condition=L('Búrka','Thunderstorm')}
+    else if([71,73,75,77,85,86].includes(code)){kind='snow';condition=L('Sneženie','Snow')}else if(code>=80){kind='rain';condition=L('Prehánky','Showers')}else if(code>=61){kind='rain';condition=L('Dážď','Rain')}else if(code>=51){kind='rain';condition=L('Mrholenie','Drizzle')}
+  }
+  const feelColor=weatherSummaryTempColor(feel),windColor=weatherSummaryWindColor(wind);
+  const windText=wind==null?L('Údaj nedostupný','Unavailable'):windColor==='#fdd835'?L('Silný vietor','Strong wind'):windColor==='#fb8c00'?L('Veľmi silný vietor','Very strong wind'):windColor==='#e53935'?L('Extrémny vietor','Extreme wind'):L('Bežný vietor','Normal wind');
+  const compass=wd==null?'':'<svg class="pw3-compass" viewBox="0 0 100 100" role="img" aria-label="'+E(L('Vietor prichádza z','Wind from')+' '+dir(wd)+' '+fmt(wd)+'°')+'"><title>'+E(dir(wd)+' '+fmt(wd)+'°')+'</title><circle cx="50" cy="50" r="40" fill="none" stroke="#8c9bb2" stroke-width="2"/><g stroke="#8c9bb2" stroke-width="2"><path d="M50 10v7M90 50h-7M50 90v-7M10 50h7"/></g><text x="50" y="7.5" text-anchor="middle" font-size="9" fill="#e8eaf0">'+L('S','N')+'</text><text x="94" y="53" text-anchor="middle" font-size="9" fill="#bbc4d2">'+L('V','E')+'</text><text x="50" y="99" text-anchor="middle" font-size="9" fill="#bbc4d2">'+L('J','S')+'</text><text x="6" y="53" text-anchor="middle" font-size="9" fill="#bbc4d2">'+L('Z','W')+'</text><path d="M50 15L36 69L50 58L64 69Z" transform="rotate('+wd+' 50 50)" fill="#88dca1"/><circle cx="50" cy="50" r="4" fill="#e8eaf0"/></svg>';
+  const uvColor=weatherSummaryUvColor(uv),uvInt=uv==null?null:Math.round(uv);
+  const uvNames=sk?['Nízka','Mierna','Vysoká','Veľmi vysoká','Extrémna']:['Low','Moderate','High','Very high','Extreme'];
+  const uvName=uv==null?L('Údaj nedostupný','Unavailable'):uv<3?uvNames[0]:uv<6?uvNames[1]:uv<8?uvNames[2]:uv<11?uvNames[3]:uvNames[4];
+  const uvGauge=pw3Gauge(uv,11,v=>weatherSummaryUvColor(v)||'#4EB400',{value:uvInt==null?'—':String(uvInt),color:uvColor||'#e8eaf0'},L('UV index, stupnica 0 až 11 a viac','UV index, scale 0 to 11 plus'),'0','11+');
+  const greyLevel=cc==null?null:Math.round(190-cc*0.9),cloudDot=greyLevel==null?'#5b6577':'rgb('+greyLevel+','+(greyLevel+4)+','+(greyLevel+12)+')';
+  const cloudName=cc==null?L('Údaj nedostupný','Unavailable'):cc<20?L('Jasno','Clear'):cc<45?L('Malá oblačnosť','Few clouds'):cc<70?L('Polooblačno','Partly cloudy'):cc<90?L('Oblačno','Cloudy'):L('Zamračené','Overcast');
+  const layer=(k,name)=>{const v=get(k);return '<span>'+E(name)+' '+(v==null?'—':fmt(v)+' %')+'</span>'};
+  const cloudHtml=pw3CloudSvg('pw3CloudCover',cc==null?0:cc/100,'#8294ad',cc==null?'—':fmt(cc)+' %',L('Celková oblačnosť','Total cloud cover'))+'<div style="font-weight:650">'+E(cloudName)+'</div><div class="pw3-layers">'+layer('cloud_cover_low',L('Nízke','Low'))+layer('cloud_cover_mid',L('Stredné','Mid'))+layer('cloud_cover_high',L('Vysoké','High'))+'</div>';
+  const ptype=weatherSummaryPrecipType(get('rain'),get('showers'),get('snowfall')),precipColor=ptype?ptype.color:CLR.rain;
+  const mm=total==null?null:total*(state.units==='imperial'?25.4:1),hasPrecip=total!=null&&total>0;
+  const intensity=mm==null||mm<=0?L('Bez zrážok','No precipitation'):mm<2.5?L('Slabé zrážky','Light precipitation'):mm<7.6?L('Mierne zrážky','Moderate precipitation'):L('Silné zrážky','Heavy precipitation');
+  const isSnow=ptype&&ptype.key==='precip_snow',visual=hasPrecip?(isSnow?'snow':'rain'):'';
+  const amount=total==null?'—':hasPrecip?fmt(total,1)+' '+E(u.precip):E(L('žiadne','none'));
+  const precipHtml=pw3CloudSvg('pw3PrecipCloud',mm==null?0:mm/10,precipColor,'',L('Intenzita zrážok, stupnica 0 až 10 mm za hodinu','Precipitation intensity, scale 0 to 10 mm per hour'),visual)+'<div class="pw3-big" style="color:'+(hasPrecip?precipColor:'#e8eaf0')+'">'+amount+'</div><div class="pw3-muted">'+(hasPrecip&&ptype?E(t(ptype.key)):E(intensity))+'</div><div class="pw3-muted" style="color:'+CLR.rain+'">'+E(L('Pravdepodobnosť zrážok','Precipitation probability'))+': '+(prob==null?'—':fmt(prob)+' %')+'</div>'+(prob==null?'':'<div class="pw3-bar"><span style="width:'+prob+'%;background:'+probabilityColour(prob)+'"></span></div>');
+  const air=(d.air&&d.air.hourly)||{},at=k=>valid?N(arr(air,k)[i]):null,aq=at(selectedAqiScale()==='us'?'us_aqi':'european_aqi'),cat=aqiCategory(aq),bands=aqiBands(),aqMax=bands.filter(b=>Number.isFinite(b.upper)).slice(-1)[0].upper;
+  const aqGauge=pw3Gauge(aq,aqMax,v=>(aqiCategory(v)||bands[bands.length-1]).color,{value:aq==null?'—':String(Math.round(aq)),color:cat?cat.color:'#e8eaf0'},selectedAqiName()+' '+(aq==null?'':Math.round(aq)),'0',aqMax+'+');
+  const pollenKeys=['alder','birch','grass','mugwort','ragweed','olive'],rank={ok:0,warn:1,bad:2};
+  const pollen=pollenKeys.map(k=>{const v=at(k+'_pollen'),threshold=POLLEN_THRESHOLDS[k];return v!=null&&v>0&&threshold?{k,v,level:pollenLevel(v,k),ratio:v/threshold.bad}:null}).filter(Boolean).sort((a,b)=>rank[b.level]-rank[a.level]||b.ratio-a.ratio).slice(0,3);
+  const known=pollenKeys.some(k=>at(k+'_pollen')!=null),levelColor={ok:'#66d17a',warn:'#ffb74d',bad:'#ff6b6b'},levelName={ok:L('nízka','low'),warn:L('zvýšená','elevated'),bad:L('vysoká','high')};
+  const pollenHtml=pollen.length?pollen.map(p=>'<div class="pw3-row"><span>'+dot(levelColor[p.level],levelName[p.level])+E(t('leg_'+p.k))+'</span><span style="color:'+levelColor[p.level]+'">'+E(levelName[p.level])+'</span></div>').join(''):'<div class="pw3-muted">'+E(known?L('V dostupných údajoch nie je žiadny peľ.','No pollen in the available data.'):L('Údaje nie sú dostupné.','Data unavailable.'))+'</div>';
+  const pollenDot=pollen.length?levelColor[pollen[0].level]:null;
+  const alerts=Array.isArray(d.alerts)?d.alerts:[],highest=highestAlertLevel(alerts),groups=new Map();
+  alerts.forEach(a=>{const label=alertEvent(a),level=alertLevel(a),key=label+'|'+level,g=groups.get(key)||{label,level,count:0,local:alertIssuer(a)==='Local estimate'};g.count++;groups.set(key,g)});
+  const rows=[...groups.values()].sort((a,b)=>ALERT_RANK[b.level]-ALERT_RANK[a.level]||b.count-a.count||a.label.localeCompare(b.label));
+  const alertRows=rows.length?rows.slice(0,3).map(g=>'<div class="pw3-row"><span>'+dot(ALERT_COLORS[g.level],g.level)+E(g.label)+(g.local?' <span class="pw3-muted">· '+E(L('lokálny odhad','local estimate'))+'</span>':'')+'</span><b>×'+g.count+'</b></div>').join('')+(rows.length>3?'<div class="pw3-muted">+'+(rows.length-3)+' '+E(L('ďalšie','more'))+'</div>':''):'<div class="pw3-muted">'+E(t('no_active_alerts'))+'</div>';
+  const date=typeof pwOverviewDate==='function'?pwOverviewDate(now,sk):'';
+  const tile=(name,dotHtml,body,cls)=>'<div class="pw3-tile '+(cls||'')+'"><div class="pw3-label">'+dotHtml+E(name)+'</div>'+body+'</div>';
+  const html='<div class="pw3-hero"><div class="pw3-main"><div><div class="pw3-eyebrow">'+E(L('Počasie na prvý pohľad','Weather at a glance'))+'</div><div class="pw3-location">'+E(d.name||'')+'</div><div class="pw3-date">'+E(date)+'</div></div><div><div class="pw3-reading"><div class="pw3-temp">'+(temp==null?'—':fmt(temp)+'°')+'</div>'+(code==null?'':pw3Icon(kind,night))+'</div><div class="pw3-condition">'+E(condition)+'</div></div><div class="pw3-feels">'+dot(feelColor,t('chip_feels'))+'<span>'+E(L('Pocitovo','Feels like'))+' '+weatherSummaryTint(val(feel,u.temp),feelColor)+'</span></div><button type="button" class="pw3-btn" data-pw3-open="weather">'+E(L('Podrobná predpoveď','Detailed forecast'))+' ↗</button></div><div class="pw3-tiles">'
+  +tile(t('chip_wind'),dot(windColor||'#66d17a',windText),'<div class="pw3-windbody"><div><div class="pw3-big" style="color:'+(windColor||'#e8eaf0')+'">'+val(wind,u.wind)+'</div><div class="pw3-muted">'+E(t('chip_gusts'))+' '+weatherSummaryTint(val(gust,u.wind),weatherSummaryWindColor(gust))+'</div><div class="pw3-muted">'+E(windText)+'</div></div>'+compass+'</div>')
+  +tile(t('chip_uv'),dot(uvColor,uvName),'<div class="pw3-center">'+uvGauge+'<div style="font-weight:650;color:'+(uvColor||'#e8eaf0')+'">'+E(uvName)+'</div></div>')
+  +tile(t('chip_clouds'),dot(cloudDot,cloudName),'<div class="pw3-center">'+cloudHtml+'</div>')
+  +tile(t('chip_precip'),dot(hasPrecip?precipColor:'#5b6577',intensity),'<div class="pw3-center">'+precipHtml+'</div>')
+  +tile(L('Slnko dnes','Sun today'),dot(isDay==null?'#5b6577':isDay?'#ffd166':'#2b3550',isDay==null?'':isDay?L('Deň','Day'):L('Noc','Night')),sun.svg,'wide')
+  +'</div></div><div class="pw3-side"><section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(cat?cat.color:null,cat?cat.name:'')+E(L('Kvalita vzduchu','Air quality'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div><div class="pw3-airbody">'+aqGauge+'<div class="pw3-airtext"><b style="color:'+(cat?cat.color:'#e8eaf0')+'">'+E(cat?cat.name:L('Údaje nie sú dostupné','Data unavailable'))+'</b><span class="pw3-muted">'+E(selectedAqiName())+'</span></div></div></section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(pollenDot,pollen.length?levelName[pollen[0].level]:'')+E(L('Peľ aktuálne','Current pollen'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+pollenHtml+'</section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(ALERT_COLORS[highest],alerts.length?highest:'')+E(L('Výstrahy','Alerts'))+(alerts.length?' <span class="pw3-muted">'+E(t('alert_count',alerts.length))+'</span>':'')+'</div><button type="button" class="pw3-link" data-pw3-open="alerts">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+alertRows+'</section></div>';
+  root.className='pw3';
+  if(root._pw3Html!==html){root.innerHTML=html;root._pw3Html=html}
+  if(!root._pw3Bound){
+    root._pw3Bound=true;
+    root.addEventListener('click',e=>{const target=e.target instanceof Element?e.target.closest('[data-pw3-open]'):null;if(!target)return;const section=target.getAttribute('data-pw3-open'),body=document.getElementById(section+'Body');if(!body)return;if(!body.classList.contains('open'))toggleSection(section);const host=body.parentElement;if(host)host.scrollIntoView({block:'start'})});
+  }
+  if(pw3Renders%10===0)console.info('[Perun Weather diagnostics]',pwDiag());
+}
+renderOverview=function(d){pw3Render(d)};
+
+// PERUN OVERVIEW V4
+function pw4Umbrella(color){
+  return '<svg class="pw4-umbrella" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12a9.5 9.5 0 0 1 19 0Z" fill="'+color+'"/><path d="M12 12v6.2a2.1 2.1 0 0 1-4.2 0" fill="none" stroke="'+color+'" stroke-width="1.8" stroke-linecap="round"/></svg>';
+}
+function pw4Compass(wd,color,label,north){
+  const angle=(wd+180)%360;
+  return '<svg class="pw4-compass" viewBox="0 0 100 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title><circle cx="50" cy="56" r="36" fill="none" stroke="#8c9bb2" stroke-width="2"/><text x="50" y="15" text-anchor="middle" font-size="19" font-weight="700" fill="#e8eaf0">'+escapeHtml(north)+'</text><path d="M50 28L38 80L50 68L62 80Z" transform="rotate('+angle.toFixed(1)+' 50 56)" fill="'+color+'"/><circle cx="50" cy="56" r="4" fill="#e8eaf0"/></svg>';
+}
+function pw4Sun(d,now,lang){
+  const N=weatherSummaryNumber,offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs)return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss;
+  const cx=400,hy=54,rx=250,ryD=40,ryN=30,left=cx-rx,right=cx+rx,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  let x,y;
+  if(isDay){const f=Math.max(0,Math.min(1,(instant-rs)/(ss-rs)));x=cx-rx*Math.cos(Math.PI*f);y=hy-ryD*Math.sin(Math.PI*f)}
+  else{
+    let from,to;
+    if(instant<rs){from=di>0?parse(sets[di-1]):null;if(from==null)from=ss-86400000;to=rs}
+    else{from=ss;to=di+1<rises.length?parse(rises[di+1]):null;if(to==null)to=rs+86400000}
+    const g=Math.max(0,Math.min(1,to>from?(instant-from)/(to-from):0));x=cx+rx*Math.cos(Math.PI*g);y=hy+ryN*Math.sin(Math.PI*g);
+  }
+  const len=ss-rs,hours=Math.floor(len/3600000),minutes=Math.round((len%3600000)/60000),adjusted=minutes===60?[hours+1,0]:[hours,minutes];
+  const lenText=t('sun_daylen')+': '+adjusted[0]+' h '+String(adjusted[1]).padStart(2,'0')+' min';
+  const label=(iso,arrow,color,xPos,anchor)=>'<text x="'+xPos+'" y="46" text-anchor="'+anchor+'" font-size="16" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(iso))+'</text>';
+  const aria=sk?'Symbolická dráha Slnka nad a pod obzorom a jeho aktuálna poloha':'Symbolic sun path above and below the horizon and its current position';
+  const svg='<svg class="pw4-sunsvg" viewBox="0 0 800 100" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+left+' '+hy+'A'+rx+' '+ryD+' 0 0 1 '+right+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+right+' '+hy+'A'+rx+' '+ryN+' 0 0 1 '+cx+' '+(hy+ryN)+'A'+rx+' '+ryN+' 0 0 1 '+left+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="2.4" stroke-linecap="round"/>'
+   +'<path d="M'+left+' '+hy+'A'+rx+' '+ryD+' 0 0 1 '+right+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.2" stroke-linecap="round"/>'
+   +'<path d="M24 '+hy+'H776" stroke="#8c9bb2" stroke-width="1.8"/>'
+   +label(rises[di],'↑','#66d17a',left-14,'end')+label(sets[di],'↓','#ff8a65',right+14,'start')
+   +'<text x="'+cx+'" y="40" text-anchor="middle" font-size="15" fill="#bbc4d2">'+escapeHtml(lenText)+'</text>'
+   +'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="9" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.5"/></svg>';
+  return {isDay,svg};
+}
+function pw4Render(d){
+  const root=document.getElementById('pwOverview');if(!root||!d)return;
+  pw3Renders++;
+  const sk=currentLang==='sk',L=(a,b)=>sk?a:b,E=escapeHtml,N=weatherSummaryNumber;
+  const h=d.hourly||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),stamp=times[i];
+  const valid=!!stamp&&Math.abs(new Date(stamp)-now)<=3600000;
+  const get=k=>valid?N(arr(h,k)[i]):null,u=UNITS[state.units]||UNITS.metric;
+  const temp=get('temperature_2m'),feel=get('apparent_temperature'),wind=get('wind_speed_10m'),gust=get('wind_gusts_10m'),wd=get('wind_direction_10m'),uv=get('uv_index');
+  const cloud=get('cloud_cover'),cc=cloud!=null&&cloud>=0&&cloud<=100?cloud:null,prob0=get('precipitation_probability'),prob=prob0!=null&&prob0>=0&&prob0<=100?prob0:null;
+  const dot=(color,title)=>'<span class="pw3-dot" style="background:'+(color||'#5b6577')+'" title="'+E(title||'')+'"></span>';
+  const val=(v,unit,dec)=>v==null?'—':fmt(v,dec||0)+(unit?' '+E(unit):'');
+  const sun=pw4Sun(d,now,currentLang),isDay=sun.isDay,night=isDay===false;
+  const code=get('weather_code');let kind='cloud',condition=L('Údaj nedostupný','Unavailable');
+  if(code!=null){
+    if(code===0){kind='clear';condition=L('Jasno','Clear')}else if(code<=2){kind='part';condition=L('Polojasno','Partly cloudy')}else if(code===3){condition=L('Zamračené','Overcast')}
+    else if(code===45||code===48){kind='fog';condition=L('Hmla','Fog')}else if(code>=95){kind='storm';condition=L('Búrka','Thunderstorm')}
+    else if([71,73,75,77,85,86].includes(code)){kind='snow';condition=L('Sneženie','Snow')}else if(code>=80){kind='rain';condition=L('Prehánky','Showers')}else if(code>=61){kind='rain';condition=L('Dážď','Rain')}else if(code>=51){kind='rain';condition=L('Mrholenie','Drizzle')}
+  }
+  const tempColor=tempDotColor(temp),windColor=weatherSummaryWindColor(wind);
+  const windDot=windColor||'#66d17a';
+  const windLabel=wd==null?'':L('Vietor fúka zo smeru ','Wind from ')+dir(wd)+' '+fmt(wd)+'°';
+  const compass=wd==null||wind===0?'':pw4Compass(wd,'#88dca1',windLabel,L('S','N'));
+  const uvLow=night&&(uv==null||uv<0.5),uvColor=uvLow?null:weatherSummaryUvColor(uv),uvInt=uv==null?null:Math.round(uv);
+  const uvNames=sk?['Nízka','Mierna','Vysoká','Veľmi vysoká','Extrémna']:['Low','Moderate','High','Very high','Extreme'];
+  const uvName=uvLow?L('Noc','Night'):uv==null?L('Údaj nedostupný','Unavailable'):uv<3?uvNames[0]:uv<6?uvNames[1]:uv<8?uvNames[2]:uv<11?uvNames[3]:uvNames[4];
+  const uvGauge=pw3Gauge(uvLow?0:uv,11,v=>weatherSummaryUvColor(v)||'#4EB400',{value:uvInt==null?'—':String(uvInt),color:uvLow?'#bbc4d2':(uvColor||'#e8eaf0')},L('UV index, stupnica 0 až 11 a viac','UV index, scale 0 to 11 plus'),'0','11+');
+  const greyLevel=cc==null?null:Math.round(190-cc*0.9),cloudDot=greyLevel==null?'#5b6577':'rgb('+greyLevel+','+(greyLevel+4)+','+(greyLevel+12)+')';
+  const cloudName=cc==null?L('Údaj nedostupný','Unavailable'):cc<20?L('Jasno','Clear'):cc<45?L('Malá oblačnosť','Few clouds'):cc<70?L('Polooblačno','Partly cloudy'):cc<90?L('Oblačno','Cloudy'):L('Zamračené','Overcast');
+  const cloudHtml=pw3CloudSvg('pw4CloudCover',cc==null?0:cc/100,'#8294ad',cc==null?'—':fmt(cc)+' %',L('Celková oblačnosť','Total cloud cover'));
+  const rain=get('rain'),show=get('showers'),snow=get('snowfall'),legacy=get('precipitation'),split=[rain,show,snow].some(v=>v!=null),known=split||legacy!=null,imperial=state.units==='imperial';
+  const liquid=split?(rain||0)+(show||0):(legacy||0),snowAmount=split?(snow||0):0;
+  const eq=known?liquid*(imperial?25.4:1)+snowAmount*(imperial?2.54:1):null,hasPrecip=eq!=null&&eq>0;
+  const ptype=split?weatherSummaryPrecipType(rain,show,snow):(legacy>0?{key:'precip_rain',color:CLR.rain}:null),precipColor=ptype?ptype.color:CLR.rain;
+  const parts=split?[{key:'precip_rain',v:rain,unit:u.precip,color:CLR.rain},{key:'precip_showers',v:show,unit:u.precip,color:'#2196c9'},{key:'precip_snow',v:snow,unit:imperial?'in':'cm',color:'#e8eaf0'}].filter(p=>p.v!=null&&p.v>0):(legacy>0?[{key:'precip_rain',v:legacy,unit:u.precip,color:CLR.rain}]:[]);
+  const partText=p=>E(t(p.key))+' '+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit);
+  const isSnow=ptype&&ptype.key==='precip_snow',visual=hasPrecip?(isSnow?'snow':'rain'):'';
+  const fraction=eq==null?0:Math.min(1,Math.sqrt(eq/6));
+  let precipBig,precipMuted='';
+  if(!known){precipBig='<div class="pw4-big">—</div>';precipMuted='<div class="pw3-muted">'+E(L('Údaj nedostupný','Unavailable'))+'</div>'}
+  else if(!hasPrecip){precipBig='<div class="pw4-big">'+E(L('Žiadne','None'))+'</div>'}
+  else if(parts.length===1){const p=parts[0];precipBig='<div class="pw4-big" style="color:'+p.color+'">'+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit)+'</div>';precipMuted='<div class="pw3-muted">'+E(t(p.key))+'</div>'}
+  else{precipBig='<div class="pw4-big" style="color:'+precipColor+'">'+E(t(ptype?ptype.key:'precip_mixed'))+'</div>';precipMuted='<div class="pw4-detail">'+parts.map(p=>'<span style="color:'+p.color+'">'+partText(p)+'</span>').join('')+'</div>'}
+  const probs=arr(h,'precipitation_probability'),cells=[];
+  for(let k=0;k<12&&i+k<times.length;k++){
+    const p=valid?N(probs[i+k]):null,okProb=p!=null&&p>=0&&p<=100,hour=String(times[i+k]).slice(11,16);
+    cells.push('<span class="pw4-cell'+(k===0?' current':'')+(okProb?'':' missing')+'"'+(okProb?' style="background:'+probabilityColour(p)+'"':'')+' title="'+E(hour+' · '+(okProb?fmt(p)+' %':L('údaj nedostupný','unavailable')))+'"></span>');
+  }
+  const firstHour=times[i]?String(times[i]).slice(11,16):'',lastHour=times[Math.min(i+11,times.length-1)]?String(times[Math.min(i+11,times.length-1)]).slice(11,16):'';
+  const umbrellaColor=prob==null?'#5b6577':probabilityColour(Math.round(35+0.65*prob));
+  const probLabel=L('Pravdepodobnosť zrážok','Precipitation probability');
+  const precipHtml=pw3CloudSvg('pw4PrecipCloud',fraction,precipColor,'',L('Intenzita a typ zrážok','Precipitation intensity and type'),visual)+precipBig+precipMuted
+    +'<div class="pw4-prob" title="'+E(probLabel)+'" aria-label="'+E(probLabel+': '+(prob==null?L('údaj nedostupný','unavailable'):fmt(prob)+' %'))+'">'+pw4Umbrella(umbrellaColor)+'<span>'+(prob==null?'—':fmt(prob)+' %')+'</span></div>'
+    +'<div class="pw4-strip" role="group" aria-label="'+E(L('Pravdepodobnosť zrážok na najbližších 12 hodín','Precipitation probability for the next 12 hours'))+'">'+cells.join('')+'</div><div class="pw4-striplabels"><span>'+E(firstHour)+'</span><span>'+E(lastHour)+'</span></div>';
+  const air=(d.air&&d.air.hourly)||{},at=k=>valid?N(arr(air,k)[i]):null,aq=at(selectedAqiScale()==='us'?'us_aqi':'european_aqi'),cat=aqiCategory(aq),bands=aqiBands(),aqMax=bands.filter(b=>Number.isFinite(b.upper)).slice(-1)[0].upper;
+  const aqGauge=pw3Gauge(aq,aqMax,v=>(aqiCategory(v)||bands[bands.length-1]).color,{value:aq==null?'—':String(Math.round(aq)),color:cat?cat.color:'#e8eaf0'},selectedAqiName()+' '+(aq==null?'':Math.round(aq)),'0',aqMax+'+');
+  const pollenKeys=['alder','birch','grass','mugwort','ragweed','olive'],rank={ok:0,warn:1,bad:2};
+  const pollen=pollenKeys.map(k=>{const v=at(k+'_pollen'),threshold=POLLEN_THRESHOLDS[k];return v!=null&&v>0&&threshold?{k,v,level:pollenLevel(v,k),ratio:v/threshold.bad}:null}).filter(Boolean).sort((a,b)=>rank[b.level]-rank[a.level]||b.ratio-a.ratio).slice(0,3);
+  const pollenKnown=pollenKeys.some(k=>at(k+'_pollen')!=null),levelColor={ok:'#66d17a',warn:'#ffb74d',bad:'#ff6b6b'},levelName={ok:L('nízka','low'),warn:L('zvýšená','elevated'),bad:L('vysoká','high')};
+  const pollenHtml=pollen.length?pollen.map(p=>'<div class="pw3-row"><span>'+dot(levelColor[p.level],levelName[p.level])+E(t('leg_'+p.k))+'</span><span style="color:'+levelColor[p.level]+'">'+E(levelName[p.level])+'</span></div>').join(''):'<div class="pw3-muted">'+E(pollenKnown?L('V dostupných údajoch nie je žiadny peľ.','No pollen in the available data.'):L('Údaje nie sú dostupné.','Data unavailable.'))+'</div>';
+  const pollenDot=pollen.length?levelColor[pollen[0].level]:null;
+  const alerts=Array.isArray(d.alerts)?d.alerts:[],highest=highestAlertLevel(alerts),groups=new Map();
+  alerts.forEach(a=>{const label=alertEvent(a),level=alertLevel(a),key=label+'|'+level;if(!groups.has(key))groups.set(key,{label,level,local:alertIssuer(a)==='Local estimate'})});
+  const rows=[...groups.values()].sort((a,b)=>ALERT_RANK[b.level]-ALERT_RANK[a.level]||a.label.localeCompare(b.label));
+  const alertRows=rows.length?rows.slice(0,4).map(g=>'<div class="pw3-row"><span>'+dot(ALERT_COLORS[g.level],g.level)+E(g.label)+(g.local?' <span class="pw3-muted">· '+E(L('lokálny odhad','local estimate'))+'</span>':'')+'</span></div>').join('')+(rows.length>4?'<div class="pw3-muted">+'+(rows.length-4)+' '+E(L('ďalšie','more'))+'</div>':''):'<div class="pw3-muted">'+E(t('no_active_alerts'))+'</div>';
+  const date=typeof pwOverviewDate==='function'?pwOverviewDate(now,sk):'';
+  const tile=(name,dotHtml,body,cls)=>'<div class="pw4-tile '+(cls||'')+'"><div class="pw4-label">'+dotHtml+E(name)+'</div>'+body+'</div>';
+  const windBody='<div class="pw4-windbody"><div class="pw4-windtext"><div class="pw4-big" style="color:'+(windColor||'#e8eaf0')+'">'+val(wind,u.wind)+'</div><div class="pw4-gust">'+E(L('Nárazy','Gusts'))+' '+weatherSummaryTint(val(gust,u.wind),weatherSummaryWindColor(gust))+'</div></div>'+compass+'</div>';
+  const html='<div class="pw4-hero"><div class="pw4-top"><div class="pw4-place"><div class="pw3-eyebrow">'+E(L('Počasie na prvý pohľad','Weather at a glance'))+'</div><div class="pw3-location">'+E(d.name||'')+'</div><div class="pw3-date">'+E(date)+'</div></div><div class="pw4-reading"><div class="pw4-temp">'+(temp==null?'—':fmt(temp)+'°')+'</div>'+(code==null?'':pw3Icon(kind,night))+'</div><div class="pw4-now"><div class="pw3-condition">'+E(condition)+'</div><div class="pw3-feels">'+dot(tempColor,t('chip_feels'))+'<span>'+E(L('Pocitovo','Feels like'))+' '+val(feel,u.temp)+'</span></div><button type="button" class="pw3-btn" data-pw3-open="weather">'+E(L('Podrobná predpoveď','Detailed forecast'))+' ↗</button></div></div>'
+  +'<div class="pw4-tiles">'
+  +tile(t('chip_precip'),dot(hasPrecip?precipColor:'#5b6577',hasPrecip?L('Zrážky','Precipitation'):''),'<div class="pw4-body">'+precipHtml+'</div>')
+  +tile(t('chip_wind'),dot(windDot,wind==null?'':L('Vietor','Wind')),windBody)
+  +tile(t('chip_uv'),dot(uvLow?'#5b6577':(uvColor||'#5b6577'),uvName),'<div class="pw4-body">'+uvGauge+'<div style="font-weight:650;color:'+(uvLow?'#bbc4d2':(uvColor||'#e8eaf0'))+'">'+E(uvName)+'</div></div>')
+  +tile(t('chip_clouds'),dot(cloudDot,cloudName),'<div class="pw4-body">'+cloudHtml+'</div>')
+  +'</div>'
+  +'<div class="pw4-tile pw4-sun"><div class="pw4-label">'+dot(isDay==null?'#5b6577':isDay?'#ffd166':'#2b3550',isDay==null?'':isDay?L('Deň','Day'):L('Noc','Night'))+E(L('Slnko dnes','Sun today'))+'</div>'+sun.svg+'</div></div>'
+  +'<div class="pw3-side"><section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(cat?cat.color:null,cat?cat.name:'')+E(L('Kvalita vzduchu','Air quality'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div><div class="pw3-airbody">'+aqGauge+'<div class="pw3-airtext"><b style="color:'+(cat?cat.color:'#e8eaf0')+'">'+E(cat?cat.name:L('Údaje nie sú dostupné','Data unavailable'))+'</b><span class="pw3-muted">'+E(selectedAqiName())+'</span></div></div></section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(pollenDot,pollen.length?levelName[pollen[0].level]:'')+E(L('Peľ aktuálne','Current pollen'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+pollenHtml+'</section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(ALERT_COLORS[highest],alerts.length?highest:'')+E(L('Výstrahy','Alerts'))+'</div><button type="button" class="pw3-link" data-pw3-open="alerts">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+alertRows+'</section></div>';
+  root.className='pw3';
+  if(root._pw3Html!==html){root.innerHTML=html;root._pw3Html=html}
+  if(!root._pw3Bound){
+    root._pw3Bound=true;
+    root.addEventListener('click',e=>{const target=e.target instanceof Element?e.target.closest('[data-pw3-open]'):null;if(!target)return;const section=target.getAttribute('data-pw3-open'),body=document.getElementById(section+'Body');if(!body)return;if(!body.classList.contains('open'))toggleSection(section);const host=body.parentElement;if(host)host.scrollIntoView({block:'start'})});
+  }
+}
+renderOverview=function(d){pw4Render(d)};
+
+// PERUN OVERVIEW V5
+function pw5Umbrella(color){
+  return '<svg class="pw5-umbrella" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12a9.5 9.5 0 0 1 19 0Z" fill="'+color+'"/><path d="M12 12v6.2a2.1 2.1 0 0 1-4.2 0" fill="none" stroke="'+color+'" stroke-width="1.8" stroke-linecap="round"/></svg>';
+}
+function pw5Compass(wd,color,label,north){
+  const angle=(wd+180)%360;
+  return '<svg class="pw5-compass" viewBox="0 0 100 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title><circle cx="50" cy="56" r="36" fill="none" stroke="#8c9bb2" stroke-width="2"/><text x="50" y="16" text-anchor="middle" font-size="20" font-weight="700" fill="#e8eaf0">'+escapeHtml(north)+'</text><path d="M50 28L38 80L50 68L62 80Z" transform="rotate('+angle.toFixed(1)+' 50 56)" fill="'+color+'"/><circle cx="50" cy="56" r="4" fill="#e8eaf0"/></svg>';
+}
+function pw5Gauge(cls,value,max,colorAt,text,label,minLabel,maxLabel){
+  let body='<path d="'+pw3GaugeArc(0,1)+'" fill="none" stroke="#414958" stroke-width="14" stroke-linecap="round"/>';
+  if(value!=null&&Number.isFinite(value)&&value>0){
+    const extent=Math.max(0,Math.min(1,value/max)),steps=Math.max(2,Math.ceil(extent*70));
+    for(let k=0;k<steps;k++){const a=extent*k/steps,b=extent*(k+1)/steps;body+='<path d="'+pw3GaugeArc(a,b)+'" fill="none" stroke="'+colorAt((a+b)/2*max)+'" stroke-width="14"/>'}
+  }
+  body+='<text x="80" y="78" text-anchor="middle" font-size="25" font-weight="650" fill="'+(text.color||'#e8eaf0')+'">'+escapeHtml(text.value)+'</text>';
+  body+='<text x="14" y="95" fill="#bbc4d2" font-size="13" text-anchor="middle">'+escapeHtml(minLabel)+'</text><text x="146" y="95" fill="#bbc4d2" font-size="13" text-anchor="middle">'+escapeHtml(maxLabel)+'</text>';
+  return '<svg class="'+cls+'" viewBox="0 0 160 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title>'+body+'</svg>';
+}
+function pw5Sun(d,now,lang){
+  const offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000;
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs||!Number.isFinite(start))return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  const X0=40,X1=760,W=X1-X0,hy=52,ryD=40,ryN=30;
+  const xAt=ts=>X0+Math.max(0,Math.min(1,(ts-start)/(end-start)))*W;
+  const xr=Math.max(X0+2,xAt(rs)),xs=Math.min(X1-2,xAt(ss)),cx=(xr+xs)/2,rD=(xs-xr)/2,rL=xr-X0,rR=X1-xs;
+  const yAt=x=>{
+    if(x<xr)return hy+ryN*Math.sqrt(Math.max(0,1-Math.pow((x-X0)/rL,2)));
+    if(x<=xs)return hy-ryD*Math.sqrt(Math.max(0,1-Math.pow((x-cx)/rD,2)));
+    return hy+ryN*Math.sqrt(Math.max(0,1-Math.pow((x-X1)/rR,2)));
+  };
+  const len=ss-rs;let hours=Math.floor(len/3600000),minutes=Math.round((len%3600000)/60000);if(minutes===60){hours++;minutes=0}
+  const lenText=t('sun_daylen')+': '+hours+' h '+String(minutes).padStart(2,'0')+' min';
+  const label=(iso,arrow,color,x,anchor)=>'<text x="'+x.toFixed(1)+'" y="'+(hy-9)+'" text-anchor="'+anchor+'" font-size="17" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(iso))+'</text>';
+  const ticks=[0,6,12,18,24].map(h=>{const x=X0+W*h/24;return '<path d="M'+x.toFixed(1)+' '+(hy-4)+'V'+(hy+4)+'" stroke="#8c9bb2" stroke-width="1.6"/><text x="'+x.toFixed(1)+'" y="'+(hy+ryN+22)+'" text-anchor="middle" font-size="14" fill="#bbc4d2">'+String(h).padStart(2,'0')+'</text>'}).join('');
+  const aria=sk?'Symbolická dráha Slnka počas 24 hodín: noc do východu, deň a noc po západe, s aktuálnou polohou':'Symbolic 24-hour sun path: night until sunrise, day, and night after sunset, with the current position';
+  let dot='';
+  if(instant>=start&&instant<=end){const x=xAt(instant),y=yAt(x);dot='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="9" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.5"/>'}
+  const svg='<svg class="pw5-sunsvg" viewBox="0 0 800 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+ryD+' 0 0 1 '+xs.toFixed(1)+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+X0+' '+(hy+ryN)+'A'+rL.toFixed(1)+' '+ryN+' 0 0 0 '+xr.toFixed(1)+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="2.6" stroke-linecap="round"/>'
+   +'<path d="M'+xs.toFixed(1)+' '+hy+'A'+rR.toFixed(1)+' '+ryN+' 0 0 0 '+X1+' '+(hy+ryN)+'" fill="none" stroke="#6b7280" stroke-width="2.6" stroke-linecap="round"/>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+ryD+' 0 0 1 '+xs.toFixed(1)+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.2" stroke-linecap="round"/>'
+   +'<path d="M'+X0+' '+hy+'H'+X1+'" stroke="#8c9bb2" stroke-width="1.8"/>'+ticks
+   +label(rises[di],'↑','#66d17a',xr-12,'end')+label(sets[di],'↓','#ff8a65',xs+12,'start')
+   +'<text x="'+cx.toFixed(1)+'" y="'+(hy-12)+'" text-anchor="middle" font-size="17" fill="#bbc4d2">'+escapeHtml(lenText)+'</text>'+dot+'</svg>';
+  return {isDay,svg};
+}
+function pw5Render(d){
+  const root=document.getElementById('pwOverview');if(!root||!d)return;
+  pw3Renders++;
+  const sk=currentLang==='sk',L=(a,b)=>sk?a:b,E=escapeHtml,N=weatherSummaryNumber;
+  const h=d.hourly||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),stamp=times[i];
+  const valid=!!stamp&&Math.abs(new Date(stamp)-now)<=3600000;
+  const get=k=>valid?N(arr(h,k)[i]):null,u=UNITS[state.units]||UNITS.metric;
+  const temp=get('temperature_2m'),feel=get('apparent_temperature'),wind=get('wind_speed_10m'),gust=get('wind_gusts_10m'),wd=get('wind_direction_10m'),uv=get('uv_index');
+  const cloud=get('cloud_cover'),cc=cloud!=null&&cloud>=0&&cloud<=100?cloud:null,prob0=get('precipitation_probability'),prob=prob0!=null&&prob0>=0&&prob0<=100?prob0:null;
+  const dot=(color,title)=>'<span class="pw3-dot" style="background:'+(color||'#5b6577')+'" title="'+E(title||'')+'"></span>';
+  const val=(v,unit,dec)=>v==null?'—':fmt(v,dec||0)+(unit?' '+E(unit):'');
+  const sun=pw5Sun(d,now,currentLang),isDay=sun.isDay,night=isDay===false;
+  const code=get('weather_code');let kind='cloud',condition=L('Údaj nedostupný','Unavailable');
+  if(code!=null){
+    if(code===0){kind='clear';condition=L('Jasno','Clear')}else if(code<=2){kind='part';condition=L('Polojasno','Partly cloudy')}else if(code===3){condition=L('Zamračené','Overcast')}
+    else if(code===45||code===48){kind='fog';condition=L('Hmla','Fog')}else if(code>=95){kind='storm';condition=L('Búrka','Thunderstorm')}
+    else if([71,73,75,77,85,86].includes(code)){kind='snow';condition=L('Sneženie','Snow')}else if(code>=80){kind='rain';condition=L('Prehánky','Showers')}else if(code>=61){kind='rain';condition=L('Dážď','Rain')}else if(code>=51){kind='rain';condition=L('Mrholenie','Drizzle')}
+  }
+  const tempColor=tempDotColor(temp),windColor=weatherSummaryWindColor(wind);
+  const windLabel=wd==null?'':L('Vietor fúka zo smeru ','Wind from ')+dir(wd)+' '+fmt(wd)+'°';
+  const compass=wd==null||wind===0?'':pw5Compass(wd,'#88dca1',windLabel,L('S','N'));
+  const uvLow=night&&(uv==null||uv<0.5),uvColor=uvLow?null:weatherSummaryUvColor(uv),uvInt=uv==null?null:Math.round(uv);
+  const uvNames=sk?['Nízka','Mierna','Vysoká','Veľmi vysoká','Extrémna']:['Low','Moderate','High','Very high','Extreme'];
+  const uvName=uvLow?L('Noc','Night'):uv==null?L('Údaj nedostupný','Unavailable'):uv<3?uvNames[0]:uv<6?uvNames[1]:uv<8?uvNames[2]:uv<11?uvNames[3]:uvNames[4];
+  const uvGauge=pw5Gauge('pw5-gauge',uvLow?0:uv,11,v=>weatherSummaryUvColor(v)||'#4EB400',{value:uvInt==null?'—':String(uvInt),color:uvLow?'#bbc4d2':(uvColor||'#e8eaf0')},L('UV index, stupnica 0 až 11 a viac','UV index, scale 0 to 11 plus'),'0','11+');
+  const greyLevel=cc==null?null:Math.round(190-cc*0.9),cloudDot=greyLevel==null?'#5b6577':'rgb('+greyLevel+','+(greyLevel+4)+','+(greyLevel+12)+')';
+  const cloudName=cc==null?L('Údaj nedostupný','Unavailable'):cc<20?L('Jasno','Clear'):cc<45?L('Malá oblačnosť','Few clouds'):cc<70?L('Polooblačno','Partly cloudy'):cc<90?L('Oblačno','Cloudy'):L('Zamračené','Overcast');
+  const cloudHtml=pw3CloudSvg('pw5CloudCover',cc==null?0:cc/100,'#8294ad',cc==null?'—':fmt(cc)+' %',L('Celková oblačnosť','Total cloud cover'));
+  const rain=get('rain'),show=get('showers'),snow=get('snowfall'),legacy=get('precipitation'),split=[rain,show,snow].some(v=>v!=null),known=split||legacy!=null,imperial=state.units==='imperial';
+  const liquid=split?(rain||0)+(show||0):(legacy||0),snowAmount=split?(snow||0):0;
+  const eq=known?liquid*(imperial?25.4:1)+snowAmount*(imperial?2.54:1):null,hasPrecip=eq!=null&&eq>0;
+  const ptype=split?weatherSummaryPrecipType(rain,show,snow):(legacy>0?{key:'precip_rain',color:CLR.rain}:null),precipColor=ptype?ptype.color:CLR.rain;
+  const parts=split?[{key:'precip_rain',v:rain,unit:u.precip,color:CLR.rain},{key:'precip_showers',v:show,unit:u.precip,color:'#2196c9'},{key:'precip_snow',v:snow,unit:imperial?'in':'cm',color:'#e8eaf0'}].filter(p=>p.v!=null&&p.v>0):(legacy>0?[{key:'precip_rain',v:legacy,unit:u.precip,color:CLR.rain}]:[]);
+  const partText=p=>E(t(p.key))+' '+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit);
+  const isSnow=ptype&&ptype.key==='precip_snow',visual=hasPrecip?(isSnow?'snow':'rain'):'';
+  const fraction=eq==null?0:Math.min(1,Math.sqrt(eq/6));
+  let precipBig,precipMuted='';
+  if(!known){precipBig='<div class="pw5-value">—</div>';precipMuted='<div class="pw5-text">'+E(L('Údaj nedostupný','Unavailable'))+'</div>'}
+  else if(!hasPrecip){precipBig='<div class="pw5-value">'+E(L('Žiadne','None'))+'</div>'}
+  else if(parts.length===1){const p=parts[0];precipBig='<div class="pw5-value" style="color:'+p.color+'">'+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit)+'</div>';precipMuted='<div class="pw5-text">'+E(t(p.key))+'</div>'}
+  else{precipBig='<div class="pw5-value" style="color:'+precipColor+'">'+E(t(ptype?ptype.key:'precip_mixed'))+'</div>';precipMuted='<div class="pw5-text">'+parts.map(p=>'<span style="color:'+p.color+'">'+partText(p)+'</span>').join(' · ')+'</div>'}
+  const umbrellaColor=prob==null?'#5b6577':probabilityColour(Math.round(35+0.65*prob));
+  const probLabel=L('Pravdepodobnosť zrážok','Precipitation probability');
+  const precipHtml=pw3CloudSvg('pw5PrecipCloud',fraction,precipColor,'',L('Intenzita a typ zrážok','Precipitation intensity and type'),visual)+precipBig+precipMuted
+    +'<div class="pw5-prob" title="'+E(probLabel)+'" aria-label="'+E(probLabel+': '+(prob==null?L('údaj nedostupný','unavailable'):fmt(prob)+' %'))+'">'+pw5Umbrella(umbrellaColor)+'<span>'+(prob==null?'—':fmt(prob)+' %')+'</span></div>';
+  const air=(d.air&&d.air.hourly)||{},at=k=>valid?N(arr(air,k)[i]):null,aq=at(selectedAqiScale()==='us'?'us_aqi':'european_aqi'),cat=aqiCategory(aq),bands=aqiBands(),aqMax=bands.filter(b=>Number.isFinite(b.upper)).slice(-1)[0].upper;
+  const aqGauge=pw5Gauge('pw5-airgauge',aq,aqMax,v=>(aqiCategory(v)||bands[bands.length-1]).color,{value:aq==null?'—':String(Math.round(aq)),color:cat?cat.color:'#e8eaf0'},selectedAqiName()+' '+(aq==null?'':Math.round(aq)),'0',aqMax+'+');
+  const pollenKeys=['alder','birch','grass','mugwort','ragweed','olive'],rank={ok:0,warn:1,bad:2};
+  const pollen=pollenKeys.map(k=>{const v=at(k+'_pollen'),threshold=POLLEN_THRESHOLDS[k];return v!=null&&v>0&&threshold?{k,v,level:pollenLevel(v,k),ratio:v/threshold.bad}:null}).filter(Boolean).sort((a,b)=>rank[b.level]-rank[a.level]||b.ratio-a.ratio).slice(0,3);
+  const pollenKnown=pollenKeys.some(k=>at(k+'_pollen')!=null),levelColor={ok:'#66d17a',warn:'#ffb74d',bad:'#ff6b6b'},levelName={ok:L('nízka','low'),warn:L('zvýšená','elevated'),bad:L('vysoká','high')};
+  const pollenHtml=pollen.length?pollen.map(p=>'<div class="pw3-row"><span>'+dot(levelColor[p.level],levelName[p.level])+E(t('leg_'+p.k))+'</span><span style="color:'+levelColor[p.level]+'">'+E(levelName[p.level])+'</span></div>').join(''):'<div class="pw3-muted">'+E(pollenKnown?L('V dostupných údajoch nie je žiadny peľ.','No pollen in the available data.'):L('Údaje nie sú dostupné.','Data unavailable.'))+'</div>';
+  const pollenDot=pollen.length?levelColor[pollen[0].level]:null;
+  const alerts=Array.isArray(d.alerts)?d.alerts:[],highest=highestAlertLevel(alerts),groups=new Map();
+  alerts.forEach(a=>{const label=alertEvent(a),level=alertLevel(a),key=label+'|'+level;if(!groups.has(key))groups.set(key,{label,level,local:alertIssuer(a)==='Local estimate'})});
+  const rows=[...groups.values()].sort((a,b)=>ALERT_RANK[b.level]-ALERT_RANK[a.level]||a.label.localeCompare(b.label));
+  const alertRows=rows.length?rows.slice(0,4).map(g=>'<div class="pw3-row"><span>'+dot(ALERT_COLORS[g.level],g.level)+E(g.label)+(g.local?' <span class="pw3-muted">· '+E(L('lokálny odhad','local estimate'))+'</span>':'')+'</span></div>').join('')+(rows.length>4?'<div class="pw3-muted">+'+(rows.length-4)+' '+E(L('ďalšie','more'))+'</div>':''):'<div class="pw3-muted">'+E(t('no_active_alerts'))+'</div>';
+  const date=typeof pwOverviewDate==='function'?pwOverviewDate(now,sk):'';
+  const tile=(name,dotHtml,body,cls)=>'<div class="pw5-tile '+(cls||'')+'"><div class="pw5-label">'+dotHtml+E(name)+'</div>'+body+'</div>';
+  const windBody='<div class="pw5-windbody"><div class="pw5-windtext"><div class="pw5-value" style="color:'+(windColor||'#e8eaf0')+'">'+val(wind,u.wind)+'</div><div class="pw5-text">'+E(L('Nárazy','Gusts'))+' '+weatherSummaryTint(val(gust,u.wind),weatherSummaryWindColor(gust))+'</div></div>'+compass+'</div>';
+  const html='<div class="pw5-hero"><div class="pw5-main"><div><div class="pw3-eyebrow">'+E(L('Počasie na prvý pohľad','Weather at a glance'))+'</div><div class="pw3-location">'+E(d.name||'')+'</div><div class="pw3-date">'+E(date)+'</div></div><div><div class="pw5-reading"><div class="pw5-temp">'+(temp==null?'—':fmt(temp)+'°')+'</div>'+(code==null?'':pw3Icon(kind,night))+'</div><div class="pw3-condition">'+E(condition)+'</div></div><div class="pw3-feels">'+dot(tempColor,t('chip_feels'))+'<span>'+E(L('Pocitovo','Feels like'))+' '+val(feel,u.temp)+'</span></div><button type="button" class="pw3-btn" data-pw3-open="weather">'+E(L('Podrobná predpoveď','Detailed forecast'))+' ↗</button></div>'
+  +'<div class="pw5-tiles">'
+  +tile(t('chip_precip'),dot(hasPrecip?precipColor:'#5b6577',hasPrecip?L('Zrážky','Precipitation'):''),'<div class="pw5-body">'+precipHtml+'</div>')
+  +tile(t('chip_wind'),dot(windColor||'#66d17a',wind==null?'':L('Vietor','Wind')),windBody)
+  +tile(t('chip_uv'),dot(uvLow?'#5b6577':(uvColor||'#5b6577'),uvName),'<div class="pw5-body">'+uvGauge+'<div class="pw5-text" style="font-weight:650;color:'+(uvLow?'#bbc4d2':(uvColor||'#e8eaf0'))+'">'+E(uvName)+'</div></div>')
+  +tile(t('chip_clouds'),dot(cloudDot,cloudName),'<div class="pw5-body">'+cloudHtml+'</div>')
+  +tile(L('Slnko dnes','Sun today'),dot(isDay==null?'#5b6577':isDay?'#ffd166':'#2b3550',isDay==null?'':isDay?L('Deň','Day'):L('Noc','Night')),sun.svg,'wide')
+  +'</div></div>'
+  +'<div class="pw3-side"><section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(cat?cat.color:null,cat?cat.name:'')+E(L('Kvalita vzduchu','Air quality'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div><div class="pw3-airbody">'+aqGauge+'<div class="pw3-airtext"><b style="color:'+(cat?cat.color:'#e8eaf0')+'">'+E(cat?cat.name:L('Údaje nie sú dostupné','Data unavailable'))+'</b><span class="pw3-muted">'+E(selectedAqiName())+'</span></div></div></section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(pollenDot,pollen.length?levelName[pollen[0].level]:'')+E(L('Peľ aktuálne','Current pollen'))+'</div><button type="button" class="pw3-link" data-pw3-open="air">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+pollenHtml+'</section>'
+  +'<section class="pw3-card"><div class="pw3-cardhead"><div class="pw3-cardtitle">'+dot(ALERT_COLORS[highest],alerts.length?highest:'')+E(L('Výstrahy','Alerts'))+'</div><button type="button" class="pw3-link" data-pw3-open="alerts">'+E(L('Podrobnosti','Details'))+' ↗</button></div>'+alertRows+'</section></div>';
+  root.className='pw3 pw5';
+  if(root._pw3Html!==html){root.innerHTML=html;root._pw3Html=html}
+  if(!root._pw3Bound){
+    root._pw3Bound=true;
+    root.addEventListener('click',e=>{const target=e.target instanceof Element?e.target.closest('[data-pw3-open]'):null;if(!target)return;const section=target.getAttribute('data-pw3-open'),body=document.getElementById(section+'Body');if(!body)return;if(!body.classList.contains('open'))toggleSection(section);const host=body.parentElement;if(host)host.scrollIntoView({block:'start'})});
+  }
+}
+renderOverview=function(d){pw5Render(d)};
+
+// PERUN OVERVIEW V6
+pw5Gauge=function(cls,value,max,colorAt,text,label,minLabel,maxLabel){
+  const E=escapeHtml,neutral=value===0&&text&&text.color==='#bbc4d2';
+  const point=p=>[80-62*Math.cos(p*Math.PI),80-62*Math.sin(p*Math.PI)];
+  let body='<path d="'+pw3GaugeArc(0,1)+'" fill="none" stroke="#414958" stroke-width="14" stroke-linecap="round"/>';
+  if(value!=null&&Number.isFinite(value)&&value>=0&&!neutral){
+    const extent=Math.max(0,Math.min(1,value/max)),steps=Math.max(2,Math.ceil(extent*70));
+    const first=point(0),last=point(extent);
+    if(extent>0){for(let k=0;k<steps;k++){const a=extent*k/steps,b=extent*(k+1)/steps;body+='<path d="'+pw3GaugeArc(a,b)+'" fill="none" stroke="'+colorAt((a+b)/2*max)+'" stroke-width="14"/>'}}
+    body+='<circle cx="'+first[0].toFixed(2)+'" cy="'+first[1].toFixed(2)+'" r="7" fill="'+colorAt(0)+'"/>';
+    if(extent>0)body+='<circle cx="'+last[0].toFixed(2)+'" cy="'+last[1].toFixed(2)+'" r="7" fill="'+colorAt(extent*max)+'"/>';
+  }
+  body+='<text x="18" y="106" fill="#bbc4d2" font-size="13" text-anchor="middle">'+E(minLabel)+'</text><text x="142" y="106" fill="#bbc4d2" font-size="13" text-anchor="middle">'+E(maxLabel)+'</text>';
+  return '<div class="pw6-gauge '+cls+'" style="aspect-ratio:160/114"><svg viewBox="0 0 160 114" role="img" aria-label="'+E(label)+'"><title>'+E(label)+'</title>'+body+'</svg><div class="pw6-gval" style="color:'+(text.color||'#e8eaf0')+';top:52%">'+E(text.value)+'</div></div>';
+};
+pw5Sun=function(d,now,lang){
+  const offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000;
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs||!Number.isFinite(start))return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  const X0=40,X1=760,W=X1-X0,hy=90,ryD=76,ryN=52,VBH=168;
+  const xAt=ts=>X0+Math.max(0,Math.min(1,(ts-start)/(end-start)))*W;
+  const xr=Math.max(X0+2,xAt(rs)),xs=Math.min(X1-2,xAt(ss)),cx=(xr+xs)/2,rD=(xs-xr)/2,rL=xr-X0,rR=X1-xs;
+  const yAt=x=>{
+    if(x<xr)return hy+ryN*Math.sqrt(Math.max(0,1-Math.pow((x-X0)/rL,2)));
+    if(x<=xs)return hy-ryD*Math.sqrt(Math.max(0,1-Math.pow((x-cx)/rD,2)));
+    return hy+ryN*Math.sqrt(Math.max(0,1-Math.pow((x-X1)/rR,2)));
+  };
+  const len=ss-rs;let hours=Math.floor(len/3600000),minutes=Math.round((len%3600000)/60000);if(minutes===60){hours++;minutes=0}
+  const lenText=t('sun_daylen')+': '+hours+' h '+String(minutes).padStart(2,'0')+' min';
+  const label=(iso,arrow,color,x,anchor)=>'<text x="'+x.toFixed(1)+'" y="'+(hy-14)+'" text-anchor="'+anchor+'" font-size="22" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(iso))+'</text>';
+  const axisY=hy+ryN+26;
+  const ends='<path d="M'+X0+' '+(hy-5)+'V'+(hy+5)+'M'+X1+' '+(hy-5)+'V'+(hy+5)+'" stroke="#8c9bb2" stroke-width="2"/><text x="'+X0+'" y="'+axisY+'" text-anchor="middle" font-size="20" fill="#bbc4d2">00 h</text><text x="'+X1+'" y="'+axisY+'" text-anchor="middle" font-size="20" fill="#bbc4d2">24 h</text>';
+  const aria=sk?'Symbolická dráha Slnka počas 24 hodín: noc do východu, deň a noc po západe, s aktuálnou polohou':'Symbolic 24-hour sun path: night until sunrise, day, and night after sunset, with the current position';
+  let dot='';
+  if(instant>=start&&instant<=end){const x=xAt(instant),y=yAt(x);dot='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="11" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.6"/>'}
+  const svg='<svg class="pw5-sunsvg" viewBox="0 0 800 '+VBH+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+ryD+' 0 0 1 '+xs.toFixed(1)+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+X0+' '+(hy+ryN)+'A'+rL.toFixed(1)+' '+ryN+' 0 0 0 '+xr.toFixed(1)+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xs.toFixed(1)+' '+hy+'A'+rR.toFixed(1)+' '+ryN+' 0 0 0 '+X1+' '+(hy+ryN)+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+ryD+' 0 0 1 '+xs.toFixed(1)+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.8" stroke-linecap="round"/>'
+   +'<path d="M'+X0+' '+hy+'H'+X1+'" stroke="#8c9bb2" stroke-width="2"/>'+ends
+   +label(rises[di],'↑','#66d17a',xr-14,'end')+label(sets[di],'↓','#ff8a65',xs+14,'start')
+   +'<text x="'+cx.toFixed(1)+'" y="'+(hy-24)+'" text-anchor="middle" font-size="22" fill="#bbc4d2">'+escapeHtml(lenText)+'</text>'+dot+'</svg>';
+  return {isDay,svg};
+};
+
+// PERUN OVERVIEW V7
+pw5Sun=function(d,now,lang){
+  const offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000;
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs||!Number.isFinite(start))return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  const X0=40,X1=760,W=X1-X0,RY=72,hy=22+RY,VBH=hy+RY+12;
+  const xAt=ts=>X0+Math.max(0,Math.min(1,(ts-start)/(end-start)))*W;
+  const xr=Math.max(X0+2,xAt(rs)),xs=Math.min(X1-2,xAt(ss)),cx=(xr+xs)/2,rD=(xs-xr)/2,rL=xr-X0,rR=X1-xs;
+  const yAt=x=>{
+    if(x<xr)return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X0)/rL,2)));
+    if(x<=xs)return hy-RY*Math.sqrt(Math.max(0,1-Math.pow((x-cx)/rD,2)));
+    return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X1)/rR,2)));
+  };
+  const len=ss-rs;let hours=Math.floor(len/3600000),minutes=Math.round((len%3600000)/60000);if(minutes===60){hours++;minutes=0}
+  const lenText=t('sun_daylen')+': '+hours+' h '+String(minutes).padStart(2,'0')+' min';
+  const label=(iso,arrow,color,x,anchor)=>'<text x="'+x.toFixed(1)+'" y="'+(hy-14)+'" text-anchor="'+anchor+'" font-size="22" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(iso))+'</text>';
+  const ends='<path d="M'+X0+' '+(hy-6)+'V'+(hy+6)+'M'+X1+' '+(hy-6)+'V'+(hy+6)+'" stroke="#8c9bb2" stroke-width="2"/><text x="'+X0+'" y="'+(hy-14)+'" text-anchor="middle" font-size="20" fill="#bbc4d2">00 h</text><text x="'+X1+'" y="'+(hy-14)+'" text-anchor="middle" font-size="20" fill="#bbc4d2">24 h</text>';
+  const aria=sk?'Symbolická dráha Slnka počas 24 hodín':'Symbolic 24-hour sun path';
+  let dot='';
+  if(instant>=start&&instant<=end){const x=xAt(instant),y=yAt(x);dot='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="11" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.6"/>'}
+  const svg='<svg class="pw5-sunsvg" viewBox="0 0 800 '+VBH+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+X0+' '+(hy+RY)+'A'+rL.toFixed(1)+' '+RY+' 0 0 0 '+xr.toFixed(1)+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="3.2" stroke-linecap="round"/>'
+   +'<path d="M'+xs.toFixed(1)+' '+hy+'A'+rR.toFixed(1)+' '+RY+' 0 0 0 '+X1+' '+(hy+RY)+'" fill="none" stroke="#6b7280" stroke-width="3.2" stroke-linecap="round"/>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.8" stroke-linecap="round"/>'
+   +'<path d="M'+X0+' '+hy+'H'+X1+'" stroke="#8c9bb2" stroke-width="2"/>'+ends
+   +label(rises[di],'↑','#66d17a',xr-14,'end')+label(sets[di],'↓','#ff8a65',xs+14,'start')
+   +'<text x="'+cx.toFixed(1)+'" y="'+(hy-26)+'" text-anchor="middle" font-size="22" fill="#bbc4d2">'+escapeHtml(lenText)+'</text>'+dot+'</svg>';
+  return {isDay,svg};
+};
+
+// PERUN OVERVIEW V8
+pw5Sun=function(d,now,lang){
+  const offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000;
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs||!Number.isFinite(start))return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  const X0=34,X1=526,W=X1-X0,RY=66,hy=26+RY,VBH=hy+RY+10;
+  const xAt=ts=>X0+Math.max(0,Math.min(1,(ts-start)/(end-start)))*W;
+  const xr=Math.max(X0+2,xAt(rs)),xs=Math.min(X1-2,xAt(ss)),cx=(xr+xs)/2,rD=(xs-xr)/2,rL=xr-X0,rR=X1-xs;
+  const yAt=x=>{
+    if(x<xr)return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X0)/rL,2)));
+    if(x<=xs)return hy-RY*Math.sqrt(Math.max(0,1-Math.pow((x-cx)/rD,2)));
+    return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X1)/rR,2)));
+  };
+  const len=ss-rs;let hours=Math.floor(len/3600000),minutes=Math.round((len%3600000)/60000);if(minutes===60){hours++;minutes=0}
+  const lenValue=hours+' h '+String(minutes).padStart(2,'0')+' min';
+  const labelText=(iso,arrow)=>arrow+' '+smFmtHM(iso),estimate=(text,size)=>text.length*size*0.6;
+  const riseLabel=labelText(rises[di],'↑'),setLabel=labelText(sets[di],'↓');
+  const liftLeft=(xr-14-estimate(riseLabel,21))<(X0+estimate('00 h',18)/2+6);
+  const liftRight=(xs+14+estimate(setLabel,21))>(X1-estimate('24 h',18)/2-6);
+  const label=(text,color,x,anchor)=>'<text x="'+x.toFixed(1)+'" y="'+(hy-14)+'" text-anchor="'+anchor+'" font-size="21" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+text.charAt(0)+'</tspan>'+escapeHtml(text.slice(1))+'</text>';
+  const ends='<path d="M'+X0+' '+(hy-6)+'V'+(hy+6)+'M'+X1+' '+(hy-6)+'V'+(hy+6)+'" stroke="#8c9bb2" stroke-width="2"/>'
+    +'<text x="'+X0+'" y="'+(hy-14-(liftLeft?26:0))+'" text-anchor="middle" font-size="18" fill="#bbc4d2">00 h</text><text x="'+X1+'" y="'+(hy-14-(liftRight?26:0))+'" text-anchor="middle" font-size="18" fill="#bbc4d2">24 h</text>';
+  const aria=sk?'Symbolická dráha Slnka počas 24 hodín':'Symbolic 24-hour sun path';
+  let dot='';
+  if(instant>=start&&instant<=end){const x=xAt(instant),y=yAt(x);dot='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="10" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.6"/>'}
+  const svg='<svg class="pw5-sunsvg" viewBox="0 0 560 '+VBH+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+X0+' '+(hy+RY)+'A'+rL.toFixed(1)+' '+RY+' 0 0 0 '+xr.toFixed(1)+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xs.toFixed(1)+' '+hy+'A'+rR.toFixed(1)+' '+RY+' 0 0 0 '+X1+' '+(hy+RY)+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.6" stroke-linecap="round"/>'
+   +'<path d="M'+X0+' '+hy+'H'+X1+'" stroke="#8c9bb2" stroke-width="2"/>'+ends
+   +label(riseLabel,'#66d17a',xr-14,'end')+label(setLabel,'#ff8a65',xs+14,'start')
+   +'<text x="'+cx.toFixed(1)+'" y="'+(hy-44)+'" text-anchor="middle" font-size="16" fill="#bbc4d2">'+escapeHtml(t('sun_daylen'))+'</text><text x="'+cx.toFixed(1)+'" y="'+(hy-16)+'" text-anchor="middle" font-size="21" font-weight="650" fill="#e8eaf0">'+escapeHtml(lenValue)+'</text>'+dot+'</svg>';
+  return {isDay,svg};
+};
+
+// PERUN OVERVIEW V9
+pw5Compass=function(wd,color,label,north){
+  const angle=(wd+180)%360;
+  return '<svg class="pw5-compass" viewBox="0 0 100 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title><circle cx="50" cy="56" r="36" fill="none" stroke="#8c9bb2" stroke-width="2"/><text x="50" y="14" text-anchor="middle" font-size="14" font-weight="600" fill="#bbc4d2">'+escapeHtml(north)+'</text><path d="M50 28L38 80L50 68L62 80Z" transform="rotate('+angle.toFixed(1)+' 50 56)" fill="'+color+'"/><circle cx="50" cy="56" r="4" fill="#e8eaf0"/></svg>';
+};
+pw5Sun=function(d,now,lang){
+  const offset=Number(d.utc_offset_seconds)||0,sk=lang==='sk';
+  const day=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const daily=d.daily||{},days=arr(daily,'time'),rises=arr(daily,'sunrise'),sets=arr(daily,'sunset'),di=days.indexOf(day);
+  const parse=iso=>{if(!iso)return null;const v=Date.parse(String(iso).length===16?iso+':00Z':iso+'Z');return Number.isFinite(v)?v-offset*1000:null};
+  const start=Date.parse(day+'T00:00:00Z')-offset*1000,end=start+86400000;
+  const rs=di>=0?parse(rises[di]):null,ss=di>=0?parse(sets[di]):null,instant=Date.now();
+  if(rs==null||ss==null||ss<=rs||!Number.isFinite(start))return {isDay:null,svg:'<div class="pw3-muted">'+escapeHtml(sk?'Dráha Slnka nie je dostupná (polárny deň alebo noc, alebo chýbajúce údaje).':'Solar path unavailable (polar day or night, or missing data).')+'</div>'};
+  const isDay=instant>=rs&&instant<ss,sunColor=(typeof CLR!=='undefined'&&CLR.sun)||'#ffd166';
+  const X0=34,X1=526,W=X1-X0,RY=66,hy=26+RY,VBH=hy+RY+10;
+  const xAt=ts=>X0+Math.max(0,Math.min(1,(ts-start)/(end-start)))*W;
+  const xr=Math.max(X0+2,xAt(rs)),xs=Math.min(X1-2,xAt(ss)),cx=(xr+xs)/2,rD=(xs-xr)/2,rL=xr-X0,rR=X1-xs;
+  const yAt=x=>{
+    if(x<xr)return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X0)/rL,2)));
+    if(x<=xs)return hy-RY*Math.sqrt(Math.max(0,1-Math.pow((x-cx)/rD,2)));
+    return hy+RY*Math.sqrt(Math.max(0,1-Math.pow((x-X1)/rR,2)));
+  };
+  const label=(iso,arrow,color,x,anchor)=>'<text x="'+x.toFixed(1)+'" y="'+(hy-14)+'" text-anchor="'+anchor+'" font-size="21" fill="#e8eaf0"><tspan fill="'+color+'" font-weight="700">'+arrow+'</tspan> '+escapeHtml(smFmtHM(iso))+'</text>';
+  const aria=sk?'Symbolická dráha Slnka počas 24 hodín':'Symbolic 24-hour sun path';
+  let dot='';
+  if(instant>=start&&instant<=end){const x=xAt(instant),y=yAt(x);dot='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="10" fill="'+sunColor+'" stroke="#8a6d1f" stroke-width="1.6"/>'}
+  const svg='<svg class="pw5-sunsvg" viewBox="0 0 560 '+VBH+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+escapeHtml(aria)+'"><title>'+escapeHtml(aria)+'</title>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'Z" fill="#ffd16622"/>'
+   +'<path d="M'+X0+' '+(hy+RY)+'A'+rL.toFixed(1)+' '+RY+' 0 0 0 '+xr.toFixed(1)+' '+hy+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xs.toFixed(1)+' '+hy+'A'+rR.toFixed(1)+' '+RY+' 0 0 0 '+X1+' '+(hy+RY)+'" fill="none" stroke="#6b7280" stroke-width="3" stroke-linecap="round"/>'
+   +'<path d="M'+xr.toFixed(1)+' '+hy+'A'+rD.toFixed(1)+' '+RY+' 0 0 1 '+xs.toFixed(1)+' '+hy+'" fill="none" stroke="#ffd166" stroke-width="3.6" stroke-linecap="round"/>'
+   +'<path d="M'+X0+' '+hy+'H'+X1+'" stroke="#8c9bb2" stroke-width="2"/>'
+   +label(rises[di],'↑','#66d17a',xr-14,'end')+label(sets[di],'↓','#ff8a65',xs+14,'start')+dot+'</svg>';
+  return {isDay,svg};
+};
+function pw9TrimAlerts(){
+  const root=document.getElementById('pwOverview');if(!root)return;
+  const card=root.querySelector('.pw3-side>.pw3-card:nth-child(3)');if(!card)return;
+  const rows=[...card.children].filter(el=>el.classList.contains('pw3-row'));
+  const extra=[...card.children].find(el=>el.classList.contains('pw3-muted')&&/\d/.test(el.textContent));
+  const hidden=extra?parseInt((extra.textContent.match(/\d+/)||['0'])[0],10):0;
+  const total=rows.length+hidden;
+  if(total<=2)return;
+  rows.slice(2).forEach(row=>row.remove());
+  const n=total-2,sk=currentLang==='sk';
+  const text=sk?'+'+n+' '+(n===1?'ďalšia výstraha':n<5?'ďalšie výstrahy':'ďalších výstrah'):'+'+n+' more '+(n===1?'alert':'alerts');
+  if(extra)extra.textContent=text;
+  else{const note=document.createElement('div');note.className='pw3-muted';note.textContent=text;card.appendChild(note)}
+}
+const pw9PreviousRender=pw5Render;
+pw5Render=function(d){pw9PreviousRender(d);pw9TrimAlerts()};
+
+
+
 
 startNowTick();
 
