@@ -510,6 +510,29 @@ footer a:hover{text-decoration:underline}
 #pw11Forecast .pw11-windcard>.pw11-bar{grid-column:1/-1;grid-row:4}
 #pw11Forecast .pw11-windcard>.pw11-bottom{grid-column:1/-1;grid-row:5}
 
+
+/* PERUN SETTINGS V16 */
+.appHeader{align-items:center}
+.pw16-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.pw16-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.pw16-actions .toolbarStatus{position:static;font-size:12px}
+.pw16-actions .btn{height:36px;padding:0 14px}
+.pw16-actions .btn.autoToggle{min-width:0}
+.pw16-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.pw16-group{display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--deep);border:1px solid var(--border);border-radius:12px;min-width:0}
+.pw16-group h4{margin:0;font-size:14px;font-weight:650;color:var(--heading)}
+.pw16-group .field select{width:100%;min-width:0}
+.pw16-group .aqiSwitch{margin-left:0;align-self:flex-start}
+
+
+/* PERUN SETTINGS V17 */
+.pw16-pill{flex-shrink:0}
+.pw16-actions .pw16-pill .btn{height:auto;min-width:0;padding:6px 16px;border:0;border-radius:16px;background:transparent;color:var(--muted);font-size:13px;font-weight:600;white-space:nowrap}
+.pw16-actions .pw16-pill .btn:hover{color:var(--text);opacity:1}
+.pw16-actions .pw16-pill .btn.active{background:var(--accent);color:#10131a}
+.pw16-actions .pw16-pill .btn.refreshing{opacity:.68}
+.pw17-marine .langSwitch{align-self:flex-start;margin-left:0}
+
 </style>
 </head>
 <body>
@@ -5612,6 +5635,102 @@ pw11Decorate=function(d){pw14PreviousDecorate(d);pw14SplitWindUnit()};
 
 
 
+
+
+// PERUN SETTINGS V16
+function pw16Move(){
+  if(document.getElementById('settingsSection'))return;
+  const toolbar=document.querySelector('main .toolbar'),helpBody=document.getElementById('helpBody'),helpSection=helpBody&&helpBody.closest('section');
+  if(!toolbar||!helpSection)return;
+  const field=id=>{const el=document.getElementById(id);return el&&el.closest('.field')};
+  const model=field('modelSelect'),interval=field('intervalSelect'),range=field('rangeSelect'),units=field('unitsSelect'),smoothing=field('smoothingSelect');
+  if(![model,interval,range,units,smoothing].every(Boolean))return;
+  const section=document.createElement('section');section.className='section';section.id='settingsSection';
+  section.innerHTML='<div class="sectionHead" onclick="toggleSection(\'settings\')"><h3><span id="settingsChevron" class="chev">▶</span><span class="dot neutral"></span> <span id="lblSectionSettings"></span></h3></div>'
+    +'<div id="settingsBody" class="body"><div class="inner"><div class="pw16-groups"><div class="pw16-group" id="pw16Data"><h4 id="pw16TitleData"></h4></div>'
+    +'<div class="pw16-group" id="pw16Air"><h4 id="pw16TitleAir"></h4><div class="langSwitch aqiSwitch" role="group" id="pw16AqiSwitch"><button type="button" id="btnAqiEuS" onclick="changeAqiScale(\'eu\')"></button><button type="button" id="btnAqiUsS" onclick="changeAqiScale(\'us\')"></button></div></div>'
+    +'<div class="pw16-group" id="pw16Charts"><h4 id="pw16TitleCharts"></h4></div></div></div></div>';
+  helpSection.insertAdjacentElement('beforebegin',section);
+  [model,range,units].forEach(item=>document.getElementById('pw16Data').appendChild(item));
+  [interval,smoothing].forEach(item=>document.getElementById('pw16Charts').appendChild(item));
+  const header=document.querySelector('.appHeader'),lang=header&&header.querySelector('.langSwitch'),refresh=document.getElementById('refreshButton'),auto=document.getElementById('autoButton'),status=document.getElementById('status');
+  if(header&&lang&&refresh&&auto&&status){
+    const right=document.createElement('div'),actions=document.createElement('div');right.className='pw16-right';actions.className='pw16-actions';
+    actions.append(status,refresh,auto);right.append(actions,lang);header.appendChild(right);
+  }
+  const oldAqi=document.querySelector('.aqiCardHeader .aqiSwitch');if(oldAqi)oldAqi.remove();
+  toolbar.remove();
+}
+function pw16Texts(){
+  const sk=currentLang==='sk',set=(id,text)=>{const el=document.getElementById(id);if(el&&el.textContent!==text)el.textContent=text};
+  set('lblSectionSettings',sk?'Nastavenia':'Settings');set('pw16TitleData',sk?'Údaje':'Data');set('pw16TitleAir',sk?'Kvalita ovzdušia':'Air quality');set('pw16TitleCharts',sk?'Grafy':'Charts');
+  const eu=document.getElementById('btnAqiEuS'),us=document.getElementById('btnAqiUsS');
+  if(eu&&us){
+    set('btnAqiEuS',sk?'Európsky AQI':'European AQI');set('btnAqiUsS',sk?'Americký AQI':'American AQI');
+    const isUs=typeof selectedAqiScale==='function'&&selectedAqiScale()==='us';
+    eu.classList.toggle('active',!isUs);us.classList.toggle('active',isUs);eu.setAttribute('aria-pressed',String(!isUs));us.setAttribute('aria-pressed',String(isUs));
+  }
+}
+closeOtherSections=function(n){
+  ['alerts','air','weather','sunmoon','marine','settings','help'].forEach(o=>{
+    if(o===n)return;
+    const body=document.getElementById(o+'Body'),chevron=document.getElementById(o+'Chevron');
+    if(body)body.classList.remove('open');if(chevron)chevron.classList.remove('open');
+  });
+};
+const pw16PreviousSyncAqi=syncAqiControl;
+syncAqiControl=function(){pw16PreviousSyncAqi.apply(this,arguments);pw16Texts()};
+const pw16PreviousTranslations=applyTranslations;
+applyTranslations=function(){pw16PreviousTranslations.apply(this,arguments);pw16Texts()};
+pw16Move();pw16Texts();
+
+// PERUN SETTINGS V17
+const PW17_GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="#9aa3b2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+function pw17Rework(){
+  if(document.getElementById('pw17Marine'))return;
+  const data=document.getElementById('pw16Data'),charts=document.getElementById('pw16Charts');if(!data||!charts)return;
+  const field=id=>{const el=document.getElementById(id);return el&&el.closest('.field')};
+  const dot=document.querySelector('#settingsSection .sectionHead h3 .dot');
+  if(dot){const icon=document.createElement('span');icon.className='ico';icon.style.cssText='width:16px;height:16px';icon.innerHTML=PW17_GEAR;dot.replaceWith(icon)}
+  [field('rangeSelect'),field('intervalSelect'),field('smoothingSelect')].forEach(item=>{if(item)charts.appendChild(item)});
+  const original=document.querySelector('label.marineToggle');if(original)original.style.display='none';
+  const marine=document.createElement('div');marine.className='field pw17-marine';marine.id='pw17Marine';
+  marine.innerHTML='<label id="pw17MarineLabel"></label><div class="langSwitch aqiSwitch" role="group" id="pw17MarineSwitch"><button type="button" data-pw17-marine="on"></button><button type="button" data-pw17-marine="off"></button></div>';
+  const units=field('unitsSelect');if(units)data.insertBefore(marine,units);else data.appendChild(marine);
+  marine.addEventListener('click',event=>{
+    const button=event.target instanceof Element?event.target.closest('[data-pw17-marine]'):null;if(!button)return;
+    const on=button.getAttribute('data-pw17-marine')==='on',checkbox=document.getElementById('marineToggle');
+    if(checkbox)checkbox.checked=on;pw17SyncMarine();setSetting('marine_enabled',on);
+  });
+  const actions=document.querySelector('.pw16-actions'),refresh=document.getElementById('refreshButton'),auto=document.getElementById('autoButton');
+  if(actions&&refresh&&auto){const pill=document.createElement('div');pill.className='langSwitch pw16-pill';pill.append(refresh,auto);actions.appendChild(pill)}
+}
+function pw17SyncMarine(){
+  const checkbox=document.getElementById('marineToggle'),on=!!(checkbox&&checkbox.checked);
+  document.querySelectorAll('[data-pw17-marine]').forEach(button=>{const active=(button.getAttribute('data-pw17-marine')==='on')===on;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});
+}
+function pw17SyncAuto(){const auto=document.getElementById('autoButton');if(auto)auto.classList.toggle('active',!!(typeof state!=='undefined'&&state.auto))}
+function pw17Texts(){
+  const sk=currentLang==='sk',set=(id,text)=>{const el=document.getElementById(id);if(el&&el.textContent!==text)el.textContent=text};
+  set('pw17MarineLabel',typeof t==='function'?t('marine_toggle'):(sk?'Morské údaje':'Marine data'));
+  const on=document.querySelector('[data-pw17-marine="on"]'),off=document.querySelector('[data-pw17-marine="off"]');
+  if(on&&on.textContent!==(sk?'Zapnuté':'On'))on.textContent=sk?'Zapnuté':'On';
+  if(off&&off.textContent!==(sk?'Vypnuté':'Off'))off.textContent=sk?'Vypnuté':'Off';
+  pw17SyncMarine();pw17SyncAuto();
+}
+const pw17PreviousTexts=pw16Texts;
+pw16Texts=function(){pw17PreviousTexts.apply(this,arguments);pw17Texts()};
+const pw17PreviousMarine=updateMarineVisibility;
+updateMarineVisibility=function(){const result=pw17PreviousMarine.apply(this,arguments);pw17SyncMarine();return result};
+const pw17PreviousStatus=updateStatusForAutoToggle;
+updateStatusForAutoToggle=function(){const result=pw17PreviousStatus.apply(this,arguments);pw17SyncAuto();return result};
+pw17Rework();pw17Texts();
+
+// PERUN OVERVIEW V18
+pw11Compass=function(wd,label){
+  const north=currentLang==='sk'?'S':'N',angle=((wd+180)%360).toFixed(1);
+  return '<svg class="pw11-compass" viewBox="0 0 100 100" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title><circle cx="50" cy="56" r="36" fill="none" stroke="#8c9bb2" stroke-width="2"/><text x="50" y="14" text-anchor="middle" font-size="14" font-weight="600" fill="#bbc4d2">'+escapeHtml(north)+'</text><path d="M50 28L38 80L50 68L62 80Z" transform="rotate('+angle+' 50 56)" fill="#88dca1"/><circle cx="50" cy="56" r="4" fill="#e8eaf0"/></svg>';
+};
 
 startNowTick();
 
