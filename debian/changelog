@@ -1,3 +1,13 @@
+perun-weather (5.0.0-1) unstable; urgency=medium
+
+  * New upstream release 5.0.0.
+  * Add weather-at-a-glance overview and 5-day outlook.
+  * Add settings panel with Data, Panels and Charts groups.
+  * Rename marine data to Marine panel.
+  * Unify number formatting, degree signs and wind direction text.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Sun, 18 Oct 2026 10:12:15 +0200
+
 perun-weather (4.6.0-1) unstable; urgency=medium
 
   * New upstream release 4.6.0.

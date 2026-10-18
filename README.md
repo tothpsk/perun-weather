@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Perun Weather</h1>
-<p align="center">Version 4.6.0</p>
+<p align="center">Version 5.0.0</p>
 <p align="center"><em>Weather, made visible.</em></p>
 
 Perun Weather is a desktop weather application built around interactive charts.
@@ -14,6 +14,10 @@ develop over time, so you can read the data yourself and judge what it means.
 
 ## Features
 
+- Weather-at-a-glance overview: current conditions, wind compass, precipitation,
+  UV, cloud cover, sun and moon, air quality, pollen and alerts on one screen
+- 5-day outlook with switchable views (temperature, precipitation, wind, cloud
+  cover, UV and air quality)
 - Interactive forecast charts (meteograms) for temperature, UV index,
   precipitation, cloud cover, wind and pressure
 - Official weather alerts worldwide, wherever official sources are available,
@@ -22,7 +26,7 @@ develop over time, so you can read the data yourself and judge what it means.
   dust and aerosol optical depth
 - Pollen forecast
 - Sun and moon data: altitude, day and night, moon visibility and daily summary
-- Optional marine data
+- Optional marine panel
 - Expanded choice of global and European weather models, including ECMWF IFS/AIFS,
   GFS/AIGFS, JMA, ICON, GEM, ARPEGE, UK Met Office, CMA, HARMONIE and CHMI ALADIN,
   plus Best match and fallback when the selected model has no usable data
@@ -33,6 +37,7 @@ develop over time, so you can read the data yourself and judge what it means.
 - Five unit presets (metric, mmHg, imperial, m/s and knots variants)
 - Adjustable line smoothing, from raw data to strong smoothing
 - Automatic refresh with a last-updated indicator
+- Collapsible settings for model, units, air quality scale, panels and chart options
 - Slovak and English interface
 - Built-in help
 
@@ -53,7 +58,7 @@ develop over time, so you can read the data yourself and judge what it means.
 ![Sun and moon](https://github.com/user-attachments/assets/adeb6490-ba5f-4374-bf30-c439c8853f06)
 
 
-**Marine data (optional)**
+**Marine panel (optional)**
 
 ![Marine data](https://github.com/user-attachments/assets/2a05e6a1-99bd-4c76-90fa-72465c253586)
 
@@ -100,7 +105,7 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-4.6.0-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-5.0.0-1.fc44.noarch.rpm
 ```
 
 `dnf` installs the required dependencies automatically.
@@ -111,7 +116,7 @@ Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo apt install ./perun-weather_4.6.0-1_all.deb
+sudo apt install ./perun-weather_5.0.0-1_all.deb
 ```
 
 Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`

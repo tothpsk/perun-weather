@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        4.6.0
+Version:        5.0.0
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
@@ -60,6 +60,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
+* Sun Oct 18 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 5.0.0-1
+- Add the weather-at-a-glance overview and the 5-day outlook
+- Add a settings panel grouped into Data, Panels and Charts
+- Rename marine data to Marine panel
+- Unify number formatting, degree signs and wind direction text
 * Thu Oct 15 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 4.6.0-1
 - Add precipitation probability strip and summary value
 - Apply readable five-tick axes to forecast, air, pollen and marine charts
