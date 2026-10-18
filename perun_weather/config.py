@@ -59,6 +59,9 @@ class Settings:
     lang: str = "sk"
     marine_enabled: bool = False
     aqi_scale: str = "eu"
+    radar_enabled: bool = False
+    radar_client_id: str = ""
+    radar_client_secret: str = ""
 
 def load() -> Settings:
     _migrate_legacy_config()
@@ -76,6 +79,10 @@ def load() -> Settings:
 def save(settings: Settings) -> None:
     CONFIG.mkdir(parents=True, exist_ok=True)
     (CONFIG / "settings.json").write_text(json.dumps(asdict(settings), ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        (CONFIG / "settings.json").chmod(0o600)
+    except OSError:
+        pass
 
 def cache_file(location: Location) -> Path:
     CACHE.mkdir(parents=True, exist_ok=True)

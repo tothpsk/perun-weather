@@ -31,4 +31,4 @@ packages = ["perun_weather"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-perun_weather = ["data/*.html", "data/*.js"]
+perun_weather = ["data/*.html", "data/*.js", "data/*.css"]
