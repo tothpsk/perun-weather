@@ -500,7 +500,7 @@ footer a:hover{text-decoration:underline}
 .pw15-cloudwrap{position:relative;display:block;width:134px;max-width:100%}
 .pw5-tile .pw15-cloudwrap .pw3-cloud{display:block;width:100%;height:auto}
 .pw15-cloudwrap .pw3-cloudtext{display:none}
-.pw15-cloudval{position:absolute;left:0;right:0;top:56%;transform:translateY(-50%);text-align:center;font-size:var(--pw5-value);font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;pointer-events:none;text-shadow:0 0 3px #1a1d24,0 0 3px #1a1d24,0 0 5px #1a1d24}
+.pw15-cloudval{position:absolute;left:0;right:0;top:51%;transform:translateY(-50%);text-align:center;font-size:var(--pw5-value);font-weight:700;line-height:1.1;color:#fff;white-space:nowrap;pointer-events:none;text-shadow:0 0 3px #1a1d24,0 0 3px #1a1d24,0 0 5px #1a1d24}
 #pw11Forecast .pw11-windcard{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px;row-gap:6px;align-content:start}
 #pw11Forecast .pw11-windcard>.pw11-dayname{grid-column:1/-1;grid-row:1}
 #pw11Forecast .pw11-windcard>.pw3-icon{grid-column:1;grid-row:2}
@@ -4943,9 +4943,9 @@ function pw5Render(d){
   const fraction=eq==null?0:Math.min(1,Math.sqrt(eq/6));
   let precipBig,precipMuted='';
   if(!known){precipBig='<div class="pw5-value">—</div>';precipMuted='<div class="pw5-text">'+E(L('Údaj nedostupný','Unavailable'))+'</div>'}
-  else if(!hasPrecip){precipBig='<div class="pw5-value">'+E(L('Žiadne','None'))+'</div>'}
-  else if(parts.length===1){const p=parts[0];precipBig='<div class="pw5-value" style="color:'+p.color+'">'+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit)+'</div>';precipMuted='<div class="pw5-text">'+E(t(p.key))+'</div>'}
-  else{precipBig='<div class="pw5-value" style="color:'+precipColor+'">'+E(t(ptype?ptype.key:'precip_mixed'))+'</div>';precipMuted='<div class="pw5-text">'+parts.map(p=>'<span style="color:'+p.color+'">'+partText(p)+'</span>').join(' · ')+'</div>'}
+  else if(!hasPrecip){precipBig='<div class="pw5-value" style="color:#bbc4d2">'+E(L('Žiadne','None'))+'</div>'}
+  else if(parts.length===1){const p=parts[0];precipBig='<div class="pw5-value" style="color:'+p.color+'">'+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit)+'</div>'}
+  else{const same=parts.every(q=>q.unit===parts[0].unit),sum=same?parts.reduce((a,q)=>a+q.v,0):eq/(imperial?25.4:1),sumUnit=same?parts[0].unit:u.precip;precipBig='<div class="pw5-value" style="color:'+precipColor+'">'+fmt(sum,sum<0.1?2:1)+' '+E(sumUnit)+'</div>'}
   const umbrellaColor=prob==null?'#5b6577':probabilityColour(Math.round(35+0.65*prob));
   const probLabel=L('Pravdepodobnosť zrážok','Precipitation probability');
   const precipHtml=pw3CloudSvg('pw5PrecipCloud',fraction,precipColor,'',L('Intenzita a typ zrážok','Precipitation intensity and type'),visual)+precipBig+precipMuted
@@ -5357,7 +5357,7 @@ pw5Sun=function(d,now,lang){
   return {isDay:st.rise!=null&&st.set!=null?(instant>=st.rise&&instant<st.set):null,svg:''};
 };
 function pw11SunSvg(alt,label){
-  const hy=60,half=50,scale=75,a=alt==null||!Number.isFinite(alt)?null:Math.max(-scale,Math.min(scale,alt)),y=a==null?null:hy-a/scale*half;
+  const hy=60,half=50,scale=90,a=alt==null||!Number.isFinite(alt)?null:Math.max(-scale,Math.min(scale,alt)),y=a==null?null:hy-a/scale*half;
   return '<svg class="pw11-graphic" viewBox="0 0 60 120" role="img" aria-label="'+escapeHtml(label)+'"><title>'+escapeHtml(label)+'</title>'
     +'<path d="M30 10V'+hy+'" stroke="#8a7a45" stroke-width="3" stroke-linecap="round"/><path d="M30 '+hy+'V110" stroke="#4d5668" stroke-width="3" stroke-linecap="round"/>'
     +'<path d="M7 '+hy+'H53" stroke="#8c9bb2" stroke-width="2.4" stroke-linecap="round"/>'
@@ -5585,7 +5585,7 @@ pw11Body=function(x,mode,ctx){
     const snowUnit=imperial?'in':'cm',eq=x.known?x.liquid*(imperial?25.4:1)+x.snow*(imperial?2.54:1):null,has=eq!=null&&eq>0,type=weatherSummaryPrecipType(x.rain,x.show,x.snow),color=type?type.color:CLR.rain;
     const first=x.liquid>0?fmt(x.liquid,x.liquid<0.1?2:1)+' '+u.precip:x.snow>0?fmt(x.snow,x.snow<0.1?2:1)+' '+snowUnit:'';
     const second=x.liquid>0&&x.snow>0?' <small>· '+E(fmt(x.snow,x.snow<0.1?2:1)+' '+snowUnit)+'</small>':'';
-    const value=!x.known?'—':!has?E(L('Žiadne','None')):E(first)+second;
+    const value=!x.known?'—':!has?'<span style="color:#bbc4d2">'+E(L('Žiadne','None'))+'</span>':E(first)+second;
     const pc=x.prob==null?'#5b6577':probabilityColour(Math.round(35+0.65*x.prob));
     return '<div class="pw11-value">'+value+'</div>'+bar(0,has?Math.max(6,Math.min(100,Math.sqrt(eq/20)*100)):0,has?color:'')+bottom(pw11Umbrella(pc)+'<span title="'+E(L('Najvyššia pravdepodobnosť zrážok','Highest precipitation probability'))+'">'+(x.prob==null?'—':fmt(x.prob)+' %')+'</span>');
   }
