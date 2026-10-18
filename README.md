@@ -56,6 +56,7 @@ develop over time, so you can read the data yourself and judge what it means.
 
 
 **Weather forecast**
+
 ![Weather forecast](https://github.com/user-attachments/assets/62ba819a-e69c-4ce9-88c0-4f272bfc32dc)
 
 
@@ -70,10 +71,12 @@ develop over time, so you can read the data yourself and judge what it means.
 
 
 **Settings**
+
 ![Settings](https://github.com/user-attachments/assets/dd0efebd-537e-433c-a518-136a77cfe3b4)
 
 
 **Help**
+
 ![Help](https://github.com/user-attachments/assets/5b91b136-05cb-44d0-a698-a0cc67dace96)
 
 
