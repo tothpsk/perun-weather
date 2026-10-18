@@ -249,6 +249,12 @@ class App(Adw.Application):
                 elif key == "marine_enabled":
                     self.settings.marine_enabled = value == "true"
                     refresh_needed = True
+                elif key == "radar_enabled":
+                    self.settings.radar_enabled = value == "true"
+                elif key == "radar_client_id":
+                    self.settings.radar_client_id = (value or "").strip()
+                elif key == "radar_client_secret":
+                    self.settings.radar_client_secret = (value or "").strip()
                     
                 save(self.settings)
                 self.push_locations()
@@ -306,6 +312,9 @@ class App(Adw.Application):
             'lang': self.settings.lang,
             "marine_enabled": self.settings.marine_enabled,
             "aqi_scale": self.settings.aqi_scale,
+            "radar_enabled": self.settings.radar_enabled,
+            "radar_client_id": self.settings.radar_client_id,
+            "radar_client_secret": self.settings.radar_client_secret,
         }
         self.call_js("setAppState(" + json.dumps(payload, ensure_ascii=False) + ")")
 

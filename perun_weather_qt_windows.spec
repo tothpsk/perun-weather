@@ -21,6 +21,7 @@ block_cipher = None
 app_datas = [
     ('perun_weather/data/*.html', 'perun_weather/data'),
     ('perun_weather/data/*.js', 'perun_weather/data'),
+    ('perun_weather/data/*.css', 'perun_weather/data'),
 ]
 
 # Qt WebEngine carries Chromium resources, helper executables, ICU data,
