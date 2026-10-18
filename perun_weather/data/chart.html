@@ -4945,7 +4945,12 @@ function pw5Render(d){
   if(!known){precipBig='<div class="pw5-value">—</div>';precipMuted='<div class="pw5-text">'+E(L('Údaj nedostupný','Unavailable'))+'</div>'}
   else if(!hasPrecip){precipBig='<div class="pw5-value" style="color:#bbc4d2">'+E(L('Žiadne','None'))+'</div>'}
   else if(parts.length===1){const p=parts[0];precipBig='<div class="pw5-value" style="color:'+p.color+'">'+fmt(p.v,p.v<0.1?2:1)+' '+E(p.unit)+'</div>'}
-  else{const same=parts.every(q=>q.unit===parts[0].unit),sum=same?parts.reduce((a,q)=>a+q.v,0):eq/(imperial?25.4:1),sumUnit=same?parts[0].unit:u.precip;precipBig='<div class="pw5-value" style="color:'+precipColor+'">'+fmt(sum,sum<0.1?2:1)+' '+E(sumUnit)+'</div>'}
+  else{
+    const values=[];
+    if(liquid>0)values.push(fmt(liquid,liquid<0.1?2:1)+' '+E(u.precip));
+    if(snowAmount>0)values.push(fmt(snowAmount,snowAmount<0.1?2:1)+' '+E(imperial?'in':'cm'));
+    precipBig='<div class="pw5-value" style="color:'+precipColor+'">'+values.join(' · ')+'</div>';
+  }
   const umbrellaColor=prob==null?'#5b6577':probabilityColour(Math.round(35+0.65*prob));
   const probLabel=L('Pravdepodobnosť zrážok','Precipitation probability');
   const precipHtml=pw3CloudSvg('pw5PrecipCloud',fraction,precipColor,'',L('Intenzita a typ zrážok','Precipitation intensity and type'),visual)+precipBig+precipMuted
