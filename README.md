@@ -10,7 +10,8 @@ Perun Weather is a desktop weather application built around interactive charts.
 Instead of icons and a handful of numbers, it shows how forecast variables
 develop over time, so you can read the data yourself and judge what it means.
 
-![Perun Weather main window](https://github.com/user-attachments/assets/58934efb-5e4a-4a6d-af40-628ff8c2c968)
+![Perun Weather main window](https://github.com/user-attachments/assets/5287dd61-9f85-442d-96af-31e7243cb404)
+
 
 ## Features
 
@@ -46,22 +47,34 @@ develop over time, so you can read the data yourself and judge what it means.
 
 **Alerts**
 
-![Alerts](https://github.com/user-attachments/assets/81f9dc10-a9c9-4710-9b81-470ebafcdc7d)
+![Alerts](https://github.com/user-attachments/assets/b3091239-68c4-4194-b2e5-832a1b677e4a)
+
 
 **Air quality & pollen**
 
-![Air quality and pollen](https://github.com/user-attachments/assets/4b1a6012-78d6-48c2-ab2e-f1fa1a7051d0)
+![Air quality and pollen](https://github.com/user-attachments/assets/fb7e90d5-4771-4843-80cb-ce6c84fae3f3)
+
+
+**Weather forecast**
+![Weather forecast](https://github.com/user-attachments/assets/62ba819a-e69c-4ce9-88c0-4f272bfc32dc)
 
 
 **Sun & moon**
 
-![Sun and moon](https://github.com/user-attachments/assets/adeb6490-ba5f-4374-bf30-c439c8853f06)
+![Sun and moon](https://github.com/user-attachments/assets/2ec51210-072f-4efe-b3f0-c6f90065dfbc)
 
 
 **Marine panel (optional)**
 
-![Marine data](https://github.com/user-attachments/assets/2a05e6a1-99bd-4c76-90fa-72465c253586)
+![Marine data](https://github.com/user-attachments/assets/b1f377d1-1143-4ffc-bd41-36787f9c1515)
 
+
+**Settings**
+![Settings](https://github.com/user-attachments/assets/dd0efebd-537e-433c-a518-136a77cfe3b4)
+
+
+**Help**
+![Help](https://github.com/user-attachments/assets/5b91b136-05cb-44d0-a698-a0cc67dace96)
 
 
 ## About the name
