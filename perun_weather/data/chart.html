@@ -5782,11 +5782,16 @@ pw11Compass=function(wd,label){
 };
 
 // PERUN METEORADAR V1
+// PERUN WEATHERAPI MAPS V1
 (function(){
   const sk=()=>currentLang==='sk',T=(s,e)=>sk()?s:e,el=id=>document.getElementById(id);
   const R={lib:null,loading:null,map:null,layer:null,marker:null,sig:'',errors:0,loc:''};
   const st=()=>{try{return typeof state!=='undefined'&&state?state:null}catch(e){return null}};
   const enabled=()=>{const s=st();return !!(s&&s.radar_enabled)};
+  const provider=()=>st()&&st().radar_provider==='weatherapi'?'weatherapi':'xweather';
+  const isWeatherApi=()=>provider()==='weatherapi';
+  const weatherLayer=()=>{const v=st()&&st().radar_weatherapi_layer;return ['precip','tmp2m','pressure','wind'].includes(v)?v:'precip'};
+  const initialIndex=()=>isWeatherApi()?0:NOW_INDEX;
   const hasKey=()=>{const s=st();return !!(s&&s.radar_client_id&&s.radar_client_secret)};
   const isOpen=()=>{const b=el('radarBody');return !!(b&&b.classList.contains('open'))};
   if(!el('pwRadarStyle')){const s=document.createElement('style');s.id='pwRadarStyle';
@@ -5798,7 +5803,7 @@ pw11Compass=function(wd,label){
     const anchor=el('marineSection');if(!anchor)return;
     const sec=document.createElement('section');sec.className='section';sec.id='radarSection';sec.hidden=true;
     sec.innerHTML='<div class="sectionHead" onclick="toggleSection(\'radar\')"><h3><span id="radarChevron" class="chev">▶</span><span id="radarDot" class="dot neutral"></span> <span id="lblSectionRadar"></span></h3><div id="radarSummary" class="summary"></div></div>'
-      +'<div id="radarBody" class="body"><div class="inner"><div id="radarMessage" class="meta"></div><div id="radarWrap" hidden><div id="radarMap" style="height:480px;border-radius:8px;overflow:hidden"></div><div id="radarCtl" style="display:flex;align-items:center;gap:10px;margin-top:8px"><button type="button" id="radarPlay" class="btn alt" style="height:34px;min-width:44px;padding:0 12px">▶</button><input id="radarSlider" type="range" min="0" max="14" step="1" value="12" style="flex:1;accent-color:var(--accent)"><span id="radarFrameLabel" class="meta" style="min-width:230px;text-align:right"></span></div><div id="radarNote" class="meta" style="margin-top:6px"></div></div></div></div>';
+      +'<div id="radarBody" class="body"><div class="inner"><div id="radarSources" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px"><div class="field"><label id="radarSourceLabel" for="radarSource"></label><select id="radarSource"><option value="xweather">Xweather</option><option value="weatherapi">WeatherAPI.com</option></select></div><div class="field" id="radarWeatherLayerField" hidden><label id="radarWeatherLayerLabel" for="radarWeatherLayer"></label><select id="radarWeatherLayer"></select></div></div><div id="radarMessage" class="meta"></div><div id="radarWrap" hidden><div id="radarMap" style="height:480px;border-radius:8px;overflow:hidden"></div><div id="radarCtl" style="display:flex;align-items:center;gap:10px;margin-top:8px"><button type="button" id="radarPlay" class="btn alt" style="height:34px;min-width:44px;padding:0 12px">▶</button><input id="radarSlider" type="range" min="0" max="14" step="1" value="12" style="flex:1;accent-color:var(--accent)"><span id="radarFrameLabel" class="meta" style="min-width:230px;text-align:right"></span></div><div id="radarNote" class="meta" style="margin-top:6px"></div></div></div></div>';
     anchor.insertAdjacentElement('afterend',sec);wireControls();
   }
   function settingsUi(){
@@ -5822,16 +5827,27 @@ pw11Compass=function(wd,label){
   }
   function texts(){
     const set=(id,t)=>{const e=el(id);if(e&&e.textContent!==t)e.textContent=t};
-    set('lblSectionRadar',T('Meteoradar','Weather radar'));set('pwRadarLabel',T('Meteoradar','Weather radar'));
+    set('lblSectionRadar',T('Meteorologické mapy','Weather maps'));set('pwRadarLabel',T('Meteorologické mapy','Weather maps'));
+    set('radarSourceLabel',T('Zdroj mapy','Map source'));set('radarWeatherLayerLabel',T('Vrstva','Layer'));
+    const source=el('radarSource'),layers=el('radarWeatherLayer'),field=el('radarWeatherLayerField');
+    if(source)source.value=provider();if(field)field.hidden=!isWeatherApi();
+    if(layers){
+      const opts=[['precip',T('Zrážky','Precipitation')],['tmp2m',T('Teplota vo výške 2 m','Temperature at 2 m')],['pressure',T('Tlak vzduchu','Pressure')],['wind',T('Rýchlosť vetra','Wind speed')]];
+      const sig=sk()?'sk':'en';
+      if(layers.dataset.lang!==sig){layers.replaceChildren(...opts.map(([value,label])=>{const o=document.createElement('option');o.value=value;o.textContent=label;return o}));layers.dataset.lang=sig}
+      layers.value=weatherLayer();
+    }
     set('pwRadarIdLabel','Client ID');set('pwRadarSecretLabel','Client Secret');
     const on=document.querySelector('[data-pw-radar="on"]'),off=document.querySelector('[data-pw-radar="off"]');
     if(on)on.textContent=T('Zapnuté','On');if(off)off.textContent=T('Vypnuté','Off');
     const help=el('pwRadarHelp');
-    if(help){const h=sk()
+    if(help&&isWeatherApi()){help.textContent=T('WeatherAPI.com: predpovedné mapy bez API kľúča. Zdroj a vrstvu vyberieš priamo v paneli mapy.','WeatherAPI.com: forecast maps without an API key. Select the source and layer in the map panel.')}
+    else if(help){const h=sk()
       ?'Radar poskytuje <a href="https://www.xweather.com/" target="_blank">Xweather</a>. Vytvor si bezplatný účet, v portáli otvor <a href="https://data.portal.xweather.com/account/keys" target="_blank">Account → Keys</a>, vytvor aplikáciu a skopíruj Client ID a Client Secret (stačí vložiť celý reťazec ID_SECRET do prvého poľa). Jedna dlaždica 256×256 spotrebuje jednu mapovú jednotku; dlaždice sa sťahujú len keď je panel zapnutý a otvorený. Kľúč sa ukladá v nastaveniach na tomto počítači.'
       :'The radar is provided by <a href="https://www.xweather.com/" target="_blank">Xweather</a>. Create a free account, open <a href="https://data.portal.xweather.com/account/keys" target="_blank">Account → Keys</a> in the portal, create an application and copy the Client ID and Client Secret (you can paste the whole ID_SECRET string into the first field). One 256×256 tile uses one map unit; tiles are downloaded only while the panel is enabled and open. The key is stored in the settings on this computer.';
       if(help.innerHTML!==h)help.innerHTML=h}
-    set('radarNote',T('Radar © Xweather · podkladová mapa © OpenStreetMap. Dlaždice sa sťahujú len pri otvorenom paneli.','Radar © Xweather · base map © OpenStreetMap. Tiles are downloaded only while the panel is open.'));
+    if(isWeatherApi())set('radarNote',T('Predpoveď © WeatherAPI.com · podklad © OpenStreetMap. Hodinové snímky, časy zobrazené podľa časového pásma počítača. Bez API kľúča.','Forecast © WeatherAPI.com · base map © OpenStreetMap. Hourly frames; times use the computer’s time zone. No API key required.'));
+    else set('radarNote',T('Radar © Xweather · podkladová mapa © OpenStreetMap. Dlaždice sa sťahujú len pri otvorenom paneli.','Radar © Xweather · base map © OpenStreetMap. Tiles are downloaded only while the panel is open.'));
   }
   function loadLib(){
     if(R.lib)return Promise.resolve();
@@ -5847,13 +5863,26 @@ pw11Compass=function(wd,label){
   }
   const RADAR_LAYER='radar-global',FORECAST_LAYER='fradar',STEP_MIN=10,PAST_STEPS=12,FUTURE_MIN=[60,120],NOW_INDEX=PAST_STEPS;
   function buildFrames(){
+    if(isWeatherApi()){
+      const base=Math.floor(Date.now()/3600000)*3600000;
+      return Array.from({length:72},(_,i)=>({min:i*60,time:base+i*3600000,forecast:true,weatherapi:true}));
+    }
     const f=[];
     for(let i=0;i<PAST_STEPS;i++){const m=(PAST_STEPS-i)*STEP_MIN;f.push({min:-m,layer:RADAR_LAYER,offset:'-'+m+'minutes',forecast:false})}
     f.push({min:0,layer:RADAR_LAYER,offset:'current',forecast:false});
     FUTURE_MIN.forEach(m=>f.push({min:m,layer:FORECAST_LAYER,offset:'+'+(m/60)+(m===60?'hour':'hours'),forecast:true}));
     return f;
   }
+  function weatherTileUrl(fr){
+    const d=new Date(fr.time),pad=n=>String(n).padStart(2,'0');
+    const stamp=String(d.getUTCFullYear())+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+pad(d.getUTCHours());
+    return 'https://weathermaps.weatherapi.com/'+weatherLayer()+'/tiles/'+stamp+'/{z}/{x}/{y}.png';
+  }
   function frameLabel(fr){
+    if(fr.weatherapi){
+      const when=new Date(fr.time).toLocaleString(sk()?'sk-SK':'en-GB',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+      return when+' · '+T('predpoveď','forecast')+(fr.min?' · +'+(fr.min/60)+' h':'');
+    }
     if(fr.min===0)return T('Teraz','Now');
     const a=Math.abs(fr.min),rel=a>=60?(a/60)+' h':a+' min';
     const hm=new Date(Date.now()+fr.min*60000).toLocaleTimeString(sk()?'sk-SK':'en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -5862,6 +5891,7 @@ pw11Compass=function(wd,label){
   function setPlayLabel(){
     const b=el('radarPlay');if(!b)return;
     b.textContent=R.playing?'⏸':'▶';
+    if(isWeatherApi()){b.title=R.playing?T('Zastaviť','Pause'):T('Prehrať predpoveď (načíta až 72 snímok)','Play forecast (loads up to 72 frames)');return}
     b.title=R.playing?T('Zastaviť','Pause'):T('Prehrať posledné 2 hodiny a predpoveď (stiahne všetky snímky a spotrebuje mapové jednotky)','Play the last 2 hours and the forecast (downloads all frames and uses map units)');
   }
 
@@ -5886,9 +5916,13 @@ pw11Compass=function(wd,label){
     const content=box.querySelector('.pw-radar-legend-content');
     const fr=R.frames&&R.frames[R.index];
     const forecast=!!(fr&&fr.forecast);
-    const sig=(sk()?'sk':'en')+'|'+forecast;
+    const sig=(sk()?'sk':'en')+'|'+forecast+'|'+provider()+'|'+weatherLayer();
     if(content.dataset.sig===sig)return;
     content.dataset.sig=sig;
+    if(isWeatherApi()){
+      content.textContent=T('Predpovedná vrstva WeatherAPI.com. Číselná farebná stupnica a jednotky zatiaľ nie sú overené; nepoužívaj radarovú škálu dBZ.','WeatherAPI.com forecast layer. The numerical colour scale and units have not yet been verified; do not use the radar dBZ scale.');
+      return;
+    }
     if(forecast){
       content.textContent=T(
         'Modelová predpoveď. Farebná škála tejto vrstvy zatiaľ nie je overená.',
@@ -5917,20 +5951,23 @@ pw11Compass=function(wd,label){
     setPlayLabel();updateRadarLegend();
   }
   function frameError(fr){
+    if(!enabled()||!isOpen()||!R.frames||R.frames[R.index]!==fr)return;
+    if(fr.weatherapi){const m=el('radarMessage');if(m)m.textContent=T('Niektoré dlaždice WeatherAPI.com sa nenačítali. Snímka môže byť neúplná alebo nedostupná; skús inú hodinu.','Some WeatherAPI.com tiles failed to load. The frame may be incomplete or unavailable; try another hour.');return}
     R.errors++;
     if(R.errors===4){const m=el('radarMessage');if(m)m.textContent=fr.forecast
       ?T('Predpovedný radar sa nenačítal. Vrstva „'+FORECAST_LAYER+'“ nemusí byť v tvojom pláne Xweather dostupná.','The forecast radar failed to load. The "'+FORECAST_LAYER+'" layer may not be available in your Xweather plan.')
       :T('Radarové dlaždice sa nenačítali. Skontroluj Client ID, Client Secret a limit mapových jednotiek v účte Xweather.','Radar tiles failed to load. Check the Client ID, Client Secret and the map-unit limit in your Xweather account.')}
   }
   function showFrame(i){
-    if(!R.map||!R.lib||!R.frames)return;
+    if(!enabled()||!isOpen()||!R.map||!R.lib||!R.frames)return;
     i=Math.max(0,Math.min(R.frames.length-1,Number(i)||0));
     R.layers=R.layers||{};
     const fr=R.frames[i];let layer=R.layers[i];
     if(!layer){
-      layer=R.lib.tileLayer('https://maps.api.xweather.com/'+R.key+'/'+fr.layer+'/{z}/{x}/{y}/'+fr.offset+'.png',{opacity:.85,maxZoom:10,attribution:'&copy; Xweather'});
-      layer.on('tileerror',()=>frameError(fr));
-      layer.on('tileload',()=>{if(R.errors){R.errors=0;const m=el('radarMessage');if(m)m.textContent=''}});
+      const url=fr.weatherapi?weatherTileUrl(fr):'https://maps.api.xweather.com/'+R.key+'/'+fr.layer+'/{z}/{x}/{y}/'+fr.offset+'.png';
+      layer=R.lib.tileLayer(url,{opacity:.85,maxZoom:10,attribution:fr.weatherapi?'&copy; WeatherAPI.com':'&copy; Xweather'});
+      layer.on('tileerror',()=>{layer._perunFailed=true;frameError(fr)});
+      layer.on('load',()=>{if(R.frames&&R.frames[R.index]===fr&&!layer._perunFailed){R.errors=0;const m=el('radarMessage');if(m)m.textContent=''}});
       R.layers[i]=layer;
     }
     const prev=R.layer;
@@ -5938,27 +5975,36 @@ pw11Compass=function(wd,label){
       layer.addTo(R.map);R.layer=layer;
       if(prev){let gone=false;const drop=()=>{if(gone)return;gone=true;if(prev!==R.layer&&R.map&&R.map.hasLayer(prev))R.map.removeLayer(prev)};layer.once('load',drop);setTimeout(drop,2500)}
     }
-    R.index=i;syncControls();
+    R.index=i;R.errors=0;
+    const message=el('radarMessage');if(message)message.textContent='';
+    if(layer._perunFailed)frameError(fr);
+    if(isWeatherApi()){
+      const keep=Object.keys(R.layers).map(Number).sort((a,b)=>Math.abs(a-i)-Math.abs(b-i)).slice(0,6);
+      Object.keys(R.layers).forEach(k=>{if(!keep.includes(Number(k))){const old=R.layers[k];if(old!==R.layer){if(R.map.hasLayer(old))R.map.removeLayer(old);delete R.layers[k]}}});
+    }
+    syncControls();
   }
-  function stopPlay(){R.playing=false;clearTimeout(R.timer);setPlayLabel()}
+  function stopPlay(){R.playing=false;R.playToken=(R.playToken||0)+1;clearTimeout(R.timer);setPlayLabel()}
   function startPlay(){
     if(!R.map||!R.frames)return;
-    R.playing=true;setPlayLabel();
+    stopPlay();const token=R.playToken;R.playing=true;setPlayLabel();
     const step=i=>{
-      if(!R.playing||!R.map)return;
+      if(token!==R.playToken||!R.playing||!R.map||!isOpen()||!enabled())return;
       showFrame(i);
       const layer=R.layer;let done=false;
       const next=()=>{
-        if(done)return;done=true;if(!R.playing)return;
-        if(i>=R.frames.length-1){R.timer=setTimeout(()=>{stopPlay();showFrame(NOW_INDEX)},1200);return}
+        if(done)return;done=true;if(token!==R.playToken||!R.playing||!isOpen()||!enabled())return;
+        if(i>=R.frames.length-1){R.timer=setTimeout(()=>{if(token!==R.playToken)return;stopPlay();showFrame(initialIndex())},1200);return}
         R.timer=setTimeout(()=>step(i+1),R.frames[i+1].forecast&&!R.frames[i].forecast?900:450);
       };
-      layer.once('load',next);setTimeout(next,2500);
+      layer.once('load',next);if(!layer.isLoading())setTimeout(next,0);setTimeout(next,2500);
     };
     step(0);
   }
   function wireControls(){
     const sl=el('radarSlider'),pl=el('radarPlay');if(!sl||!pl||sl._wired)return;sl._wired=true;
+    el('radarSource').addEventListener('change',e=>{stopPlay();destroy();setSetting('radar_provider',e.target.value)});
+    el('radarWeatherLayer').addEventListener('change',e=>{stopPlay();destroy();setSetting('radar_weatherapi_layer',e.target.value)});
     sl.addEventListener('input',()=>{const fr=(R.frames||buildFrames())[Number(sl.value)],lb=el('radarFrameLabel');if(lb&&fr)lb.textContent=frameLabel(fr)});
     sl.addEventListener('change',()=>{stopPlay();showFrame(Number(sl.value))});
     pl.addEventListener('click',()=>{if(R.playing)stopPlay();else startPlay()});
@@ -5966,7 +6012,7 @@ pw11Compass=function(wd,label){
   }
   function destroy(){
     if(R.map){try{R.map.remove()}catch(e){}}
-    stopPlay();R.map=R.layer=R.marker=null;R.layers={};R.frames=null;R.errors=0;R.index=NOW_INDEX;
+    stopPlay();R.map=R.layer=R.marker=null;R.layers={};R.frames=null;R.errors=0;R.index=initialIndex();
     const wrap=el('radarWrap');if(wrap)wrap.hidden=true;
     const box=el('radarMap');if(box)box.innerHTML='';
   }
@@ -5978,9 +6024,9 @@ pw11Compass=function(wd,label){
     map.attributionControl.setPrefix('Leaflet');
     lib.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
     R.map=map;R.key=encodeURIComponent(s.radar_client_id)+'_'+encodeURIComponent(s.radar_client_secret);
-    R.frames=buildFrames();R.layers={};R.index=NOW_INDEX;
-    const sl=el('radarSlider');if(sl){sl.max=String(R.frames.length-1);sl.value=String(NOW_INDEX)}
-    showFrame(NOW_INDEX);
+    R.frames=buildFrames();R.layers={};R.index=initialIndex();
+    const sl=el('radarSlider');if(sl){sl.max=String(R.frames.length-1);sl.value=String(initialIndex())}
+    showFrame(initialIndex());
     const locationIcon=lib.divIcon({
       className:'pw-radar-location-pin',
       html:'<svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" viewBox="0 0 36 48" aria-hidden="true" style="display:block;overflow:visible;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))"><path d="M18 46C15 42 2 28 2 18a16 16 0 0 1 32 0c0 10-13 24-16 28Z" fill="#e53935" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="18" cy="18" r="6" fill="#fff"/></svg>',
@@ -5998,9 +6044,9 @@ pw11Compass=function(wd,label){
   }
   function show(){
     const wrap=el('radarWrap'),msg=el('radarMessage');if(!wrap||!msg)return;
-    if(!hasKey()){wrap.hidden=true;msg.textContent=T('Zadaj Client ID a Client Secret v Nastavenia → Panely → Meteoradar.','Enter the Client ID and Client Secret in Settings → Panels → Weather radar.');return}
-    msg.textContent='';wrap.hidden=false;
-    loadLib().then(()=>{if(enabled()&&isOpen()&&hasKey())create()}).catch(()=>{msg.textContent=T('Knižnicu mapy (leaflet.js) sa nepodarilo načítať.','The map library (leaflet.js) could not be loaded.')});
+    if(!isWeatherApi()&&!hasKey()){wrap.hidden=true;msg.textContent=T('Zadaj Client ID a Client Secret v Nastavenia → Panely → Meteoradar.','Enter the Client ID and Client Secret in Settings → Panels → Weather radar.');return}
+    if(!R.map)msg.textContent='';wrap.hidden=false;
+    loadLib().then(()=>{if(enabled()&&isOpen()&&(isWeatherApi()||hasKey()))create()}).catch(()=>{msg.textContent=T('Knižnicu mapy (leaflet.js) sa nepodarilo načítať.','The map library (leaflet.js) could not be loaded.')});
   }
   function sync(){if(!enabled()||!isOpen()){destroy();return}show()}
   function applyState(){
@@ -6008,11 +6054,11 @@ pw11Compass=function(wd,label){
     const s=st(),on=enabled(),sec=el('radarSection');if(sec)sec.hidden=!on;
     if(!on){const b=el('radarBody'),c=el('radarChevron');if(b)b.classList.remove('open');if(c)c.classList.remove('open')}
     document.querySelectorAll('[data-pw-radar]').forEach(b=>{const a=(b.getAttribute('data-pw-radar')==='on')===on;b.classList.toggle('active',a);b.setAttribute('aria-pressed',String(a))});
-    const keys=el('pwRadarKeys');if(keys)keys.hidden=!on;
+    const keys=el('pwRadarKeys');if(keys)keys.hidden=!on||isWeatherApi();
     const idEl=el('pwRadarId'),secEl=el('pwRadarSecret');
     if(s&&idEl&&document.activeElement!==idEl)idEl.value=s.radar_client_id||'';
     if(s&&secEl&&document.activeElement!==secEl)secEl.value=s.radar_client_secret||'';
-    const sig=on+'|'+(s?s.radar_client_id:'')+'|'+(s?s.radar_client_secret:'');
+    const sig=on+'|'+provider()+'|'+weatherLayer()+'|'+(s?s.radar_client_id:'')+'|'+(s?s.radar_client_secret:'');
     if(sig!==R.sig){R.sig=sig;destroy()}
     const loc=s&&(s.locations||[])[s.selected],lk=loc?loc.latitude+','+loc.longitude:'';
     if(R.map&&loc&&lk!==R.loc){const ll=[Number(loc.latitude),Number(loc.longitude)];R.map.setView(ll);if(R.marker)R.marker.setLatLng(ll)}
@@ -6023,7 +6069,7 @@ pw11Compass=function(wd,label){
   toggleSection=function(n){const r=prevToggle.apply(this,arguments);sync();return r};
   const prevClose=closeOtherSections;
   closeOtherSections=function(n){const r=prevClose.apply(this,arguments);
-    if(n!=='radar'){const b=el('radarBody'),c=el('radarChevron');if(b)b.classList.remove('open');if(c)c.classList.remove('open')}return r};
+    if(n!=='radar'){const b=el('radarBody'),c=el('radarChevron');if(b)b.classList.remove('open');if(c)c.classList.remove('open');destroy()}return r};
   const prevState=setAppState;
   setAppState=function(){const r=prevState.apply(this,arguments);try{applyState()}catch(e){console.warn('[Perun Weather] Radar state failed:',e)}return r};
   const prevTr=applyTranslations;
