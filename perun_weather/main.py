@@ -249,6 +249,10 @@ class App(Adw.Application):
                 elif key == "marine_enabled":
                     self.settings.marine_enabled = value == "true"
                     refresh_needed = True
+                elif key == "radar_provider":
+                    self.settings.radar_provider = "weatherapi" if value == "weatherapi" else "xweather"
+                elif key == "radar_weatherapi_layer":
+                    self.settings.radar_weatherapi_layer = value if value in ("precip", "tmp2m", "pressure", "wind") else "precip"
                 elif key == "radar_enabled":
                     self.settings.radar_enabled = value == "true"
                 elif key == "radar_client_id":
@@ -312,6 +316,8 @@ class App(Adw.Application):
             'lang': self.settings.lang,
             "marine_enabled": self.settings.marine_enabled,
             "aqi_scale": self.settings.aqi_scale,
+            "radar_provider": self.settings.radar_provider,
+            "radar_weatherapi_layer": self.settings.radar_weatherapi_layer,
             "radar_enabled": self.settings.radar_enabled,
             "radar_client_id": self.settings.radar_client_id,
             "radar_client_secret": self.settings.radar_client_secret,
