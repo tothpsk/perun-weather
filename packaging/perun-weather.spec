@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        5.0.0
+Version:        5.1.0
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
