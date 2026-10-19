@@ -9,6 +9,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QTimer, QUrl, Signal, Slot
 from PySide6.QtGui import QColor
 from PySide6.QtWebChannel import QWebChannel
+from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication, QMainWindow
 
@@ -129,6 +130,11 @@ class App(QObject):
         self.window.resize(1800, 940)
 
         self.web = QWebEngineView()
+        # PERUN WINDOWS REMOTE MAP RESOURCES V1
+        self.web.settings().setAttribute(
+            QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls,
+            True,
+        )
         self.web.page().setBackgroundColor(QColor("#1e2129"))
         self.window.setCentralWidget(self.web)
 
