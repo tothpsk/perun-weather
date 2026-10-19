@@ -1,3 +1,14 @@
+perun-weather (5.1.0-1) unstable; urgency=medium
+
+  * New upstream release 5.1.0.
+  * Add WeatherAPI map layers and an alternative Xweather radar source.
+  * Add map animation and frame selection controls.
+  * Default new settings to WeatherAPI while preserving saved selections.
+  * Update bilingual help, footer credits, README and release notes.
+  * Include the Leaflet license and document its copyright.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Mon, 19 Oct 2026 23:59:00 +0200
+
 perun-weather (5.0.0-1) unstable; urgency=medium
 
   * New upstream release 5.0.0.

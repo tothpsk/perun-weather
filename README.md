@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Perun Weather</h1>
-<p align="center">Version 5.0.0</p>
+<p align="center">Version 5.1.0</p>
 <p align="center"><em>Weather, made visible.</em></p>
 
 Perun Weather is a desktop weather application built around interactive charts.
@@ -40,8 +40,38 @@ develop over time, so you can read the data yourself and judge what it means.
 - Automatic refresh with a last-updated indicator
 - Collapsible settings for model, units, air quality scale, panels and chart options
 - Slovak and English interface
-- Built-in help
+- Weather maps with WeatherAPI.com layer selection and an alternative
+  Xweather radar source, animation and frame selection
+- Built-in Slovak and English help, including map setup and limitations
 
+
+## Weather maps
+
+Enable the map panel in Settings and expand it to load the map.
+Choose WeatherAPI.com or Xweather using the source selector.
+
+- WeatherAPI.com is the default for new settings. Existing saved source
+  selections are preserved. Use the layer selector to choose a weather layer.
+- Xweather requires your own Client ID and Client Secret. In the Xweather
+  portal, open [Account → Keys](https://data.portal.xweather.com/account/keys),
+  create an application and copy its credentials into the application settings.
+  The combined `ID_SECRET` string can also be pasted into the first field.
+  Access and usage limits depend on your plan.
+- Use the play button and time slider to animate or select map frames.
+  The displayed map time is separate from the forecast chart timeline.
+- WeatherAPI.com layer legends are currently hidden. Do not interpret map
+  colours using forecast chart scales or another provider's legend.
+- Credentials are stored in the application settings on your computer.
+  Do not include them in public screenshots, bug reports or commits.
+
+Map sources are separate from the Open-Meteo forecast model used in the charts.
+Missing tiles or frames do not mean that there is no precipitation.
+Maps supplement forecasts and official warnings; they do not replace them.
+
+## Release notes
+
+Version 5.1.0 · 2026-10-19:
+[English](docs/release-notes-5.1.0.md) ·
 
 ## Screenshots
 
@@ -166,7 +196,7 @@ them manually when running Perun Weather from source.
 
 Planned ideas, in no particular order:
 
-- Weather radar
+- ~~Weather maps and radar~~ (added in 5.1.0)
 - ~~Further weather models~~ (done in 4.5)
 - Historical weather
 - A gardening and agriculture panel (soil moisture and drought information
@@ -210,6 +240,21 @@ data from the following services:
     from alerting authorities worldwide, a project of KDE and the FOSS Warn team.
 - **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License), bundled
   locally with the application.
+
+### Maps and map rendering
+
+- Weather map layers: [WeatherAPI.com](https://www.weatherapi.com/),
+  when selected. Provider terms apply.
+- Alternative radar imagery:
+  [Powered by Vaisala Xweather](https://www.xweather.com/).
+  Requires user-supplied credentials and an appropriate service plan.
+- Interactive map rendering: [Leaflet 1.9.4](https://leafletjs.com/),
+  bundled locally, under the
+  [BSD-2-Clause license](perun_weather/data/leaflet-LICENSE.txt).
+  Leaflet is a software library, not a weather data provider.
+
+Map data, map backgrounds and software libraries have separate terms.
+Provider credits displayed on the map must be preserved.
 
 ### Usage note
 

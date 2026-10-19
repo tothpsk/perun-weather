@@ -799,9 +799,9 @@ section_help: "Help",
 help_html: `
 <section>
   <h2>Application overview</h2>
-  <p>Perun Weather is a native Linux (GTK4 / Libadwaita) desktop application that shows a detailed weather forecast, air quality, pollen load, sun/moon position, optional marine data and official weather warnings for any number of saved locations. Data comes from <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (forecast, air quality, marine data), <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (official warnings for Europe) and the <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (official CAP warnings from authorities worldwide). Charts are rendered with Plotly.js, running in an embedded WebKit browser inside the app's own window. The interface is available in both Slovak and English, switchable directly in the app.</p>
+  <p>Perun Weather is a desktop application for Linux and Windows. It displays detailed weather forecasts, air quality, pollen, sun and moon information, optional marine data, official weather warnings and weather maps for saved locations. Forecast, air-quality and marine data come from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Official warnings come from MeteoAlarm and the FOSS Public Alert Server, supplemented by local threshold-based estimates. Weather maps use a separately selected source: WeatherAPI.com or Vaisala Xweather. Charts are rendered with Plotly.js and maps with Leaflet. The interface and built-in help are available in Slovak and English.</p>
   <div class="grid3">
-    <div class="card"><h3 style="margin-top:0">🖥️ Native GTK shell</h3><p style="margin:0">Adw.ApplicationWindow with a headerbar, fully integrated into the GNOME/Fedora desktop.</p></div>
+    <div class="card"><h3 style="margin-top:0">🖥️ Linux and Windows</h3><p style="margin:0">Linux uses GTK4 / Libadwaita with an embedded WebKit view. Windows uses PySide6 / Qt WebEngine. Both display the application's HTML interface inside a desktop window.</p></div>
     <div class="card"><h3 style="margin-top:0">🌦️ Multiple models</h3><p style="margin:0">Best match plus global and European models (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN and more) — switchable in Settings.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Real warnings</h3><p style="margin:0">Official MeteoAlarm warnings for Europe, official CAP warnings worldwide via the FOSS Public Alert Server, plus a local threshold-based estimate.</p></div>
   </div>
@@ -985,6 +985,8 @@ help_html: `
   <p>Sunrise, sunset and day length come directly from the Open-Meteo daily forecast for the location. The sun-altitude curve is calculated inside the app with a low-precision solar-position formula from the date, time, latitude and longitude. It is accurate enough for reading the shape of the day, not for astronomical work.</p>
 
   <h3>Moon</h3>
+<!-- PERUN MOON NOTE 5.1 EN -->
+<p>A dash (— or --) in a rise/set field is not a time and must not be read as 00:00. It means that no event time is displayed for that field. The dash alone does not distinguish an event absent from the selected day from an unavailable calculation. When checking an apparent discrepancy, consider the selected location, date and time zone. This release does not claim to resolve the outstanding sun/moon time-zone edge cases.</p>
   <p>The moon is calculated inside the app, without any online service. Its position is estimated from the main periodic terms of the moon's orbit and converted to altitude using the local sidereal time of the location.</p>
   <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
     <li><b>Phase:</b> derived from the elongation (the angle between the moon and the sun). The cycle is split into 8 named phases of 45° each.</li>
@@ -1470,9 +1472,9 @@ section_help: "Pomocník",
 help_html: `
 <section>
   <h2>Prehľad aplikácie</h2>
-  <p>Perun Weather je natívna Linuxová (GTK4 / Libadwaita) desktopová aplikácia, ktorá zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľové zaťaženie, polohu Slnka a Mesiaca, voliteľné morské údaje a oficiálne meteorologické výstrahy pre ľubovoľný počet uložených lokalít. Dáta pochádzajú z <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (predpoveď, kvalita ovzdušia, morské údaje), z <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (oficiálne výstrahy pre Európu) a z <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (oficiálne CAP výstrahy od úradov z celého sveta). Vykresľovanie grafov zabezpečuje knižnica Plotly.js, bežiaca vo vstavanom WebKit prehliadači priamo v okne appky. Rozhranie je dostupné v slovenčine aj angličtine, prepínateľné priamo v aplikácii.</p>
+  <p>Perun Weather je desktopová aplikácia pre Linux a Windows. Pre uložené lokality zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľ, údaje o Slnku a Mesiaci, voliteľné morské údaje, oficiálne meteorologické výstrahy a meteorologické mapy. Predpoveď, kvalitu ovzdušia a morské údaje poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Oficiálne výstrahy pochádzajú z MeteoAlarm a FOSS Public Alert Server; dopĺňajú ich lokálne odhady podľa prahových hodnôt. Mapy používajú samostatne vybraný zdroj: WeatherAPI.com alebo Vaisala Xweather. Grafy vykresľuje Plotly.js a mapy Leaflet. Rozhranie aj vstavaný pomocník sú dostupné v slovenčine a angličtine.</p>
   <div class="grid3">
-    <div class="card"><h3 style="margin-top:0">🖥️ Natívny GTK shell</h3><p style="margin:0">Adw.ApplicationWindow s headerbarom, plne integrovaný do GNOME/Fedora desktop prostredia.</p></div>
+    <div class="card"><h3 style="margin-top:0">🖥️ Linux a Windows</h3><p style="margin:0">Linux používa GTK4 / Libadwaita so vstavaným WebKit zobrazením. Windows používa PySide6 / Qt WebEngine. Obe verzie zobrazujú HTML rozhranie aplikácie v desktopovom okne.</p></div>
     <div class="card"><h3 style="margin-top:0">🌦️ Viacero modelov</h3><p style="margin:0">Best match a globálne aj európske modely (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN a ďalšie) — prepínateľné v Nastaveniach.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Reálne výstrahy</h3><p style="margin:0">Oficiálne výstrahy MeteoAlarm pre Európu, oficiálne CAP výstrahy z celého sveta cez FOSS Public Alert Server a k tomu lokálny odhad podľa prahových hodnôt.</p></div>
   </div>
@@ -1656,6 +1658,8 @@ help_html: `
   <p>Východ, západ a dĺžku dňa preberá appka priamo z dennej predpovede Open-Meteo pre danú lokalitu. Krivka výšky Slnka sa počíta priamo v appke nízkopresným vzorcom polohy Slnka z dátumu, času, zemepisnej šírky a dĺžky. Je dosť presná na čítanie priebehu dňa, nie na astronomické účely.</p>
 
   <h3>Mesiac</h3>
+<!-- PERUN MOON NOTE 5.1 SK -->
+<p>Pomlčka (— alebo --) v poli východu či západu nie je čas a neznamená 00:00. Znamená, že v danom poli nie je zobrazený čas udalosti. Samotná pomlčka nerozlišuje medzi udalosťou, ktorá v zvolenom dni nenastala, a nedostupným výsledkom výpočtu. Pri preverovaní zdanlivého nesúladu zohľadni vybranú lokalitu, dátum a časové pásmo. Toto vydanie nedeklaruje vyriešenie zostávajúcich hraničných prípadov časových pásiem pri Slnku a Mesiaci.</p>
   <p>Mesiac sa počíta priamo v appke, bez online služby. Jeho poloha sa odhaduje z hlavných periodických členov dráhy Mesiaca a prevádza sa na výšku nad horizontom pomocou miestneho hviezdneho času lokality.</p>
   <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
     <li><b>Fáza:</b> odvodená z elongácie (uhla medzi Mesiacom a Slnkom). Cyklus je rozdelený na 8 pomenovaných fáz po 45°.</li>

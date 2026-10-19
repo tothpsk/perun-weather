@@ -50,7 +50,7 @@ install -Dpm 0644 data/io.github.tothpsk.PerunWeather-symbolic.svg \
 desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.PerunWeather.desktop
 
 %files
-%license LICENSE
+%license LICENSE perun_weather/data/leaflet-LICENSE.txt
 %doc README.md
 %{python3_sitelib}/perun_weather/
 %{python3_sitelib}/perun_weather-*.dist-info/
@@ -60,6 +60,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
+* Mon Oct 19 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 5.1.0-1
+- Add WeatherAPI map layers and an alternative Xweather radar source
+- Add map animation and frame selection controls
+- Default new settings to WeatherAPI while preserving saved selections
+- Allow remote map resources in the Windows application
+- Update bilingual help, footer credits, README and release notes
 * Sun Oct 18 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 5.0.0-1
 - Add the weather-at-a-glance overview and the 5-day outlook
 - Add a settings panel grouped into Data, Panels and Charts

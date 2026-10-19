@@ -9,7 +9,7 @@ description = "Perun Weather — weather, made visible. Interactive charts, aler
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "perun_weather/data/leaflet-LICENSE.txt"]
 authors = [{ name = "Peter Tóth" }]
 keywords = ["weather", "meteogram", "forecast", "open-meteo", "gtk4", "libadwaita"]
 classifiers = [
@@ -31,4 +31,4 @@ packages = ["perun_weather"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-perun_weather = ["data/*.html", "data/*.js", "data/*.css"]
+perun_weather = ["data/*.html", "data/*.js", "data/*.css", "data/*.txt"]
