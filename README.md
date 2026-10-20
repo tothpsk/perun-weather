@@ -71,7 +71,7 @@ Maps supplement forecasts and official warnings; they do not replace them.
 ## Release notes
 
 Version 5.1.0 · 2026-10-19:
-[English](docs/release-notes-5.1.0.md) ·
+[Release notes](docs/release-notes-5.1.0.md)
 
 ## Screenshots
 
@@ -151,7 +151,7 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-5.0.0-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-5.1.0-1.fc44.noarch.rpm
 ```
 
 `dnf` installs the required dependencies automatically.
@@ -162,7 +162,7 @@ Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo apt install ./perun-weather_5.0.0-1_all.deb
+sudo apt install ./perun-weather_5.1.0-1_all.deb
 ```
 
 Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`
