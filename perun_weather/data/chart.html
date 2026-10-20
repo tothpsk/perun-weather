@@ -537,7 +537,7 @@ footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v5.0.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
+<div class="app"><div class="appHeader"><div><h1>Perun Weather <span class="badge">v5.1.0</span></h1><div id="subtitle" class="subtitle">Loading locations…</div></div><div class="langSwitch"><button id="btnLangSk" onclick="setSetting('lang','sk')">Slovensky</button><button id="btnLangEn" onclick="setSetting('lang','en')">English</button></div></div><div class="layout">
 <aside class="sidebar"><h2 id="lblSavedLocations">Saved locations</h2><div id="locations"></div><button class="add" onclick="toggleSearch()"><span id="lblAddLocation">+ Add location</span></button><div id="searchbox" class="searchbox"><input id="searchInput" placeholder="Search for a place" onkeydown="if(event.key==='Enter')doSearch()"><div class="searchhint" id="searchHint"></div><div id="searchResults" class="searchresults"></div></div><div class="hint" id="lblDragHint">Drag locations using ⠿ to reorder. Selecting a location changes forecasts, alerts, air quality, and pollen.</div></aside>
 <main><section id="pwOverview" aria-label="Weather overview"><div class="pwEmpty">Loading…</div></section><div class="toolbar"><div class="field"><label id="lblModel">Weather model</label><select id="modelSelect" onchange="setSetting('model',this.value)"><option value="best_match">Best match (auto-blend)</option><optgroup id="optGroupGlobal" label="Global"><option value="ecmwf_ifs_hres">ECMWF IFS HRES (9 km, global)</option><option value="ecmwf_ifs">ECMWF IFS 0.25° (global, 3-6h native)</option><option value="ecmwf_aifs">ECMWF AIFS (AI model, global, 6h native)</option><option value="gfs">GFS (NOAA, global)</option><option value="aigfs">NCEP AIGFS (AI model, global)</option><option value="jma_gsm">JMA GSM (global)</option><option value="icon_seamless">ICON Seamless (DWD, Global + EU + D2)</option><option value="icon_global">ICON Global (DWD, global)</option><option value="gem_global">GEM Global (Canada, global)</option><option value="arpege_world">ARPEGE World (Météo-France, global)</option><option value="ukmo_global">UK Met Office Global (10 km, global)</option><option value="cma_grapes">CMA GRAPES (global)</option></optgroup><optgroup id="optGroupEurope" label="Europe"><option value="icon_eu">ICON EU (DWD, 7 km, Europe)</option><option value="icon_d2">ICON D2 (DWD, 2 km, Europe)</option><option value="arpege_europe">ARPEGE Europe (Météo-France, Europe)</option><option value="knmi_arome_europe">HARMONIE AROME Europe (KNMI, Europe)</option><option value="harmonie">DMI Seamless (HARMONIE → ECMWF, Europe)</option><option value="chmi_aladin_seamless">CHMI ALADIN Seamless (ALADIN → ECMWF, Central Europe)</option><option value="chmi_aladin_ce_2km">CHMI ALADIN Central Europe (2 km)</option><option value="chmi_aladin_cz_1km">CHMI ALADIN CZ (1 km, Czechia)</option></optgroup></select>
 <label class="marineToggle">
@@ -738,11 +738,11 @@ leg_o3: "Ground-level ozone O₃", leg_no2: "Nitrogen dioxide NO₂", leg_so2: "
 leg_nh3: "Ammonia NH₃", leg_co: "Carbon monoxide CO", leg_dust: "Dust", leg_aod: "AOD", alert_level_red: "RED", alert_level_orange: "ORANGE", alert_level_yellow: "YELLOW",     opt_interval_1: "1 hour", opt_interval_3: "3 hours", opt_interval_6: "6 hours",
     opt_range_3: "3 days", opt_range_5: "5 days", opt_range_7: "7 days", opt_range_16: "16 days",
     opt_smoothing_0: "None (raw data)", opt_smoothing_1: "Light", opt_smoothing_2: "Medium", opt_smoothing_3: "Strong",
-    
+
 uv_from_gfs: 'GFS - supplementary source',
 uv_from_selected: 'selected model',
 uv_from_mixed: 'selected model / GFS',
-    
+
 axis_aqi: "AQI",
 axis_pm: "PM (µg/m³)",
 axis_gas: "µg/m³",
@@ -799,9 +799,9 @@ section_help: "Help",
 help_html: `
 <section>
   <h2>Application overview</h2>
-  <p>Perun Weather is a native Linux (GTK4 / Libadwaita) desktop application that shows a detailed weather forecast, air quality, pollen load, sun/moon position, optional marine data and official weather warnings for any number of saved locations. Data comes from <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (forecast, air quality, marine data), <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (official warnings for Europe) and the <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (official CAP warnings from authorities worldwide). Charts are rendered with Plotly.js, running in an embedded WebKit browser inside the app's own window. The interface is available in both Slovak and English, switchable directly in the app.</p>
+  <p>Perun Weather is a desktop application for Linux and Windows. It displays detailed weather forecasts, air quality, pollen, sun and moon information, optional marine data, official weather warnings and weather maps for saved locations. Forecast, air-quality and marine data come from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Official warnings come from MeteoAlarm and the FOSS Public Alert Server, supplemented by local threshold-based estimates. Weather maps use a separately selected source: WeatherAPI.com or Vaisala Xweather. Charts are rendered with Plotly.js and maps with Leaflet. The interface and built-in help are available in Slovak and English.</p>
   <div class="grid3">
-    <div class="card"><h3 style="margin-top:0">🖥️ Native GTK shell</h3><p style="margin:0">Adw.ApplicationWindow with a headerbar, fully integrated into the GNOME/Fedora desktop.</p></div>
+    <div class="card"><h3 style="margin-top:0">🖥️ Linux and Windows</h3><p style="margin:0">Linux uses GTK4 / Libadwaita with an embedded WebKit view. Windows uses PySide6 / Qt WebEngine. Both display the application's HTML interface inside a desktop window.</p></div>
     <div class="card"><h3 style="margin-top:0">🌦️ Multiple models</h3><p style="margin:0">Best match plus global and European models (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN and more) — switchable in Settings.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Real warnings</h3><p style="margin:0">Official MeteoAlarm warnings for Europe, official CAP warnings worldwide via the FOSS Public Alert Server, plus a local threshold-based estimate.</p></div>
   </div>
@@ -880,7 +880,30 @@ help_html: `
 </section>
 
 <section>
-  <h2>How to</h2>
+  <!-- PERUN MAP HELP 5.1 EN -->
+<h2>Weather maps</h2>
+<p>The map panel offers two independent sources: WeatherAPI.com and Vaisala Xweather. Changing the map source does not change the forecast model used in the charts.</p>
+
+<h3>Source and layer selection</h3>
+<p>Enable the map panel in Settings and expand it. Use the source selector to choose WeatherAPI.com or Xweather. WeatherAPI.com is the default for new settings; an existing saved source selection is preserved.</p>
+<p>For WeatherAPI.com, choose a weather layer using the layer selector. Legends for these layers are currently hidden: do not interpret their colours using the scales from the forecast charts or from another map provider.</p>
+
+<h3>Animation and navigation</h3>
+<p>Use the play button to start or stop the animation and the time slider to select an individual frame. Read the time label for the selected frame. Drag the map to move around and use its zoom controls to change scale. The map timeline is separate from the forecast chart timeline.</p>
+
+<h3>Setting up Xweather</h3>
+<div class="steps">
+<div class="step">Create an Xweather account and select a plan that includes the required map service.</div>
+<div class="step">Open <a href="https://data.portal.xweather.com/account/keys" target="_blank" rel="noopener">Account → Keys</a> in the provider portal and create an application.</div>
+<div class="step">Copy its Client ID and Client Secret into the Xweather fields in the application settings. The combined ID_SECRET string can also be pasted into the first field.</div>
+<div class="step">Select Xweather as the map source and open the enabled map panel.</div>
+</div>
+<p>Credentials are stored in the application settings on this computer. Treat them as private: do not include them in screenshots, public bug reports or commits. Access and usage limits depend on the provider and your plan.</p>
+
+<h3>Availability and limitations</h3>
+<p>Map imagery requires an internet connection. Missing tiles or frames do not mean that no precipitation is occurring. Check the selected source, layer, displayed time and any error message. Maps supplement the forecast and official warnings; they do not replace them.</p>
+
+<h2>How to</h2>
 
   <h3>Add a new location</h3>
   <div class="steps">
@@ -962,6 +985,8 @@ help_html: `
   <p>Sunrise, sunset and day length come directly from the Open-Meteo daily forecast for the location. The sun-altitude curve is calculated inside the app with a low-precision solar-position formula from the date, time, latitude and longitude. It is accurate enough for reading the shape of the day, not for astronomical work.</p>
 
   <h3>Moon</h3>
+<!-- PERUN MOON NOTE 5.1 EN -->
+<p>A dash (— or --) in a rise/set field is not a time and must not be read as 00:00. It means that no event time is displayed for that field. The dash alone does not distinguish an event absent from the selected day from an unavailable calculation. When checking an apparent discrepancy, consider the selected location, date and time zone. This release does not claim to resolve the outstanding sun/moon time-zone edge cases.</p>
   <p>The moon is calculated inside the app, without any online service. Its position is estimated from the main periodic terms of the moon's orbit and converted to altitude using the local sidereal time of the location.</p>
   <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
     <li><b>Phase:</b> derived from the elongation (the angle between the moon and the sun). The cycle is split into 8 named phases of 45° each.</li>
@@ -1089,6 +1114,17 @@ help_html: `
   <h2>Changelog</h2>
 
   <div class="changelog-entry">
+<div class="ver">5.1.0 · 2026-10-19 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
+<ul>
+<li>Weather maps with WeatherAPI.com layer selection and an alternative Xweather radar source.</li>
+<li>Map animation controls and a time slider for selecting individual frames.</li>
+<li>WeatherAPI.com is the default map source for new settings; existing saved source selections are preserved.</li>
+<li>Windows: allow locally loaded application content to access remote map resources.</li>
+<li>Provider attribution in the application footer and bilingual map documentation, including Xweather setup and map limitations.</li>
+</ul>
+</div>
+
+<div class="changelog-entry">
     <div class="ver">5.0.0 · 2026-10-18 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
     <ul>
       <li>New "Weather at a glance" overview with current conditions, wind compass, precipitation, UV, cloud cover, sun and moon, air quality, pollen and alerts</li>
@@ -1099,7 +1135,10 @@ help_html: `
       <li>Wind direction reads "from NW" (Slovak: "z SZ" or "zo SZ"); decimals use a dot and degrees have no space</li>
     </ul>
   </div>
-  <div class="changelog-entry">
+  <details class="changelogOlder">
+    <summary>Older versions</summary>
+
+<div class="changelog-entry">
     <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
     <ul>
       <li>Added a precipitation probability strip below the precipitation and cloud cover chart, where colour intensity shows probability; the value is also shown in the weather summary.</li>
@@ -1140,8 +1179,7 @@ help_html: `
     </ul>
   </div>
 
-  <details class="changelogOlder">
-    <summary>Older versions</summary>
+
 
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
@@ -1152,7 +1190,7 @@ help_html: `
       <li>Debian package (<code>.deb</code>) — first build, tested on Debian 13</li>
     </ul>
   </div>
-  
+
   <div class="changelog-entry">
     <div class="ver">4 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
     <ul>
@@ -1244,11 +1282,15 @@ help_html: `
   <h2>Licenses</h2>
   <div class="grid2">
     <div class="card"><h3 style="margin-top:0">Perun Weather (this application)</h3><p style="margin:0">Copyright © 2026 <b>Peter Tóth</b>. Released under the <b>MIT License</b>.</p></div>
-    <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Used for chart rendering, <b>MIT License</b>, bundled locally with the app.</p></div>
+    <div class="card"><h3 style="margin-top:0">Leaflet 1.9.4</h3><p style="margin:0">Interactive map rendering by <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>, bundled locally with the application. License: BSD-2-Clause. Leaflet is a mapping library, not a weather data provider.</p></div>
+<div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Used for chart rendering, <b>MIT License</b>, bundled locally with the app.</p></div>
     <div class="card"><h3 style="margin-top:0">Data: Open-Meteo</h3><p style="margin:0">Weather, air-quality and marine data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">licence details</a>). The app converts units and visualises the data. Underlying model data come from national weather services such as DWD, ECMWF, NOAA and DMI; air quality from Copernicus. Place search uses the Open-Meteo Geocoding API based on <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Free API access is for non-commercial use (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Terms</a>).</p></div>
     <div class="card"><h3 style="margin-top:0">Data: MeteoAlarm</h3><p style="margin:0">Official warnings for Europe, aggregated from national meteorological services. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Data: FOSS Public Alert Server</h3><p style="margin:0">Official CAP warnings collected from alerting authorities worldwide, a project of KDE and the FOSS Warn team. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
-    <div class="card"><h3 style="margin-top:0">Data: OpenStreetMap</h3><p style="margin:0">Place names for coordinate search come from <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL).</p></div>
+
+<div class="card"><h3 style="margin-top:0">Maps: WeatherAPI.com</h3><p style="margin:0">Weather map layers are provided by <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a> when this map source is selected. This is separate from the Open-Meteo forecasts shown in the charts. Provider terms apply.</p></div>
+<div class="card"><h3 style="margin-top:0">Maps: Vaisala Xweather</h3><p style="margin:0"><a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>. Provides radar imagery when Xweather is selected. Access requires your own Client ID and Client Secret and is subject to your subscription limits and provider terms.</p></div>
+<div class="card"><h3 style="margin-top:0">Data: OpenStreetMap</h3><p style="margin:0">Place names for coordinate search come from <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL).</p></div>
   </div>
 </section>
 `,
@@ -1373,7 +1415,7 @@ leg_nh3: "Amoniak NH₃", leg_co: "Oxid uhoľnatý CO", leg_dust: "Prach", leg_a
 uv_from_gfs: 'GFS - doplnkový zdroj',
 uv_from_selected: 'zvolený model',
 uv_from_mixed: 'zvolený model / GFS',
-    
+
 axis_aqi: "AQI",
 axis_pm: "PM (µg/m³)",
 axis_gas: "µg/m³",
@@ -1430,9 +1472,9 @@ section_help: "Pomocník",
 help_html: `
 <section>
   <h2>Prehľad aplikácie</h2>
-  <p>Perun Weather je natívna Linuxová (GTK4 / Libadwaita) desktopová aplikácia, ktorá zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľové zaťaženie, polohu Slnka a Mesiaca, voliteľné morské údaje a oficiálne meteorologické výstrahy pre ľubovoľný počet uložených lokalít. Dáta pochádzajú z <a href="https://open-meteo.com" target="_blank">Open-Meteo</a> (predpoveď, kvalita ovzdušia, morské údaje), z <a href="https://feeds.meteoalarm.org" target="_blank">MeteoAlarm</a> (oficiálne výstrahy pre Európu) a z <a href="https://alerts.kde.org" target="_blank">FOSS Public Alert Server</a> (oficiálne CAP výstrahy od úradov z celého sveta). Vykresľovanie grafov zabezpečuje knižnica Plotly.js, bežiaca vo vstavanom WebKit prehliadači priamo v okne appky. Rozhranie je dostupné v slovenčine aj angličtine, prepínateľné priamo v aplikácii.</p>
+  <p>Perun Weather je desktopová aplikácia pre Linux a Windows. Pre uložené lokality zobrazuje podrobnú predpoveď počasia, kvalitu ovzdušia, peľ, údaje o Slnku a Mesiaci, voliteľné morské údaje, oficiálne meteorologické výstrahy a meteorologické mapy. Predpoveď, kvalitu ovzdušia a morské údaje poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>. Oficiálne výstrahy pochádzajú z MeteoAlarm a FOSS Public Alert Server; dopĺňajú ich lokálne odhady podľa prahových hodnôt. Mapy používajú samostatne vybraný zdroj: WeatherAPI.com alebo Vaisala Xweather. Grafy vykresľuje Plotly.js a mapy Leaflet. Rozhranie aj vstavaný pomocník sú dostupné v slovenčine a angličtine.</p>
   <div class="grid3">
-    <div class="card"><h3 style="margin-top:0">🖥️ Natívny GTK shell</h3><p style="margin:0">Adw.ApplicationWindow s headerbarom, plne integrovaný do GNOME/Fedora desktop prostredia.</p></div>
+    <div class="card"><h3 style="margin-top:0">🖥️ Linux a Windows</h3><p style="margin:0">Linux používa GTK4 / Libadwaita so vstavaným WebKit zobrazením. Windows používa PySide6 / Qt WebEngine. Obe verzie zobrazujú HTML rozhranie aplikácie v desktopovom okne.</p></div>
     <div class="card"><h3 style="margin-top:0">🌦️ Viacero modelov</h3><p style="margin:0">Best match a globálne aj európske modely (ECMWF, GFS, ICON, ARPEGE, HARMONIE AROME, ALADIN a ďalšie) — prepínateľné v Nastaveniach.</p></div>
     <div class="card"><h3 style="margin-top:0">🚨 Reálne výstrahy</h3><p style="margin:0">Oficiálne výstrahy MeteoAlarm pre Európu, oficiálne CAP výstrahy z celého sveta cez FOSS Public Alert Server a k tomu lokálny odhad podľa prahových hodnôt.</p></div>
   </div>
@@ -1511,7 +1553,30 @@ help_html: `
 </section>
 
 <section>
-  <h2>Ako čo urobiť</h2>
+  <!-- PERUN MAP HELP 5.1 SK -->
+<h2>Meteorologické mapy</h2>
+<p>Mapový panel ponúka dva samostatné zdroje: WeatherAPI.com a Vaisala Xweather. Zmena mapového zdroja nemení model predpovede používaný v grafoch.</p>
+
+<h3>Výber zdroja a vrstvy</h3>
+<p>Zapni mapový panel v Nastaveniach a rozbaľ ho. Prepínačom zdroja vyber WeatherAPI.com alebo Xweather. Pri nových nastaveniach je predvolený WeatherAPI.com; už uložený výber zdroja zostáva zachovaný.</p>
+<p>Pri WeatherAPI.com vyber meteorologickú vrstvu príslušným prepínačom. Legendy týchto vrstiev sú zatiaľ skryté: ich farby nevyhodnocuj podľa stupníc predpovedných grafov ani podľa iného poskytovateľa máp.</p>
+
+<h3>Animácia a pohyb po mape</h3>
+<p>Tlačidlom prehrávania spustíš alebo zastavíš animáciu a časovým posuvníkom vyberieš jednotlivý snímok. Čas vybraného snímku čítaj pri posuvníku. Mapu posúvaš potiahnutím a mierku meníš ovládaním priblíženia. Časová os mapy je oddelená od časovej osi predpovedných grafov.</p>
+
+<h3>Nastavenie Xweather</h3>
+<div class="steps">
+<div class="step">Vytvor si účet Xweather a vyber plán zahŕňajúci potrebnú mapovú službu.</div>
+<div class="step">V portáli poskytovateľa otvor <a href="https://data.portal.xweather.com/account/keys" target="_blank" rel="noopener">Account → Keys</a> a vytvor aplikáciu.</div>
+<div class="step">Jej Client ID a Client Secret skopíruj do polí Xweather v nastaveniach aplikácie. Celý spojený reťazec ID_SECRET môžeš vložiť aj do prvého poľa.</div>
+<div class="step">Ako mapový zdroj vyber Xweather a otvor zapnutý mapový panel.</div>
+</div>
+<p>Prihlasovacie údaje sa ukladajú v nastaveniach aplikácie na tomto počítači. Považuj ich za súkromné: nevkladaj ich do snímok obrazovky, verejných hlásení chýb ani commitov. Prístup a limity používania závisia od poskytovateľa a tvojho plánu.</p>
+
+<h3>Dostupnosť a obmedzenia</h3>
+<p>Mapové snímky vyžadujú internetové pripojenie. Chýbajúce dlaždice alebo snímky neznamenajú, že sa nevyskytujú zrážky. Skontroluj vybraný zdroj, vrstvu, zobrazený čas a prípadné chybové hlásenie. Mapy dopĺňajú predpoveď a oficiálne výstrahy; nenahrádzajú ich.</p>
+
+<h2>Ako čo urobiť</h2>
 
   <h3>Pridanie novej lokality</h3>
   <div class="steps">
@@ -1593,6 +1658,8 @@ help_html: `
   <p>Východ, západ a dĺžku dňa preberá appka priamo z dennej predpovede Open-Meteo pre danú lokalitu. Krivka výšky Slnka sa počíta priamo v appke nízkopresným vzorcom polohy Slnka z dátumu, času, zemepisnej šírky a dĺžky. Je dosť presná na čítanie priebehu dňa, nie na astronomické účely.</p>
 
   <h3>Mesiac</h3>
+<!-- PERUN MOON NOTE 5.1 SK -->
+<p>Pomlčka (— alebo --) v poli východu či západu nie je čas a neznamená 00:00. Znamená, že v danom poli nie je zobrazený čas udalosti. Samotná pomlčka nerozlišuje medzi udalosťou, ktorá v zvolenom dni nenastala, a nedostupným výsledkom výpočtu. Pri preverovaní zdanlivého nesúladu zohľadni vybranú lokalitu, dátum a časové pásmo. Toto vydanie nedeklaruje vyriešenie zostávajúcich hraničných prípadov časových pásiem pri Slnku a Mesiaci.</p>
   <p>Mesiac sa počíta priamo v appke, bez online služby. Jeho poloha sa odhaduje z hlavných periodických členov dráhy Mesiaca a prevádza sa na výšku nad horizontom pomocou miestneho hviezdneho času lokality.</p>
   <ul style="margin:6px 0;padding-left:20px;font-size:13px;line-height:1.55;color:#c9d0dc">
     <li><b>Fáza:</b> odvodená z elongácie (uhla medzi Mesiacom a Slnkom). Cyklus je rozdelený na 8 pomenovaných fáz po 45°.</li>
@@ -1720,6 +1787,17 @@ help_html: `
   <h2>História zmien</h2>
 
   <div class="changelog-entry">
+<div class="ver">5.1.0 · 2026-10-19 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
+<ul>
+<li>Meteorologické mapy s výberom vrstiev WeatherAPI.com a alternatívnym radarovým zdrojom Xweather.</li>
+<li>Ovládanie animácie máp a časový posuvník na výber jednotlivých snímok.</li>
+<li>WeatherAPI.com ako predvolený mapový zdroj pri nových nastaveniach; existujúci uložený výber zostáva zachovaný.</li>
+<li>Windows: povolený prístup lokálne načítaného rozhrania k vzdialeným mapovým zdrojom.</li>
+<li>Atribúcie poskytovateľov v zápätí a dvojjazyčný mapový pomocník vrátane nastavenia Xweather a obmedzení máp.</li>
+</ul>
+</div>
+
+<div class="changelog-entry">
     <div class="ver">5.0.0 · 2026-10-18 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
     <ul>
       <li>Nový prehľad „Počasie na prvý pohľad“ s aktuálnymi podmienkami, kompasom vetra, zrážkami, UV, oblačnosťou, Slnkom a Mesiacom, kvalitou ovzdušia, peľom a výstrahami</li>
@@ -1730,7 +1808,10 @@ help_html: `
       <li>Smer vetra sa píše „zo SZ“ alebo „z JV“ (angl. „from NW“); desatinné čísla majú bodku a stupne bez medzery</li>
     </ul>
   </div>
-  <div class="changelog-entry">
+  <details class="changelogOlder">
+    <summary>Staršie verzie</summary>
+
+<div class="changelog-entry">
     <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
     <ul>
       <li>Pridaný pás pravdepodobnosti zrážok pod grafom zrážok a oblačnosti; intenzita farby vyjadruje pravdepodobnosť a hodnota je aj v súhrne počasia.</li>
@@ -1770,9 +1851,8 @@ help_html: `
       <li>Opravené časové zarovnanie AQI grafu pri zvolenom intervale; AQI zostáva nevyhladený a graf nemá farebné pozadie.</li>
     </ul>
   </div>
-  
-  <details class="changelogOlder">
-    <summary>Staršie verzie</summary>
+
+
 
   <div class="changelog-entry">
     <div class="ver">4.0.1 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
@@ -1875,11 +1955,15 @@ help_html: `
   <h2>Licencie</h2>
   <div class="grid2">
     <div class="card"><h3 style="margin-top:0">Perun Weather (táto aplikácia)</h3><p style="margin:0">Copyright © 2026 <b>Peter Tóth</b>. Vydané pod <b>MIT License</b>.</p></div>
-    <div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Vykresľovanie grafov, <b>MIT License</b>, súčasť appky lokálne.</p></div>
+    <div class="card"><h3 style="margin-top:0">Leaflet 1.9.4</h3><p style="margin:0">Interaktívne mapy vykresľuje <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a>, pribalený lokálne k aplikácii. Licencia: BSD-2-Clause. Leaflet je mapová knižnica, nie poskytovateľ meteorologických údajov.</p></div>
+<div class="card"><h3 style="margin-top:0">Plotly.js</h3><p style="margin:0">Vykresľovanie grafov, <b>MIT License</b>, súčasť appky lokálne.</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: Open-Meteo</h3><p style="margin:0">Dáta o počasí, kvalite ovzdušia a mori poskytuje <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> pod licenciou <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> (<a href="https://open-meteo.com/en/licence" target="_blank" rel="noopener">podrobnosti o licencii</a>). Appka dáta prepočítava na zvolené jednotky a vizualizuje. Podkladové modelové dáta pochádzajú z národných meteorologických služieb, napríklad DWD, ECMWF, NOAA a DMI, a kvalita ovzdušia z Copernicus. Vyhľadávanie miest využíva Open-Meteo Geocoding API založené na <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Bezplatný prístup k API je určený na nekomerčné použitie (<a href="https://open-meteo.com/en/terms" target="_blank" rel="noopener">Podmienky</a>).</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: MeteoAlarm</h3><p style="margin:0">Oficiálne výstrahy pre Európu od národných meteo služieb. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: FOSS Public Alert Server</h3><p style="margin:0">Oficiálne CAP výstrahy zbierané od úradov z celého sveta, projekt KDE a tímu FOSS Warn. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
-    <div class="card"><h3 style="margin-top:0">Dáta: OpenStreetMap</h3><p style="margin:0">Názvy miest pri vyhľadávaní podľa súradníc poskytuje <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">prispievatelia OpenStreetMap</a> (ODbL).</p></div>
+
+<div class="card"><h3 style="margin-top:0">Mapy: WeatherAPI.com</h3><p style="margin:0">Meteorologické mapové vrstvy pri zvolení tohto zdroja poskytuje <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a>. Ide o samostatný zdroj, odlišný od predpovedí Open-Meteo zobrazovaných v grafoch. Platia podmienky poskytovateľa.</p></div>
+<div class="card"><h3 style="margin-top:0">Mapy: Vaisala Xweather</h3><p style="margin:0"><a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>. Pri zvolení Xweather poskytuje radarové snímky. Prístup vyžaduje vlastné Client ID a Client Secret a podlieha limitom predplatného a podmienkam poskytovateľa.</p></div>
+<div class="card"><h3 style="margin-top:0">Dáta: OpenStreetMap</h3><p style="margin:0">Názvy miest pri vyhľadávaní podľa súradníc poskytuje <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">prispievatelia OpenStreetMap</a> (ODbL).</p></div>
   </div>
 </section>
 `,
@@ -2118,7 +2202,7 @@ function renderSeaTemperature(marine) {
     times,
     [values]
   );
-  
+
   const mu = marineUnits();
   z.ss[0] = z.ss[0].map(mu.temp);
 
@@ -2981,7 +3065,10 @@ function updateFooter(){
     escapeHtml(MODELS[state.model] || MODELS.best_match) +
     ' &nbsp;·&nbsp; <b>' + t('footer_air') + '</b> ' + OM + ' (Copernicus)' +
     ' &nbsp;·&nbsp; <b>' + t('footer_alerts') + '</b> ' + t('footer_alerts_value') +
-    ' &nbsp;·&nbsp; ' + LIC + ' · ' + OML;
+    ' &nbsp;·&nbsp; ' + LIC + ' · ' + OML +
+    ' &nbsp;·&nbsp; <b>' + (currentLang === 'sk' ? 'Mapy:' : 'Maps:') + '</b> ' +
+    '<a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a>' +
+    ' · <a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>';
 }
 function updateStatusForAutoToggle(){const el=document.getElementById('status');const current=el.textContent||'';const m=current.match(/(\d{2}:\d{2}|--:--)/);const lastUpdated=m?m[1]:'--:--';if(state.auto){el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_next_refresh')+' <b>--:--</b> ('+t('status_pending')+')';}else{el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_auto_disabled');}}
 function renderSites(){const h=document.getElementById('locations');h.innerHTML='';(state.locations||[]).forEach((s,i)=>{const r=document.createElement('div');r.className='loc'+(i===state.selected?' active':'');r.draggable=true;r.innerHTML='<span class="handle">⠿</span><div class="locText"><b>'+escapeHtml(s.name)+'</b><small>'+escapeHtml(s.country||'')+' · '+Number(s.latitude).toFixed(2)+'°N, '+Number(s.longitude).toFixed(2)+'°E</small></div>'+((state.locations.length>1)?'<button class="delete">✕</button>':'');r.onclick=e=>{if(e.target.classList.contains('delete'))native('delete',{index:i});else if(i!==state.selected)native('select',{index:i})};r.ondragstart=e=>{dragIndex=i;r.classList.add('drag');e.dataTransfer.setData('text/plain',String(i))};r.ondragend=()=>{r.classList.remove('drag');document.querySelectorAll('.dragover').forEach(x=>x.classList.remove('dragover'))};r.ondragover=e=>{e.preventDefault();r.classList.add('dragover')};r.ondragleave=()=>r.classList.remove('dragover');r.ondrop=e=>{e.preventDefault();const from=dragIndex,to=i;dragIndex=null;r.classList.remove('dragover');if(from===null||from===to)return;const order=Array.from({length:state.locations.length},(_,k)=>k);order.splice(from,1);order.splice(to,0,from);native('reorder',{order:JSON.stringify(order)})};h.appendChild(r)})}
@@ -3791,7 +3878,7 @@ function renderWeather(d){const h=d.hourly||{},x=h.time||[],ni=nowIndex(x),temp=
     (usedGfs
       ? ' (' + (usedSelected ? t('uv_from_mixed') : t('uv_from_gfs')) + ')'
       : '');
-    
+
   document.getElementById('weatherDot').className='dot';
   document.getElementById('weatherDot').style.background=tempDotColor(temp[ni]);
   const precipVal=prec.length&&prec[ni]!=null?prec[ni]:(([rain[ni],show[ni],snow[ni]].some(v=>v!=null))?(Number(rain[ni]||0)+Number(show[ni]||0)+Number(snow[ni]||0)):null);
