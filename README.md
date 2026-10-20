@@ -10,7 +10,8 @@ Perun Weather is a desktop weather application built around interactive charts.
 Instead of icons and a handful of numbers, it shows how forecast variables
 develop over time, so you can read the data yourself and judge what it means.
 
-![Perun Weather main window](https://github.com/user-attachments/assets/5287dd61-9f85-442d-96af-31e7243cb404)
+![Perun Weather main window](https://github.com/user-attachments/assets/7cd43b5f-581f-4605-9064-1f3cb2b0e617)
+
 
 
 ## Features
@@ -41,31 +42,11 @@ develop over time, so you can read the data yourself and judge what it means.
 - Collapsible settings for model, units, air quality scale, panels and chart options
 - Slovak and English interface
 - Weather maps with WeatherAPI.com layer selection and an alternative
-  Xweather radar source, animation and frame selection
+  Xweather radar source, animation and frame selection. Map sources are separate from the Open-Meteo forecast model used in the charts.
+Missing tiles or frames do not mean that there is no precipitation.
 - Built-in Slovak and English help, including map setup and limitations
 
 
-## Weather maps
-
-Enable the map panel in Settings and expand it to load the map.
-Choose WeatherAPI.com or Xweather using the source selector.
-
-- WeatherAPI.com is the default for new settings. Existing saved source
-  selections are preserved. Use the layer selector to choose a weather layer.
-- Xweather requires your own Client ID and Client Secret. In the Xweather
-  portal, open [Account → Keys](https://data.portal.xweather.com/account/keys),
-  create an application and copy its credentials into the application settings.
-  The combined `ID_SECRET` string can also be pasted into the first field.
-  Access and usage limits depend on your plan.
-- Use the play button and time slider to animate or select map frames.
-  The displayed map time is separate from the forecast chart timeline.
-- WeatherAPI.com layer legends are currently hidden. Do not interpret map
-  colours using forecast chart scales or another provider's legend.
-- Credentials are stored in the application settings on your computer.
-  Do not include them in public screenshots, bug reports or commits.
-
-Map sources are separate from the Open-Meteo forecast model used in the charts.
-Missing tiles or frames do not mean that there is no precipitation.
 Maps supplement forecasts and official warnings; they do not replace them.
 
 ## Release notes
@@ -75,22 +56,22 @@ Version 5.1.0 · 2026-10-19:
 
 ## Screenshots
 
-**Alerts**
+**Alerts panel**
 
 ![Alerts](https://github.com/user-attachments/assets/b3091239-68c4-4194-b2e5-832a1b677e4a)
 
 
-**Air quality & pollen**
+**Air quality & pollen panel**
 
 ![Air quality and pollen](https://github.com/user-attachments/assets/fb7e90d5-4771-4843-80cb-ce6c84fae3f3)
 
 
-**Weather forecast**
+**Weather forecast panel**
 
 ![Weather forecast](https://github.com/user-attachments/assets/62ba819a-e69c-4ce9-88c0-4f272bfc32dc)
 
 
-**Sun & moon**
+**Sun & Moon panel**
 
 ![Sun and moon](https://github.com/user-attachments/assets/2ec51210-072f-4efe-b3f0-c6f90065dfbc)
 
@@ -100,14 +81,22 @@ Version 5.1.0 · 2026-10-19:
 ![Marine data](https://github.com/user-attachments/assets/b1f377d1-1143-4ffc-bd41-36787f9c1515)
 
 
+**Weather maps panel (optional)**
+
+![Weather maps with WeatherAPI](https://github.com/user-attachments/assets/64ae8f34-0b44-436a-8d66-bcb78ca2eda5)
+
+![Weather maps with XWeather](https://github.com/user-attachments/assets/7ac2dadb-59f9-4fad-9af5-65025c3e8cef)
+
+
 **Settings**
 
-![Settings](https://github.com/user-attachments/assets/dd0efebd-537e-433c-a518-136a77cfe3b4)
+![Settings](https://github.com/user-attachments/assets/5015a44d-b491-4123-a2e8-dbfb6282fa24)
 
 
 **Help**
 
-![Help](https://github.com/user-attachments/assets/5b91b136-05cb-44d0-a698-a0cc67dace96)
+![Help](https://github.com/user-attachments/assets/e61a3234-8abc-435b-9877-8f4eacabaae4)
+
 
 
 ## About the name
@@ -240,18 +229,11 @@ data from the following services:
     from alerting authorities worldwide, a project of KDE and the FOSS Warn team.
 - **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License), bundled
   locally with the application.
-
-### Maps and map rendering
-
-- Weather map layers: [WeatherAPI.com](https://www.weatherapi.com/),
-  when selected. Provider terms apply.
-- Alternative radar imagery:
-  [Powered by Vaisala Xweather](https://www.xweather.com/).
-  Requires user-supplied credentials and an appropriate service plan.
-- Interactive map rendering: [Leaflet 1.9.4](https://leafletjs.com/),
-  bundled locally, under the
-  [BSD-2-Clause license](perun_weather/data/leaflet-LICENSE.txt).
-  Leaflet is a software library, not a weather data provider.
+- **Weather map layers:**
+  - [WeatherAPI.com](https://www.weatherapi.com/), when selected. Provider terms apply.
+  - [Powered by Vaisala Xweather](https://www.xweather.com/). Requires user-supplied credentials and an appropriate service plan.
+  - Interactive map rendering: **[Leaflet 1.9.4](https://leafletjs.com/)**,
+  bundled locally, under the [BSD-2-Clause license](perun_weather/data/leaflet-LICENSE.txt). Leaflet is a software library, not a weather data provider.
 
 Map data, map backgrounds and software libraries have separate terms.
 Provider credits displayed on the map must be preserved.
