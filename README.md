@@ -166,7 +166,7 @@ them manually when running Perun Weather from source.
 
 Planned ideas, in no particular order:
 
-- Weather radar
+- ~~Weather radar~~ (done in 5.1.0)
 - ~~Further weather models~~ (done in 4.5)
 - Historical weather
 - A gardening and agriculture panel (soil moisture and drought information
