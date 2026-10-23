@@ -534,6 +534,13 @@ footer a:hover{text-decoration:underline}
 .pw17-marine .langSwitch{align-self:flex-start;margin-left:0}
 .pw16-aqi .langSwitch{align-self:flex-start;margin-left:0}
 
+/* PERUN BEAUFORT V2 BEGIN */
+.pw5-windtext .pw5-text{gap:.3em}
+#pwOverview.pw5 .pw5-windtext .pw-bft-name{font-size:var(--pw5-value);font-weight:650;line-height:1.2;white-space:normal}
+.pw-cloud-name{font-size:var(--pw5-value);font-weight:650;line-height:1.15;color:#bbc4d2;margin-top:6px;white-space:normal}
+/* PERUN BEAUFORT V2 END */
+/* PERUN BEAUFORT V1 FIT */
+#pwOverview.pw5 .pw5-windtext .pw-bft-name.pw-bft-small{font-size:var(--pw5-text);line-height:1.2}
 </style>
 </head>
 <body>
@@ -6591,7 +6598,159 @@ function renderOverview(d){
  pwCompactOverview(d,root);
  root.querySelectorAll('[data-pw-open]').forEach(b=>b.onclick=()=>pwOpen(b.dataset.pwOpen));
 }
+// PERUN BEAUFORT V2 BEGIN
+const PW_BFT=[
+  {min:0,c:'#6270b7',sk:'Bezvetrie',en:'Calm'},
+  {min:1.1,c:'#39619f',sk:'Vánok',en:'Light air'},
+  {min:5.8,c:'#4994a9',sk:'Slabý vietor',en:'Light breeze'},
+  {min:12.2,c:'#4d8d7c',sk:'Mierny vietor',en:'Gentle breeze'},
+  {min:19.8,c:'#53a553',sk:'Dosť čerstvý vietor',en:'Moderate breeze'},
+  {min:28.8,c:'#359e35',sk:'Čerstvý vietor',en:'Fresh breeze'},
+  {min:38.9,c:'#a69d50',sk:'Silný vietor',en:'Strong breeze'},
+  {min:50,c:'#a0645c',sk:'Prudký vietor',en:'Moderate gale'},
+  {min:61.9,c:'#af5088',sk:'Búrlivý vietor',en:'Gale'},
+  {min:74.9,c:'#754a92',sk:'Víchrica',en:'Strong gale'},
+  {min:88.2,c:'#45698d',sk:'Silná víchrica',en:'Storm'},
+  {min:102.6,c:'#5b9098',sk:'Mohutná víchrica',en:'Violent storm'},
+  {min:117.7,c:'#7d44a5',sk:'Orkán',en:'Hurricane-force'}
+];
+const PW_CLOUD=[
+  {max:12.5,sk:'Jasno',en:'Clear sky',r:'0–12,5'},
+  {max:37.5,sk:'Prevažne jasno',en:'Mostly clear',r:'12,5–37,5'},
+  {max:62.5,sk:'Polooblačno',en:'Partly cloudy',r:'37,5–62,5'},
+  {max:87.5,sk:'Prevažne oblačno',en:'Mostly cloudy',r:'62,5–87,5'},
+  {max:100,sk:'Zamračené',en:'Cloudy',r:'87,5–100'}
+];
+function pwBft(v){
+  const n=weatherSummaryNumber(v);if(n==null||n<0)return null;
+  const kmh=n*({imperial:1.609344,ms:3.6,knots:1.852}[state.units]||1);
+  let i=0;for(let j=0;j<PW_BFT.length;j++)if(kmh>=PW_BFT[j].min)i=j;
+  const b=PW_BFT[i];return {i:i,color:b.c,name:currentLang==='sk'?b.sk:b.en};
+}
+function pwCloudName(v){
+  const n=weatherSummaryNumber(v);if(n==null||n<0||n>100)return '';
+  const b=PW_CLOUD.find((x,k)=>k===PW_CLOUD.length-1?n<=x.max:n<x.max);
+  return b?(currentLang==='sk'?b.sk:b.en):'';
+}
+weatherSummaryWindColor=function(v){const b=pwBft(v);return b?b.color:null};
 
+function pwBftCurrent(d){
+  const h=(d&&d.hourly)||{},times=h.time||[],now=nowMarker(),i=nowIndex(times),stamp=times[i];
+  const valid=!!stamp&&Math.abs(new Date(stamp)-now)<=3600000;
+  const get=k=>valid?weatherSummaryNumber(arr(h,k)[i]):null;
+  return {wind:get('wind_speed_10m'),cloud:get('cloud_cover')};
+}
+function pwBftTileByLabel(root,re){
+  return [...root.querySelectorAll('.pw5-tiles>.pw5-tile')].find(el=>re.test(((el.querySelector('.pw5-label')||{}).textContent||'').trim()));
+}
+function pwBftAlignCloud(){
+  const root=document.getElementById('pwOverview');if(!root)return;
+  const cloudTile=pwBftTileByLabel(root,/^(Oblačnosť|Clouds)$/),sunTile=pwBftTileByLabel(root,/^(Slnko dnes|Sun today)$/);
+  if(!cloudTile||!sunTile)return;
+  const name=cloudTile.querySelector('.pw-cloud-name'),svg=cloudTile.querySelector('svg.pw3-cloud');
+  const times=sunTile.querySelectorAll('.pw11-lines>.pw11-item>b');
+  if(!name||!svg||times.length<2)return;
+  name.style.marginTop='0px';
+  const shapes=[...svg.querySelectorAll('path,circle,ellipse')].filter(e=>e.getAttribute('fill')!=='none'||e.getAttribute('stroke'));
+  if(!shapes.length)return;
+  const bottom=Math.max(...shapes.map(e=>e.getBoundingClientRect().bottom));
+  const a=times[0].getBoundingClientRect(),b=times[1].getBoundingClientRect();
+  const gap=b.top-a.bottom,natural=name.getBoundingClientRect().top-bottom,shift=gap-natural;
+  if(gap>0&&Number.isFinite(shift))name.style.marginTop=shift.toFixed(1)+'px';
+}
+function pwBftDecorate(d){
+  const root=document.getElementById('pwOverview');if(!root||!d)return;
+  const cur=pwBftCurrent(d),windText=root.querySelector('.pw5-tiles .pw5-windtext');
+  if(windText){
+    const b=pwBft(cur.wind);let line=windText.querySelector(':scope>.pw-bft-name');
+    if(!b){if(line)line.remove()}
+    else{
+      if(!line){line=document.createElement('div');line.className='pw5-text pw-bft-name';windText.appendChild(line)}
+      if(line.textContent!==b.name)line.textContent=b.name; line.style.color=b.color;
+    }
+  }
+  const cloudTile=pwBftTileByLabel(root,/^(Oblačnosť|Clouds)$/);
+  if(cloudTile){
+    const body=cloudTile.querySelector('.pw5-body')||cloudTile,name=pwCloudName(cur.cloud);
+    let line=body.querySelector(':scope>.pw-cloud-name');
+    if(!name){if(line)line.remove()}
+    else{
+      if(!line){line=document.createElement('div');line.className='pw-cloud-name';body.appendChild(line)}
+      if(line.textContent!==name)line.textContent=name;
+    }
+  }
+  pwBftAlignCloud();
+  if(window.requestAnimationFrame)requestAnimationFrame(pwBftAlignCloud);
+}
+const pwBftPrevDecorate=pw11Decorate;
+pw11Decorate=function(d){pwBftPrevDecorate(d);try{pwBftDecorate(d)}catch(error){console.warn('[Perun Weather] Beaufort decoration failed:',error)}};
+let pwBftResizeTimer=0;
+window.addEventListener('resize',()=>{clearTimeout(pwBftResizeTimer);pwBftResizeTimer=setTimeout(pwBftAlignCloud,150)});
+
+function pwBftWindBar(x,maxGust){
+  const bw=pwBft(x.wind),bg=pwBft(x.gust),wind=x.wind==null?null:Math.max(0,x.wind),gust=x.gust==null?null:Math.max(0,x.gust);
+  const top=Math.max(wind||0,gust||0),total=top>0?Math.max(6,Math.min(100,top/maxGust*100)):0;
+  let html='';
+  if(total>0){
+    const split=wind==null?0:Math.min(wind,top)/top*total;
+    if(split>0)html+='<span style="left:0;width:'+split.toFixed(1)+'%;background:'+(bw?bw.color:CLR.wind)+'"></span>';
+    if(gust!=null&&total-split>0.05)html+='<span style="left:'+split.toFixed(1)+'%;width:'+(total-split).toFixed(1)+'%;background:'+(bg?bg.color:CLR.wind)+'"></span>';
+  }
+  return '<div class="pw11-bar" aria-hidden="true">'+html+'</div>';
+}
+const pwBftPrevBody=pw11Body;
+pw11Body=function(x,mode,ctx){
+  if(mode!=='wind'&&mode!=='cloud')return pwBftPrevBody(x,mode,ctx);
+  const {L,E,u,maxGust}=ctx;
+  const bottom=html=>'<div class="pw11-bottom">'+html+'</div>';
+  if(mode==='wind'){
+    const bw=pwBft(x.wind),bg=pwBft(x.gust);
+    const label=x.wd==null?'':L('Vietor fúka zo smeru ','Wind from ')+dir(x.wd)+' '+fmt(x.wd)+'°';
+    const gust=x.gust==null?'—':weatherSummaryTint(E(fmt(x.gust)+' '+u.wind),bg?bg.color:null);
+    return '<div class="pw11-valuerow"><div class="pw11-value"'+(bw?' style="color:'+bw.color+'"':'')+'>'+(x.wind==null?'—':fmt(x.wind))+' <small>'+E(u.wind)+'</small></div>'+(x.wd==null?'':pw11Compass(x.wd,label))+'</div>'
+      +pwBftWindBar(x,maxGust)
+      +bottom(E(L('Nárazy','Gusts'))+' '+gust);
+  }
+  const v=x.cloud,name=pwCloudName(v);
+  return '<div class="pw11-value">'+(v==null?'—':fmt(v)+' <small>%</small>')+'</div>'
+    +'<div class="pw11-bar" aria-hidden="true">'+(v==null?'':'<span style="left:0;width:'+Math.max(4,Math.min(100,v)).toFixed(1)+'%;background:#8294ad"></span>')+'</div>'
+    +(name?bottom(E(name)):'');
+};
+
+function pwBftHelpSection(){
+  const sk=currentLang==='sk',num=n=>sk?String(n).replace('.',','):String(n);
+  const wind=PW_BFT.map((b,i)=>{
+    const next=PW_BFT[i+1],range=i===0?'0 – 1':next?num(b.min)+' – '+num((next.min-0.1).toFixed(1).replace(/\.0$/,'')):num(b.min)+'+';
+    return '<tr><td><span class="swatch" style="background:'+b.c+'"></span>'+i+'</td><td>'+(sk?b.sk:b.en)+'</td><td style="text-align:right">'+range+'</td></tr>';
+  }).join('');
+  const cloud=PW_CLOUD.map(b=>'<tr><td>'+(sk?b.sk:b.en)+'</td><td style="text-align:right">'+(sk?b.r:b.r.replace(/,/g,'.'))+'</td></tr>').join('');
+  return sk
+    ?'<h4>Vietor a nárazy</h4><p>Rýchlosť vetra aj nárazy sa farbia podľa Beaufortovej stupnice (0 až 12). V prehľade je pod hodnotami sivým písmom názov stupňa podľa rýchlosti vetra. V pásiku vetra na 5 dní je úsek do rýchlosti vetra zafarbený podľa nej a úsek od vetra po nárazy podľa nárazov.</p><table><tr><th>Bft</th><th>Popis</th><th style="text-align:right">km/h</th></tr>'+wind+'</table><p>Pri mph, m/s alebo uzloch sa hodnota pre výber farby prepočíta na km/h. Nejde o oficiálne meteorologické výstrahy.</p><h4>Oblačnosť</h4><p>Slovný popis vyjadruje pokrytie oblohy oblakmi.</p><table><tr><th>Popis</th><th style="text-align:right">%</th></tr>'+cloud+'</table>'
+    :'<h4>Wind and gusts</h4><p>Wind speed and gusts are coloured by the Beaufort scale (0 to 12). In the overview, the scale name for the wind speed appears in grey below the values. In the 5-day wind bar, the part up to the wind speed is coloured by it and the part from wind to gusts by the gusts.</p><table><tr><th>Bft</th><th>Description</th><th style="text-align:right">km/h</th></tr>'+wind+'</table><p>Values displayed in mph, m/s or knots are converted to km/h for colour selection. These are not official weather warnings.</p><h4>Cloud cover</h4><p>The text describes how much of the sky is covered by clouds.</p><table><tr><th>Description</th><th style="text-align:right">%</th></tr>'+cloud+'</table>';
+}
+const pwBftPrevHelp=weatherColorHelpHtml;
+weatherColorHelpHtml=function(){
+  const html=pwBftPrevHelp.apply(this,arguments);
+  return html.replace(/<h4>(?:Vietor a nárazy|Wind and gusts)<\/h4>[\s\S]*?(?=<h4>)/,pwBftHelpSection());
+};
+// PERUN BEAUFORT V2 END
+// PERUN BEAUFORT V1 FIT
+function pwBftFit(){
+  const l=document.querySelector('#pwOverview .pw5-windtext .pw-bft-name');
+  if(!l)return;
+  l.classList.remove('pw-bft-small');
+  if(!l.offsetParent)return;
+  const lh=parseFloat(getComputedStyle(l).lineHeight)||31;
+  if(l.getBoundingClientRect().height>lh*1.5)l.classList.add('pw-bft-small');
+}
+function pwBftFitSoon(){
+  requestAnimationFrame(()=>{pwBftFit();requestAnimationFrame(pwBftFit)});
+}
+const pwBftFitPrev=pwBftDecorate;
+pwBftDecorate=function(d){pwBftFitPrev(d);pwBftFitSoon()};
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(pwBftFitSoon);
+window.addEventListener('resize',()=>{clearTimeout(pwBftFit.t);pwBftFit.t=setTimeout(pwBftFitSoon,100)});
+if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(pwBftFit.r);pwBftFit.r=setTimeout(pwBftFit,60)}).observe(document.body);
 </script>
 </body>
 </html>
