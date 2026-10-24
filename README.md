@@ -10,7 +10,8 @@ Perun Weather is a desktop weather application built around interactive charts.
 Instead of icons and a handful of numbers, it shows how forecast variables
 develop over time, so you can read the data yourself and judge what it means.
 
-![Perun Weather main window](https://github.com/user-attachments/assets/7cd43b5f-581f-4605-9064-1f3cb2b0e617)
+![Perun Weather main window](https://github.com/user-attachments/assets/dc373c2a-d134-4f09-be73-cffefcaf87f4)
+
 
 
 
@@ -61,6 +62,10 @@ Version 5.2.0 · 2026-10-24:
 
 ## Screenshots
 
+**Precipitation nowcast and storms nearby**
+![Precipitation nowcast and storms nearby](https://github.com/user-attachments/assets/e797211d-597c-4181-b781-258d376b18cf)
+
+
 **Alerts panel**
 
 ![Alerts](https://github.com/user-attachments/assets/b3091239-68c4-4194-b2e5-832a1b677e4a)
@@ -88,9 +93,12 @@ Version 5.2.0 · 2026-10-24:
 
 **Weather maps panel (optional)**
 
-![Weather maps with WeatherAPI](https://github.com/user-attachments/assets/64ae8f34-0b44-436a-8d66-bcb78ca2eda5)
+![Weather maps with LibreWXR](https://github.com/user-attachments/assets/0c9ae5ee-f465-4415-8396-45696ce0d0e8)
 
-![Weather maps with XWeather](https://github.com/user-attachments/assets/7ac2dadb-59f9-4fad-9af5-65025c3e8cef)
+![Weather maps with WeatherAPI](https://github.com/user-attachments/assets/4e66ec7e-a255-4b16-a9e8-2dc0516ab351)
+
+![Weather maps with XWeather](https://github.com/user-attachments/assets/56ad65ac-36b9-444e-8dce-feeafdcad84b)
+
 
 
 **Settings**
