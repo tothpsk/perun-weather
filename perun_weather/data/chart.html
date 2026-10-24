@@ -861,6 +861,16 @@ help_html: `
     <p><b>Wind compass.</b> The letter at the top marks north (N in English, S in Slovak). The arrow points to where the wind is blowing to, while text such as "from NW 322°" says where it comes from.</p>
   </div>
 
+  <h3>Precipitation nowcast and storms nearby</h3>
+  <p>When weather maps are enabled and LibreWXR is the map source, the overview also looks one hour ahead. If precipitation is falling or expected, the Precipitation tile shows a short line such as "Rain starts in ~20 min", the strongest expected intensity and a scale of ten-minute steps, and two cards appear at the bottom: Precipitation nowcast and Storms nearby. When no precipitation is expected, nothing changes.</p>
+  <p><b>Nowcast source.</b> The Radar and Open-Meteo buttons in the Precipitation nowcast card choose how the nowcast is calculated. Radar uses the LibreWXR radar frames and nowcast; the application reads the radar colour at your location and converts it to an approximate rain rate, which is an estimate, not a measurement. Open-Meteo uses its 15-minute model forecast, which provides modelled amounts. If the selected source is unavailable, the other one is used and the card says so.</p>
+  <p><b>Intensity.</b> The bars are coloured by rain rate: very light from 0.1 mm/h, light from 0.5 mm/h, moderate from 2.5 mm/h and heavy from 7.6 mm/h. These bands are indicative bands of the application.</p>
+  <p><b>Storms nearby.</b> The card names the nearest detected storm cell (distance and direction) and, when its movement is known, estimates when it could be over you. The small radar shows your location in the centre, the north letter at the top (S in Slovak) and the cells within the range written in the corner (25, 50 or 100 km). The dashed circle marks half of that range, and the tiny dashed circle marks 8 km around you. Cell colours follow radar reflectivity (dBZ), lightning strikes of the last 30 minutes are shown as yellow bolts, and a moving dot shows where the main cell is heading. The faster the storm moves, the faster the animation. Without motion data, no animation is shown.</p>
+  <p>Storm cells, arrival times and the nowcast are estimates. They do not replace official warnings.</p>
+
+  <h3>Wind colours (Beaufort scale)</h3>
+  <p>Wind speed and gusts in the forecast summary and in the overview are coloured by the Beaufort scale (0–12), and the overview names the force of the current wind, for example "Fresh breeze". Values in mph, m/s or knots are converted to km/h for the colour. The overview also describes cloud cover in words (from "Clear sky" to "Cloudy"). The full table is part of the help for the forecast summary colours.</p>
+
   <h3>Settings</h3>
   <p>Open the collapsible <code>Settings</code> section to find these options, grouped into Data, Panels and Charts. The refresh controls and the language switch are in the header.</p>
   <table>
@@ -918,14 +928,22 @@ help_html: `
 <section>
   <!-- PERUN MAP HELP 5.1 EN -->
 <h2>Weather maps</h2>
-<p>The map panel offers two independent sources: WeatherAPI.com and Vaisala Xweather. Changing the map source does not change the forecast model used in the charts.</p>
+<p>The map panel offers three independent sources: LibreWXR, WeatherAPI.com and Vaisala Xweather. Changing the map source does not change the forecast model used in the charts.</p>
 
 <h3>Source and layer selection</h3>
-<p>Enable the map panel in Settings and expand it. Use the source selector to choose WeatherAPI.com or Xweather. WeatherAPI.com is the default for new settings; an existing saved source selection is preserved.</p>
+<p>Enable the map panel in Settings and expand it. Use the source selector to choose LibreWXR, WeatherAPI.com or Xweather. LibreWXR is the default for new settings; an existing saved source selection is preserved.</p>
 <p>For WeatherAPI.com, choose a weather layer using the layer selector. Legends for these layers are currently hidden: do not interpret their colours using the scales from the forecast charts or from another map provider.</p>
 
 <h3>Animation and navigation</h3>
 <p>Use the play button to start or stop the animation and the time slider to select an individual frame. Read the time label for the selected frame. Drag the map to move around and use its zoom controls to change scale. The map timeline is separate from the forecast chart timeline.</p>
+
+<h3>LibreWXR (default source)</h3>
+<p>LibreWXR is a free weather radar service. Perun Weather uses its public instance (api.librewxr.net), which needs no API key and is provided for fair use. The layers are drawn as an overlay above the OpenStreetMap base map.</p>
+<p><b>Layers.</b> Radar shows up to 12 past frames at 10-minute steps and a nowcast up to 60 minutes ahead. Satellite shows hourly NOAA GMGSI frames up to 12 hours back and has no future frames. Choose the layer in the control at the top right of the map, where the layer opacity can also be adjusted.</p>
+<p><b>Overlays.</b> The same control switches on lightning, precipitation motion arrows and storm cells (radar only) and alerts. Alerts on the map are indicative and are not official warnings.</p>
+<p><b>Playback.</b> The slider and the play button work as with the other sources. Frames after "Now" are a nowcast estimated from the motion of radar echoes.</p>
+<p><b>Legend.</b> The legend at the bottom right shows radar reflectivity in dBZ in the Rainbow @ Selex SI colour scheme. It is reflectivity, not accumulation in millimetres. The satellite layer has no numeric scale.</p>
+<p><b>Attribution.</b> "Weather data via LibreWXR (librewxr.net)" is shown in the application footer and on the map. The attributions of the underlying data providers apply; see the LibreWXR terms of use.</p>
 
 <h3>Setting up Xweather</h3>
 <div class="steps">
@@ -938,6 +956,11 @@ help_html: `
 
 <h3>Availability and limitations</h3>
 <p>Map imagery requires an internet connection. Missing tiles or frames do not mean that no precipitation is occurring. Check the selected source, layer, displayed time and any error message. Maps supplement the forecast and official warnings; they do not replace them.</p>
+
+<h3>LibreWXR limitations</h3>
+<p>Radar shows precipitation that the radar network detects. A missing echo does not guarantee that no precipitation is falling, and missing frames do not mean dry weather.</p>
+<p>The nowcast extrapolates the motion of existing echoes. Its accuracy decreases with time and it does not predict new cells.</p>
+<p>Rain rates derived from radar reflectivity are rough estimates. The public instance is provided for fair use and may be temporarily unavailable. Maps and forecasts do not replace official warnings.</p>
 
 <h2>How to</h2>
 
@@ -1150,6 +1173,16 @@ help_html: `
   <h2>Changelog</h2>
 
   <div class="changelog-entry">
+<div class="ver">5.2.0 · 2026-10-24 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
+<ul>
+<li>LibreWXR as a weather map source: radar with a nowcast up to 60 minutes, satellite, lightning, precipitation motion arrows, storm cells and alerts, with a legend; it is the default source for new settings and saved selections are preserved.</li>
+<li>Precipitation nowcast (LibreWXR radar or the Open-Meteo 15-minute model) in the overview: an updated Precipitation tile, a Nowcast card and a Storms nearby card with a mini radar, lightning and animated storm movement, shown only when precipitation is expected.</li>
+<li>Beaufort scale colours and names for wind and gusts, and a text description of cloud cover.</li>
+<li>LibreWXR attribution in the footer, licences and bilingual help; in-app history shows 5.2.0 and 5.1.0 outside the older-version section.</li>
+</ul>
+</div>
+
+  <div class="changelog-entry">
 <div class="ver">5.1.0 · 2026-10-19 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
 <ul>
 <li>Weather maps with WeatherAPI.com layer selection and an alternative Xweather radar source.</li>
@@ -1160,6 +1193,8 @@ help_html: `
 </ul>
 </div>
 
+  <details class="changelogOlder">
+    <summary>Older versions</summary>
 <div class="changelog-entry">
     <div class="ver">5.0.0 · 2026-10-18 <span class="tag added">Added</span><span class="tag changed">Changed</span></div>
     <ul>
@@ -1171,8 +1206,6 @@ help_html: `
       <li>Wind direction reads "from NW" (Slovak: "z SZ" or "zo SZ"); decimals use a dot and degrees have no space</li>
     </ul>
   </div>
-  <details class="changelogOlder">
-    <summary>Older versions</summary>
 
 <div class="changelog-entry">
     <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Added</span><span class="tag changed">Changed</span><span class="tag fixed">Fixed</span></div>
@@ -1324,6 +1357,7 @@ help_html: `
     <div class="card"><h3 style="margin-top:0">Data: MeteoAlarm</h3><p style="margin:0">Official warnings for Europe, aggregated from national meteorological services. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Data: FOSS Public Alert Server</h3><p style="margin:0">Official CAP warnings collected from alerting authorities worldwide, a project of KDE and the FOSS Warn team. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
 
+<div class="card"><h3 style="margin-top:0">Maps: LibreWXR</h3><p style="margin:0">Weather map layers (radar, nowcast, satellite, lightning, storm cells and alerts) are provided by <a href="https://librewxr.net/" target="_blank" rel="noopener">LibreWXR</a> when this map source is selected. Weather data via LibreWXR (librewxr.net). The attributions of its underlying data providers apply; see the <a href="https://librewxr.net/terms.html" target="_blank" rel="noopener">LibreWXR terms</a>. This is separate from the Open-Meteo forecasts shown in the charts.</p></div>
 <div class="card"><h3 style="margin-top:0">Maps: WeatherAPI.com</h3><p style="margin:0">Weather map layers are provided by <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a> when this map source is selected. This is separate from the Open-Meteo forecasts shown in the charts. Provider terms apply.</p></div>
 <div class="card"><h3 style="margin-top:0">Maps: Vaisala Xweather</h3><p style="margin:0"><a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>. Provides radar imagery when Xweather is selected. Access requires your own Client ID and Client Secret and is subject to your subscription limits and provider terms.</p></div>
 <div class="card"><h3 style="margin-top:0">Data: OpenStreetMap</h3><p style="margin:0">Place names for coordinate search come from <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a> (ODbL).</p></div>
@@ -1534,6 +1568,16 @@ help_html: `
     <p><b>Kompas vetra.</b> Písmeno hore označuje sever (S v slovenčine, N v angličtine). Šípka ukazuje, kam vietor fúka, kým text ako „zo SZ 322°“ hovorí, odkiaľ fúka.</p>
   </div>
 
+  <h3>Nowcast zrážok a búrky v okolí</h3>
+  <p>Keď sú zapnuté mapy a mapovým zdrojom je LibreWXR, prehľad sa pozerá aj hodinu dopredu. Ak zrážky padajú alebo sa očakávajú, karta Zrážky ukáže krátky riadok, napríklad „Dážď začne o ~20 min“, najsilnejšiu očakávanú intenzitu a škálu po desaťminútových krokoch. Dole sa zároveň objavia dve karty: Nowcast zrážok a Búrky v okolí. Ak sa zrážky neočakávajú, nič sa nemení.</p>
+  <p><b>Zdroj nowcastu.</b> Tlačidlá Radar a Open-Meteo v karte Nowcast zrážok určujú, ako sa nowcast počíta. Radar používa snímky a nowcast radaru LibreWXR; aplikácia prečíta farbu radaru na tvojej lokalite a prepočíta ju na približnú intenzitu dažďa, čo je odhad, nie meranie. Open-Meteo používa 15-minútovú predpoveď modelu, ktorá udáva modelované množstvá. Ak vybraný zdroj nie je dostupný, použije sa druhý a karta to uvedie.</p>
+  <p><b>Intenzita.</b> Stĺpce sú zafarbené podľa intenzity dažďa: veľmi slabé od 0,1 mm/h, slabé od 0,5 mm/h, mierne od 2,5 mm/h a silné od 7,6 mm/h. Ide o orientačné pásma aplikácie.</p>
+  <p><b>Búrky v okolí.</b> Karta uvádza najbližšiu zistenú búrkovú bunku (vzdialenosť a smer) a ak je známy jej pohyb, odhadne, kedy by mohla byť nad tebou. Malý radar ukazuje v strede tvoju lokalitu, hore písmeno severu (S) a bunky v dosahu uvedenom v rohu (25, 50 alebo 100 km). Prerušovaný kruh vyznačuje polovicu dosahu a drobný prerušovaný kruh 8 km okolo teba. Farby buniek zodpovedajú odrazivosti radaru (dBZ), blesky za posledných 30 minút sú žlté a pohyblivý bod ukazuje, kam smeruje hlavná bunka. Čím rýchlejšie sa búrka pohybuje, tým rýchlejšia je animácia. Bez údajov o pohybe sa animácia nezobrazí.</p>
+  <p>Búrkové bunky, časy príchodu aj nowcast sú odhady. Nenahrádzajú oficiálne výstrahy.</p>
+
+  <h3>Farby vetra (Beaufortova stupnica)</h3>
+  <p>Rýchlosť vetra a nárazy v súhrne predpovede a v prehľade sa farbia podľa Beaufortovej stupnice (0 – 12) a prehľad uvádza aj názov sily aktuálneho vetra, napríklad „Čerstvý vietor“. Hodnoty v mph, m/s alebo uzloch sa na výber farby prepočítajú na km/h. Prehľad popisuje aj oblačnosť slovne (od „Jasno“ po „Zamračené“). Úplná tabuľka je súčasťou pomocníka k farbám v súhrne predpovede.</p>
+
   <h3>Nastavenia</h3>
   <p>Otvor zbaliteľnú sekciu <code>Nastavenia</code>. Možnosti sú zoskupené do Údajov, Panelov a Grafov. Obnovenie a prepínač jazyka sú v záhlaví.</p>
   <table>
@@ -1591,14 +1635,22 @@ help_html: `
 <section>
   <!-- PERUN MAP HELP 5.1 SK -->
 <h2>Meteorologické mapy</h2>
-<p>Mapový panel ponúka dva samostatné zdroje: WeatherAPI.com a Vaisala Xweather. Zmena mapového zdroja nemení model predpovede používaný v grafoch.</p>
+<p>Mapový panel ponúka tri samostatné zdroje: LibreWXR, WeatherAPI.com a Vaisala Xweather. Zmena mapového zdroja nemení model predpovede používaný v grafoch.</p>
 
 <h3>Výber zdroja a vrstvy</h3>
-<p>Zapni mapový panel v Nastaveniach a rozbaľ ho. Prepínačom zdroja vyber WeatherAPI.com alebo Xweather. Pri nových nastaveniach je predvolený WeatherAPI.com; už uložený výber zdroja zostáva zachovaný.</p>
+<p>Zapni mapový panel v Nastaveniach a rozbaľ ho. Prepínačom zdroja vyber LibreWXR, WeatherAPI.com alebo Xweather. Pri nových nastaveniach je predvolený LibreWXR; už uložený výber zdroja zostáva zachovaný.</p>
 <p>Pri WeatherAPI.com vyber meteorologickú vrstvu príslušným prepínačom. Legendy týchto vrstiev sú zatiaľ skryté: ich farby nevyhodnocuj podľa stupníc predpovedných grafov ani podľa iného poskytovateľa máp.</p>
 
 <h3>Animácia a pohyb po mape</h3>
 <p>Tlačidlom prehrávania spustíš alebo zastavíš animáciu a časovým posuvníkom vyberieš jednotlivý snímok. Čas vybraného snímku čítaj pri posuvníku. Mapu posúvaš potiahnutím a mierku meníš ovládaním priblíženia. Časová os mapy je oddelená od časovej osi predpovedných grafov.</p>
+
+<h3>LibreWXR (predvolený zdroj)</h3>
+<p>LibreWXR je bezplatná služba meteorologického radaru. Perun Weather používa jej verejnú inštanciu (api.librewxr.net), ktorá nevyžaduje API kľúč a je poskytovaná na férové použitie. Vrstvy sa kreslia ako prekrytie nad podkladovou mapou OpenStreetMap.</p>
+<p><b>Vrstvy.</b> Radar zobrazuje až 12 minulých snímok po 10 minútach a nowcast do 60 minút dopredu. Satelit zobrazuje hodinové snímky NOAA GMGSI až 12 hodín späť a nemá snímky do budúcnosti. Vrstvu vyberieš v ovládaní vpravo hore na mape, kde môžeš nastaviť aj krytie vrstvy.</p>
+<p><b>Prekrytia.</b> Rovnaké ovládanie zapína blesky, šípky pohybu zrážok a búrkové bunky (len radar) a výstrahy. Výstrahy na mape sú orientačné a nie sú oficiálnymi výstrahami.</p>
+<p><b>Prehrávanie.</b> Posuvník a tlačidlo prehrávania fungujú ako pri ostatných zdrojoch. Snímky za „Teraz“ sú nowcast odhadnutý z pohybu radarových ech.</p>
+<p><b>Legenda.</b> Legenda vpravo dole ukazuje odrazivosť radaru v dBZ vo farebnej schéme Rainbow @ Selex SI. Ide o odrazivosť, nie o úhrn v milimetroch. Satelitná vrstva nemá číselnú stupnicu.</p>
+<p><b>Atribúcia.</b> „Weather data via LibreWXR (librewxr.net)“ je v zápätí aplikácie aj na mape. Platia atribúcie podkladových poskytovateľov dát; pozri podmienky používania LibreWXR.</p>
 
 <h3>Nastavenie Xweather</h3>
 <div class="steps">
@@ -1611,6 +1663,11 @@ help_html: `
 
 <h3>Dostupnosť a obmedzenia</h3>
 <p>Mapové snímky vyžadujú internetové pripojenie. Chýbajúce dlaždice alebo snímky neznamenajú, že sa nevyskytujú zrážky. Skontroluj vybraný zdroj, vrstvu, zobrazený čas a prípadné chybové hlásenie. Mapy dopĺňajú predpoveď a oficiálne výstrahy; nenahrádzajú ich.</p>
+
+<h3>Obmedzenia LibreWXR</h3>
+<p>Radar zobrazuje zrážky, ktoré zachytáva radarová sieť. Chýbajúce echo nezaručuje, že nepadajú zrážky, a chýbajúce snímky neznamenajú suché počasie.</p>
+<p>Nowcast extrapoluje pohyb existujúcich ech. Jeho presnosť s časom klesá a nepredpovedá vznik nových buniek.</p>
+<p>Intenzity dažďa odvodené z odrazivosti radaru sú hrubé odhady. Verejná inštancia je poskytovaná na férové použitie a môže byť dočasne nedostupná. Mapy a predpovede nenahrádzajú oficiálne výstrahy.</p>
 
 <h2>Ako čo urobiť</h2>
 
@@ -1823,6 +1880,16 @@ help_html: `
   <h2>História zmien</h2>
 
   <div class="changelog-entry">
+<div class="ver">5.2.0 · 2026-10-24 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
+<ul>
+<li>LibreWXR ako zdroj meteorologických máp: radar s nowcastom do 60 minút, satelit, blesky, šípky pohybu zrážok, búrkové bunky a výstrahy, s legendou; je predvoleným zdrojom pri nových nastaveniach a uložený výber zostáva zachovaný.</li>
+<li>Nowcast zrážok (radar LibreWXR alebo 15-minútový model Open-Meteo) v prehľade: upravená karta Zrážky, karta Nowcast a karta Búrky v okolí s mini radarom, bleskami a animovaným pohybom búrky, zobrazené len keď sa očakávajú zrážky.</li>
+<li>Farby a názvy podľa Beaufortovej stupnice pre vietor a nárazy a slovný popis oblačnosti.</li>
+<li>Atribúcia LibreWXR v zápätí, licenciách a dvojjazyčnom pomocníkovi; história v aplikácii zobrazuje 5.2.0 a 5.1.0 mimo sekcie starších verzií.</li>
+</ul>
+</div>
+
+  <div class="changelog-entry">
 <div class="ver">5.1.0 · 2026-10-19 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
 <ul>
 <li>Meteorologické mapy s výberom vrstiev WeatherAPI.com a alternatívnym radarovým zdrojom Xweather.</li>
@@ -1833,6 +1900,8 @@ help_html: `
 </ul>
 </div>
 
+  <details class="changelogOlder">
+    <summary>Staršie verzie</summary>
 <div class="changelog-entry">
     <div class="ver">5.0.0 · 2026-10-18 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span></div>
     <ul>
@@ -1844,8 +1913,6 @@ help_html: `
       <li>Smer vetra sa píše „zo SZ“ alebo „z JV“ (angl. „from NW“); desatinné čísla majú bodku a stupne bez medzery</li>
     </ul>
   </div>
-  <details class="changelogOlder">
-    <summary>Staršie verzie</summary>
 
 <div class="changelog-entry">
     <div class="ver">4.6.0 · 2026-10-15 <span class="tag added">Pridané</span><span class="tag changed">Zmenené</span><span class="tag fixed">Opravené</span></div>
@@ -1997,6 +2064,7 @@ help_html: `
     <div class="card"><h3 style="margin-top:0">Dáta: MeteoAlarm</h3><p style="margin:0">Oficiálne výstrahy pre Európu od národných meteo služieb. <a href="https://feeds.meteoalarm.org" target="_blank">feeds.meteoalarm.org</a>.</p></div>
     <div class="card"><h3 style="margin-top:0">Dáta: FOSS Public Alert Server</h3><p style="margin:0">Oficiálne CAP výstrahy zbierané od úradov z celého sveta, projekt KDE a tímu FOSS Warn. <a href="https://alerts.kde.org" target="_blank">alerts.kde.org</a>.</p></div>
 
+<div class="card"><h3 style="margin-top:0">Mapy: LibreWXR</h3><p style="margin:0">Meteorologické mapové vrstvy (radar, nowcast, satelit, blesky, búrkové bunky a výstrahy) pri zvolení tohto zdroja poskytuje <a href="https://librewxr.net/" target="_blank" rel="noopener">LibreWXR</a>. Weather data via LibreWXR (librewxr.net). Platia atribúcie podkladových poskytovateľov dát; pozri <a href="https://librewxr.net/terms.html" target="_blank" rel="noopener">podmienky LibreWXR</a>. Ide o samostatný zdroj, odlišný od predpovedí Open-Meteo zobrazovaných v grafoch.</p></div>
 <div class="card"><h3 style="margin-top:0">Mapy: WeatherAPI.com</h3><p style="margin:0">Meteorologické mapové vrstvy pri zvolení tohto zdroja poskytuje <a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a>. Ide o samostatný zdroj, odlišný od predpovedí Open-Meteo zobrazovaných v grafoch. Platia podmienky poskytovateľa.</p></div>
 <div class="card"><h3 style="margin-top:0">Mapy: Vaisala Xweather</h3><p style="margin:0"><a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>. Pri zvolení Xweather poskytuje radarové snímky. Prístup vyžaduje vlastné Client ID a Client Secret a podlieha limitom predplatného a podmienkam poskytovateľa.</p></div>
 <div class="card"><h3 style="margin-top:0">Dáta: OpenStreetMap</h3><p style="margin:0">Názvy miest pri vyhľadávaní podľa súradníc poskytuje <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">prispievatelia OpenStreetMap</a> (ODbL).</p></div>
