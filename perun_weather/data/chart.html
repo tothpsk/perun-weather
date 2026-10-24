@@ -565,6 +565,11 @@ footer a:hover{text-decoration:underline}
 .pw-nc-storm .pw-st-text{min-width:0;flex:1}
 .pw-nc-storm .pw-st-text .pw5-text{white-space:normal;line-height:1.25}
 .pw-st-svg{flex:0 0 auto;width:104px;height:104px}
+/* PERUN NOWCAST V3 */
+.pw-nc-storm .pw-st-body{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;text-align:left}
+.pw-nc-storm .pw-st-svg{align-self:center;width:min(100%,168px);height:auto;flex:0 0 auto}
+.pw-nc-storm .pw-st-text{flex:0 0 auto}
+@media (prefers-reduced-motion:reduce){.pw-st-anim{display:none}}
 </style>
 </head>
 <body>
@@ -7073,7 +7078,7 @@ if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(pwBftFit.r);pwBftF
           if(eta===null&&d<8)eta=t;
         }
       }
-      out.push({dist:k.dist,bearing:(Math.atan2(k.dx,k.dy)*180/Math.PI+360)%360,dbz:Number(pr.max_dbz),speed:sp,heading:hd,eta:eta,minDist:minDist});
+      out.push({dist:k.dist,bearing:(Math.atan2(k.dx,k.dy)*180/Math.PI+360)%360,dbz:Number(pr.max_dbz),speed:(pr.motion_speed_kmh==null?NaN:sp),heading:(pr.motion_heading_deg==null?NaN:hd),eta:eta,minDist:minDist});
     });
     out.sort((a,b)=>(a.eta===null?1e6:a.eta)-(b.eta===null?1e6:b.eta)||a.dist-b.dist);
     return out;
@@ -7169,13 +7174,13 @@ if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(pwBftFit.r);pwBftF
         let ex=dx0+main.speed*0.5*Math.sin(main.heading*Math.PI/180),ey=dy0+main.speed*0.5*Math.cos(main.heading*Math.PI/180);
         const len=Math.hypot(ex,ey);
         if(len>range*1.02){ex*=range*1.02/len;ey*=range*1.02/len}
-        const p1=xy(ex,ey),ang=Math.atan2(p1[1]-p0[1],p1[0]-p0[0]),h=9;
-        if(Math.hypot(p1[0]-p0[0],p1[1]-p0[1])>8){
-          const bx=p1[0]-h*0.7*Math.cos(ang),by=p1[1]-h*0.7*Math.sin(ang);
-          s+='<line x1="'+p0[0].toFixed(1)+'" y1="'+p0[1].toFixed(1)+'" x2="'+bx.toFixed(1)+'" y2="'+by.toFixed(1)+'" stroke="#141821" stroke-width="5.5" stroke-linecap="round"/>';
-          s+='<line x1="'+p0[0].toFixed(1)+'" y1="'+p0[1].toFixed(1)+'" x2="'+bx.toFixed(1)+'" y2="'+by.toFixed(1)+'" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>';
-          const a1=[p1[0]-h*Math.cos(ang-0.5),p1[1]-h*Math.sin(ang-0.5)],a2=[p1[0]-h*Math.cos(ang+0.5),p1[1]-h*Math.sin(ang+0.5)];
-          s+='<polygon points="'+p1[0].toFixed(1)+','+p1[1].toFixed(1)+' '+a1[0].toFixed(1)+','+a1[1].toFixed(1)+' '+a2[0].toFixed(1)+','+a2[1].toFixed(1)+'" fill="#ffffff" stroke="#141821" stroke-width="1.2" stroke-linejoin="round"/>';
+        const p1=xy(ex,ey);
+        if(Math.hypot(p1[0]-p0[0],p1[1]-p0[1])>6){
+          const dur=Math.max(1.2,Math.min(8,120/main.speed)).toFixed(2),col=cellColor(main.dbz);
+          s+='<line x1="'+p0[0].toFixed(1)+'" y1="'+p0[1].toFixed(1)+'" x2="'+p1[0].toFixed(1)+'" y2="'+p1[1].toFixed(1)+'" stroke="#e8eaf0" stroke-opacity=".35" stroke-dasharray="2 3"/>';
+          s+='<circle class="pw-st-anim" r="3.6" fill="'+col+'" stroke="#fff" stroke-width=".9" opacity="0">'
+            +'<animateMotion dur="'+dur+'s" repeatCount="indefinite" calcMode="linear" path="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' L'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'"/>'
+            +'<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.75;1" dur="'+dur+'s" repeatCount="indefinite"/></circle>';
         }
       }
       s+='<circle cx="'+p0[0].toFixed(1)+'" cy="'+p0[1].toFixed(1)+'" r="5" fill="'+cellColor(main.dbz)+'" stroke="#fff" stroke-width="1.2"/>';
@@ -7204,9 +7209,9 @@ if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(pwBftFit.r);pwBftF
     }
     if(light>0)color='#ff7043';
     return '<div class="pw5-label"><span class="pw3-dot" style="background:'+color+'"></span>'+E(T('Búrky v okolí','Storms nearby'))+'</div>'
-      +'<div class="pw5-body pw-st-body"><div class="pw-st-text"><div class="pw5-value" style="'+(cells&&cells.length?'':'color:#bbc4d2')+'">'+E(big)+'</div>'
+      +'<div class="pw5-body pw-st-body">'+svg+'<div class="pw-st-text"><div class="pw5-value" style="'+(cells&&cells.length?'':'color:#bbc4d2')+'">'+E(big)+'</div>'
       +(line?'<div class="pw5-text">'+E(line)+'</div>':'')
-      +'<div class="pw5-text" style="margin-top:6px">'+E(T('Blesky (30 min, 25 km): ','Lightning (30 min, 25 km): '))+'<b>'+(light==null?'—':light)+'</b></div></div>'+svg+'</div>';
+      +'<div class="pw5-text" style="margin-top:6px">'+E(T('Blesky (30 min, 25 km): ','Lightning (30 min, 25 km): '))+'<b>'+(light==null?'—':light)+'</b></div></div></div>';
   }
   function upsert(parent,id,cls,html){
     let el=document.getElementById(id);
