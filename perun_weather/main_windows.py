@@ -335,7 +335,7 @@ class App(QObject):
                     self.settings.marine_enabled = value == "true"
                     refresh_needed = True
                 elif key == "radar_provider":
-                    self.settings.radar_provider = "weatherapi" if value == "weatherapi" else "xweather"
+                    self.settings.radar_provider = value if value in ("weatherapi", "xweather", "librewxr") else "xweather"
                 elif key == "radar_weatherapi_layer":
                     self.settings.radar_weatherapi_layer = value if value in ("precip", "tmp2m", "pressure", "wind") else "precip"
                 elif key == "radar_enabled":

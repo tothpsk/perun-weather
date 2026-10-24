@@ -62,7 +62,7 @@ class Settings:
     radar_enabled: bool = False
     radar_client_id: str = ""
     radar_client_secret: str = ""
-    radar_provider: str = "weatherapi"
+    radar_provider: str = "librewxr"
     radar_weatherapi_layer: str = "precip"
 
 def load() -> Settings:
