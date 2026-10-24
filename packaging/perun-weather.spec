@@ -1,5 +1,5 @@
 Name:           perun-weather
-Version:        5.1.0
+Version:        5.2.0
 Release:        1%{?dist}
 Summary:        Weather, made visible - interactive charts powered by Open-Meteo
 
@@ -60,6 +60,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/io.github.tothpsk.Per
 %{_datadir}/icons/hicolor/symbolic/apps/io.github.tothpsk.PerunWeather-symbolic.svg
 
 %changelog
+* Sat Oct 24 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 5.2.0-1
+- Add LibreWXR as a map source (radar, nowcast, satellite and overlays) and make it the default
+- Add Beaufort scale colours and names for wind and gusts
+- Add precipitation nowcast and storms-nearby cards to the overview
+- Update bilingual help, footer credits, README and release notes
 * Mon Oct 19 2026 Peter Tóth <tothpsk@users.noreply.github.com> - 5.1.0-1
 - Add WeatherAPI map layers and an alternative Xweather radar source
 - Add map animation and frame selection controls
