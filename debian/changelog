@@ -1,3 +1,13 @@
+perun-weather (5.2.0-1) unstable; urgency=medium
+
+  * New upstream release 5.2.0.
+  * Add LibreWXR map source with radar, nowcast, satellite and overlays.
+  * Default new settings to LibreWXR while preserving saved selections.
+  * Add Beaufort wind colours and the precipitation nowcast and storm cards.
+  * Update bilingual help, footer credits, README and release notes.
+
+ -- Peter Tóth <tothpsk@users.noreply.github.com>  Sat, 24 Oct 2026 16:00:00 +0200
+
 perun-weather (5.1.0-1) unstable; urgency=medium
 
   * New upstream release 5.1.0.

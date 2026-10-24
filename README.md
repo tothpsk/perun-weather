@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">Perun Weather</h1>
-<p align="center">Version 5.1.0</p>
+<p align="center">Version 5.2.0</p>
 <p align="center"><em>Weather, made visible.</em></p>
 
 Perun Weather is a desktop weather application built around interactive charts.
@@ -41,8 +41,13 @@ develop over time, so you can read the data yourself and judge what it means.
 - Automatic refresh with a last-updated indicator
 - Collapsible settings for model, units, air quality scale, panels and chart options
 - Slovak and English interface
-- Weather maps with WeatherAPI.com layer selection and an alternative
-  Xweather radar source, animation and frame selection. Map sources are separate from the Open-Meteo forecast model used in the charts.
+- Precipitation nowcast for the next hour (LibreWXR radar or the Open-Meteo
+  15-minute model) and a storms-nearby card, shown in the overview only when
+  precipitation is expected
+- Beaufort scale colours and names for wind and gusts
+- Weather maps with LibreWXR (the default: radar with a 60-minute nowcast,
+  satellite, lightning, storm cells and alerts), WeatherAPI.com layer selection
+  and an alternative Xweather radar source, animation and frame selection. Map sources are separate from the Open-Meteo forecast model used in the charts.
 Missing tiles or frames do not mean that there is no precipitation.
 - Built-in Slovak and English help, including map setup and limitations
 
@@ -51,8 +56,8 @@ Maps supplement forecasts and official warnings; they do not replace them.
 
 ## Release notes
 
-Version 5.1.0 · 2026-10-19:
-[Release notes](docs/release-notes-5.1.0.md)
+Version 5.2.0 · 2026-10-24:
+[Release notes](docs/release-notes-5.2.0.md)
 
 ## Screenshots
 
@@ -140,7 +145,7 @@ Download the latest `.rpm` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo dnf install ./perun-weather-5.1.0-1.fc44.noarch.rpm
+sudo dnf install ./perun-weather-5.2.0-1.fc44.noarch.rpm
 ```
 
 `dnf` installs the required dependencies automatically.
@@ -151,7 +156,7 @@ Download the latest `.deb` from the [Releases](https://github.com/tothpsk/perun-
 page and install it:
 
 ```bash
-sudo apt install ./perun-weather_5.1.0-1_all.deb
+sudo apt install ./perun-weather_5.2.0-1_all.deb
 ```
 
 Use `apt install` with the `./` prefix rather than `dpkg -i`, so that `apt`
@@ -212,7 +217,7 @@ data from the following services:
 - **Weather data by [Open-Meteo.com](https://open-meteo.com/)**, licensed under
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
   ([licence details](https://open-meteo.com/en/licence)).
-  This covers forecasts, air quality and marine data. The application converts
+  This covers forecasts, air quality, marine data and the optional 15-minute precipitation nowcast. The application converts
   units and visualises the data. Underlying model data come from national
   weather services and agencies such as DWD, ECMWF, NOAA and DMI; air quality
   data come from the Copernicus Atmosphere Monitoring Service (CAMS). Please see
@@ -230,6 +235,9 @@ data from the following services:
 - **Charts:** [Plotly.js](https://plotly.com/javascript/) (MIT License), bundled
   locally with the application.
 - **Weather map layers:**
+  - [LibreWXR](https://librewxr.net/), the default source: radar, nowcast, satellite, lightning,
+  storm cells and alerts from the public instance api.librewxr.net. Weather data via LibreWXR (librewxr.net);
+  the attributions of its underlying data providers apply, see the [LibreWXR terms](https://librewxr.net/terms.html).
   - [WeatherAPI.com](https://www.weatherapi.com/), when selected. Provider terms apply.
   - [Powered by Vaisala Xweather](https://www.xweather.com/). Requires user-supplied credentials and an appropriate service plan.
   - Interactive map rendering: **[Leaflet 1.9.4](https://leafletjs.com/)**,
