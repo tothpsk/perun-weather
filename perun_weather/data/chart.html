@@ -541,6 +541,35 @@ footer a:hover{text-decoration:underline}
 /* PERUN BEAUFORT V2 END */
 /* PERUN BEAUFORT V1 FIT */
 #pwOverview.pw5 .pw5-windtext .pw-bft-name.pw-bft-small{font-size:var(--pw5-text);line-height:1.2}
+/* PERUN NOWCAST V1 */
+#pwOverview.pw5 .pw5-tiles>.pw5-tile.pw-nc-on:nth-child(1) .pw5-body{grid-template-rows:minmax(0,1fr) auto auto auto minmax(0,1fr) auto;row-gap:0}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile.pw-nc-on:nth-child(1) .pw5-body>svg{width:min(100%,var(--pw-nc-cloud,88px));justify-self:end}
+#pwOverview.pw5 .pw5-tiles>.pw5-tile.pw-nc-on:nth-child(1) .pw5-body>.pw-nc-bottom{grid-column:1/-1;grid-row:6;align-self:end;width:100%;min-width:0;text-align:left;margin-top:6px}
+.pw-nc-h{font-size:var(--pw5-text);font-weight:650;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pw-nc-s{font-size:13px;color:#bbc4d2;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pw-nc-scale{display:flex;gap:3px;margin-top:5px}
+.pw-nc-scale i{flex:1;height:8px;border-radius:2px;background:#2a3446}
+.pw-nc-card .pw-nc-big{margin-top:6px;white-space:normal}
+.pw-nc-sw{margin-left:auto;display:inline-flex;border:1px solid #4b586c;border-radius:8px;overflow:hidden;font-weight:400}
+.pw-nc-sw button{background:transparent;color:#bbc4d2;border:0;padding:2px 9px;font:inherit;font-size:12px;cursor:pointer}
+.pw-nc-sw button.active{background:#2a3446;color:#e8eaf0}
+.pw-nc-bars{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end;height:64px;margin-top:10px}
+.pw-nc-bar{border-radius:5px 5px 2px 2px;min-height:5px}
+.pw-nc-axis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;font-size:11px;color:#bbc4d2;text-align:center;margin-top:3px}
+.pw-nc-peak{margin-top:8px;font-size:14px}
+.pw-nc-legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:12px;color:#bbc4d2}
+.pw-nc-legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.pw-nc-note{margin-top:6px;font-size:11px;color:#9aa6b8}
+/* PERUN NOWCAST V2 */
+.pw-nc-storm .pw-st-body{flex-direction:row;align-items:center;justify-content:space-between;gap:10px;text-align:left}
+.pw-nc-storm .pw-st-text{min-width:0;flex:1}
+.pw-nc-storm .pw-st-text .pw5-text{white-space:normal;line-height:1.25}
+.pw-st-svg{flex:0 0 auto;width:104px;height:104px}
+/* PERUN NOWCAST V3 */
+.pw-nc-storm .pw-st-body{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;text-align:left}
+.pw-nc-storm .pw-st-svg{align-self:center;width:min(100%,168px);height:auto;flex:0 0 auto}
+.pw-nc-storm .pw-st-text{flex:0 0 auto}
+@media (prefers-reduced-motion:reduce){.pw-st-anim{display:none}}
 </style>
 </head>
 <body>
@@ -3075,7 +3104,8 @@ function updateFooter(){
     ' &nbsp;·&nbsp; ' + LIC + ' · ' + OML +
     ' &nbsp;·&nbsp; <b>' + (currentLang === 'sk' ? 'Mapy:' : 'Maps:') + '</b> ' +
     '<a href="https://www.weatherapi.com/" target="_blank" rel="noopener">WeatherAPI.com</a>' +
-    ' · <a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>';
+    ' · <a href="https://www.xweather.com/" target="_blank" rel="noopener">Powered by Vaisala Xweather</a>' +
+    ' · Weather data via <a href="https://librewxr.net/" target="_blank" rel="noopener">LibreWXR</a> (librewxr.net)';
 }
 function updateStatusForAutoToggle(){const el=document.getElementById('status');const current=el.textContent||'';const m=current.match(/(\d{2}:\d{2}|--:--)/);const lastUpdated=m?m[1]:'--:--';if(state.auto){el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_next_refresh')+' <b>--:--</b> ('+t('status_pending')+')';}else{el.innerHTML=t('status_last_updated')+' <b>'+lastUpdated+'</b> · '+t('status_auto_disabled');}}
 function renderSites(){const h=document.getElementById('locations');h.innerHTML='';(state.locations||[]).forEach((s,i)=>{const r=document.createElement('div');r.className='loc'+(i===state.selected?' active':'');r.draggable=true;r.innerHTML='<span class="handle">⠿</span><div class="locText"><b>'+escapeHtml(s.name)+'</b><small>'+escapeHtml(s.country||'')+' · '+Number(s.latitude).toFixed(2)+'°N, '+Number(s.longitude).toFixed(2)+'°E</small></div>'+((state.locations.length>1)?'<button class="delete">✕</button>':'');r.onclick=e=>{if(e.target.classList.contains('delete'))native('delete',{index:i});else if(i!==state.selected)native('select',{index:i})};r.ondragstart=e=>{dragIndex=i;r.classList.add('drag');e.dataTransfer.setData('text/plain',String(i))};r.ondragend=()=>{r.classList.remove('drag');document.querySelectorAll('.dragover').forEach(x=>x.classList.remove('dragover'))};r.ondragover=e=>{e.preventDefault();r.classList.add('dragover')};r.ondragleave=()=>r.classList.remove('dragover');r.ondrop=e=>{e.preventDefault();const from=dragIndex,to=i;dragIndex=null;r.classList.remove('dragover');if(from===null||from===to)return;const order=Array.from({length:state.locations.length},(_,k)=>k);order.splice(from,1);order.splice(to,0,from);native('reorder',{order:JSON.stringify(order)})};h.appendChild(r)})}
@@ -5934,10 +5964,11 @@ pw11Compass=function(wd,label){
   const R={lib:null,loading:null,map:null,layer:null,marker:null,sig:'',errors:0,loc:''};
   const st=()=>{try{return typeof state!=='undefined'&&state?state:null}catch(e){return null}};
   const enabled=()=>{const s=st();return !!(s&&s.radar_enabled)};
-  const provider=()=>st()&&st().radar_provider==='xweather'?'xweather':'weatherapi';
+  const provider=()=>{const v=st()&&st().radar_provider;return v==='xweather'?'xweather':v==='weatherapi'?'weatherapi':'librewxr'};
   const isWeatherApi=()=>provider()==='weatherapi';
   const weatherLayer=()=>{const v=st()&&st().radar_weatherapi_layer;return ['precip','tmp2m','pressure','wind'].includes(v)?v:'precip'};
-  const initialIndex=()=>isWeatherApi()?0:NOW_INDEX;
+  const isLibre=()=>provider()==='librewxr';
+  const initialIndex=()=>isWeatherApi()?0:isLibre()?(R.libreNow||0):NOW_INDEX;
   const hasKey=()=>{const s=st();return !!(s&&s.radar_client_id&&s.radar_client_secret)};
   const isOpen=()=>{const b=el('radarBody');return !!(b&&b.classList.contains('open'))};
   if(!el('pwRadarStyle')){const s=document.createElement('style');s.id='pwRadarStyle';
@@ -5949,7 +5980,7 @@ pw11Compass=function(wd,label){
     const anchor=el('marineSection');if(!anchor)return;
     const sec=document.createElement('section');sec.className='section';sec.id='radarSection';sec.hidden=true;
     sec.innerHTML='<div class="sectionHead" onclick="toggleSection(\'radar\')"><h3><span id="radarChevron" class="chev">▶</span><span id="radarDot" class="dot neutral"></span> <span id="lblSectionRadar"></span></h3><div id="radarSummary" class="summary"></div></div>'
-      +'<div id="radarBody" class="body"><div class="inner"><div id="radarSources" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px"><div class="field"><label id="radarSourceLabel" for="radarSource"></label><select id="radarSource"><option value="xweather">Xweather</option><option value="weatherapi">WeatherAPI.com</option></select></div><div class="field" id="radarWeatherLayerField" hidden><label id="radarWeatherLayerLabel" for="radarWeatherLayer"></label><select id="radarWeatherLayer"></select></div></div><div id="radarMessage" class="meta"></div><div id="radarWrap" hidden><div id="radarMap" style="height:480px;border-radius:8px;overflow:hidden"></div><div id="radarCtl" style="display:flex;align-items:center;gap:10px;margin-top:8px"><button type="button" id="radarPlay" class="btn alt" style="height:34px;min-width:44px;padding:0 12px">▶</button><input id="radarSlider" type="range" min="0" max="14" step="1" value="12" style="flex:1;accent-color:var(--accent)"><span id="radarFrameLabel" class="meta" style="min-width:230px;text-align:right"></span></div><div id="radarNote" class="meta" style="margin-top:6px"></div></div></div></div>';
+      +'<div id="radarBody" class="body"><div class="inner"><div id="radarSources" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px"><div class="field"><label id="radarSourceLabel" for="radarSource"></label><select id="radarSource"><option value="xweather">Xweather</option><option value="weatherapi">WeatherAPI.com</option><option value="librewxr">LibreWXR</option></select></div><div class="field" id="radarWeatherLayerField" hidden><label id="radarWeatherLayerLabel" for="radarWeatherLayer"></label><select id="radarWeatherLayer"></select></div></div><div id="radarMessage" class="meta"></div><div id="radarWrap" hidden><div id="radarMap" style="height:480px;border-radius:8px;overflow:hidden"></div><div id="radarCtl" style="display:flex;align-items:center;gap:10px;margin-top:8px"><button type="button" id="radarPlay" class="btn alt" style="height:34px;min-width:44px;padding:0 12px">▶</button><input id="radarSlider" type="range" min="0" max="14" step="1" value="12" style="flex:1;accent-color:var(--accent)"><span id="radarFrameLabel" class="meta" style="min-width:230px;text-align:right"></span></div><div id="radarNote" class="meta" style="margin-top:6px"></div></div></div></div>';
     anchor.insertAdjacentElement('afterend',sec);wireControls();
   }
   function settingsUi(){
@@ -5994,6 +6025,7 @@ pw11Compass=function(wd,label){
       group.addEventListener('keydown',event=>event.stopPropagation());
 
       [
+        ['librewxr','LibreWXR'],
         ['weatherapi','WeatherAPI'],
         ['xweather','Xweather']
       ].forEach(([value,title])=>{
@@ -6042,12 +6074,14 @@ pw11Compass=function(wd,label){
     const on=document.querySelector('[data-pw-radar="on"]'),off=document.querySelector('[data-pw-radar="off"]');
     if(on)on.textContent=T('Zapnuté','On');if(off)off.textContent=T('Vypnuté','Off');
     const help=el('pwRadarHelp');
-    if(help&&isWeatherApi()){help.textContent=T('WeatherAPI.com: predpovedné mapy bez API kľúča. Zdroj a vrstvu vyberieš priamo v paneli mapy.','WeatherAPI.com: forecast maps without an API key. Select the source and layer in the map panel.')}
+    if(help&&isLibre()){help.textContent=T('LibreWXR: radar, nowcast do +60 min a satelit bez API kľúča. Vrstvu a prekrytia vyberieš priamo v paneli mapy.','LibreWXR: radar, nowcast up to +60 min and satellite, no API key. Select the layer and overlays in the map panel.')}
+    else if(help&&isWeatherApi()){help.textContent=T('WeatherAPI.com: predpovedné mapy bez API kľúča. Zdroj a vrstvu vyberieš priamo v paneli mapy.','WeatherAPI.com: forecast maps without an API key. Select the source and layer in the map panel.')}
     else if(help){const h=sk()
       ?'Radar poskytuje <a href="https://www.xweather.com/" target="_blank">Xweather</a>. Vytvor si bezplatný účet, v portáli otvor <a href="https://data.portal.xweather.com/account/keys" target="_blank">Account → Keys</a>, vytvor aplikáciu a skopíruj Client ID a Client Secret (stačí vložiť celý reťazec ID_SECRET do prvého poľa). Jedna dlaždica 256×256 spotrebuje jednu mapovú jednotku; dlaždice sa sťahujú len keď je panel zapnutý a otvorený. Kľúč sa ukladá v nastaveniach na tomto počítači.'
       :'The radar is provided by <a href="https://www.xweather.com/" target="_blank">Xweather</a>. Create a free account, open <a href="https://data.portal.xweather.com/account/keys" target="_blank">Account → Keys</a> in the portal, create an application and copy the Client ID and Client Secret (you can paste the whole ID_SECRET string into the first field). One 256×256 tile uses one map unit; tiles are downloaded only while the panel is enabled and open. The key is stored in the settings on this computer.';
       if(help.innerHTML!==h)help.innerHTML=h}
-    if(isWeatherApi())set('radarNote',T('Predpoveď © WeatherAPI.com · podklad © OpenStreetMap. Hodinové snímky, časy zobrazené podľa časového pásma počítača. Bez API kľúča.','Forecast © WeatherAPI.com · base map © OpenStreetMap. Hourly frames; times use the computer’s time zone. No API key required.'));
+    if(isLibre())set('radarNote',T('Weather data via LibreWXR (librewxr.net) · podklad © OpenStreetMap. Radar po 10 min, satelit po hodinách; časy podľa časového pásma počítača. Bez API kľúča.','Weather data via LibreWXR (librewxr.net) · base map © OpenStreetMap. Radar every 10 min, satellite hourly; times use the computer’s time zone. No API key required.'));
+    else if(isWeatherApi())set('radarNote',T('Predpoveď © WeatherAPI.com · podklad © OpenStreetMap. Hodinové snímky, časy zobrazené podľa časového pásma počítača. Bez API kľúča.','Forecast © WeatherAPI.com · base map © OpenStreetMap. Hourly frames; times use the computer’s time zone. No API key required.'));
     else set('radarNote',T('Radar © Xweather · podkladová mapa © OpenStreetMap. Dlaždice sa sťahujú len pri otvorenom paneli.','Radar © Xweather · base map © OpenStreetMap. Tiles are downloaded only while the panel is open.'));
   }
   function loadLib(){
@@ -6064,6 +6098,7 @@ pw11Compass=function(wd,label){
   }
   const RADAR_LAYER='radar-global',FORECAST_LAYER='fradar',STEP_MIN=10,PAST_STEPS=12,FUTURE_MIN=[60,120],NOW_INDEX=PAST_STEPS;
   function buildFrames(){
+    if(isLibre())return libreFrames();
     if(isWeatherApi()){
       const base=Math.floor(Date.now()/3600000)*3600000;
       return Array.from({length:72},(_,i)=>({min:i*60,time:base+i*3600000,forecast:true,weatherapi:true}));
@@ -6079,7 +6114,180 @@ pw11Compass=function(wd,label){
     const stamp=String(d.getUTCFullYear())+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+pad(d.getUTCHours());
     return 'https://weathermaps.weatherapi.com/'+weatherLayer()+'/tiles/'+stamp+'/{z}/{x}/{y}.png';
   }
+  // PERUN LIBREWXR V1
+  const LIBRE_BASE='https://api.librewxr.net',LIBRE_COLOR=7;
+  const libreStore={
+    get(k,d){try{const v=localStorage.getItem('pwLibre.'+k);return v===null?d:v}catch(e){return d}},
+    set(k,v){try{localStorage.setItem('pwLibre.'+k,v)}catch(e){}}
+  };
+  const libreLayer=()=>libreStore.get('layer','radar')==='satellite'?'satellite':'radar';
+  const libreOpt=k=>libreStore.get('opt.'+k,'0')==='1';
+  const libreAttr=fr=>'Weather data via <a href="https://librewxr.net/" target="_blank" rel="noopener">LibreWXR</a> (librewxr.net)'+(fr&&fr.kind==='satellite'?' · NOAA GMGSI':'');
+  function loadLibreMeta(){
+    if(R.libreLoading)return R.libreLoading;
+    if(R.libreFailAt&&Date.now()-R.libreFailAt<30000)return Promise.resolve();
+    R.libreLoading=fetch(LIBRE_BASE+'/public/weather-maps.json',{cache:'no-store'})
+      .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+      .then(d=>{
+        const list=a=>(Array.isArray(a)?a:[]).filter(x=>x&&Number.isFinite(Number(x.time))&&typeof x.path==='string'&&x.path.startsWith('/v2/'));
+        R.libreMeta={past:list(d&&d.radar&&d.radar.past),nowcast:list(d&&d.radar&&d.radar.nowcast),sat:list(d&&d.satellite&&d.satellite.infrared)};
+        R.libreFailAt=0;
+      })
+      .catch(e=>{
+        R.libreMeta=null;R.libreFailAt=Date.now();
+        const m=el('radarMessage');
+        if(m)m.textContent=T('Údaje LibreWXR sa nepodarilo načítať.','LibreWXR data could not be loaded.')+' ('+(e&&e.message?e.message:'error')+')';
+      })
+      .then(()=>{R.libreLoading=null});
+    return R.libreLoading;
+  }
+  function libreFrames(){
+    const m=R.libreMeta;if(!m)return [];
+    const now=Date.now();
+    const mk=(x,kind,forecast)=>({libre:true,kind:kind,time:Number(x.time)*1000,path:x.path,forecast:forecast,min:Math.round((Number(x.time)*1000-now)/60000)});
+    if(libreLayer()==='satellite'){
+      const f=m.sat.map(x=>mk(x,'satellite',false));
+      R.libreNow=Math.max(0,f.length-1);return f;
+    }
+    const f=m.past.map(x=>mk(x,'radar',false)).concat(m.nowcast.map(x=>mk(x,'radar',true)));
+    R.libreNow=Math.max(0,m.past.length-1);return f;
+  }
+  function libreTileUrl(fr){
+    const size=(window.devicePixelRatio||1)>=2?512:256;
+    if(fr.kind==='satellite')return LIBRE_BASE+fr.path+'/'+size+'/{z}/{x}/{y}/0/0_0.png';
+    const q=[];
+    if(libreOpt('arrows'))q.push('arrows=light');
+    if(libreOpt('cells'))q.push('cells=light');
+    if(libreOpt('lightning'))q.push('lightning=dots');
+    return LIBRE_BASE+fr.path+'/'+size+'/{z}/{x}/{y}/'+LIBRE_COLOR+'/1_0.png'+(q.length?'?'+q.join('&'):'');
+  }
+  function rebuildLibreLayers(){
+    if(!R.map)return;
+    stopPlay();
+    Object.values(R.layers||{}).forEach(l=>{try{R.map.removeLayer(l)}catch(e){}});
+    R.layers={};R.layer=null;
+    showFrame(R.index);
+  }
+  function libreSeverityColor(s){
+    return s==='Extreme'?'#ff00ff':s==='Severe'?'#ff0000':s==='Moderate'?'#ff8800':s==='Minor'?'#ffcc00':'#aaaaaa';
+  }
+  function refreshLibreAlerts(){
+    const map=R.map,lib=R.lib;if(!map||!lib)return;
+    if(R.libreAlerts){try{map.removeLayer(R.libreAlerts)}catch(e){}R.libreAlerts=null}
+    if(!libreOpt('alerts'))return;
+    const b=map.getBounds(),bbox=[b.getWest(),b.getSouth(),b.getEast(),b.getNorth()].map(n=>n.toFixed(3)).join(',');
+    const token=(R.libreAlertToken=(R.libreAlertToken||0)+1);
+    fetch(LIBRE_BASE+'/v2/alerts?bbox='+bbox+'&simplify=2000')
+      .then(r=>r.ok?r.json():null)
+      .then(g=>{
+        if(!g||token!==R.libreAlertToken||R.map!==map)return;
+        R.libreAlerts=lib.geoJSON(g,{
+          style:f=>({color:libreSeverityColor((f.properties||{}).severity),weight:2,fillOpacity:.15}),
+          onEachFeature:(f,layer)=>{
+            const p=f.properties||{};
+            let html='<strong>'+escapeHtml(p.title||T('Výstraha','Alert'))+'</strong>';
+            if(Array.isArray(p.regions)&&p.regions.length)html+='<br><em>'+escapeHtml(p.regions.join(', '))+'</em>';
+            if(p.severity)html+='<br>'+T('Závažnosť','Severity')+': '+escapeHtml(p.severity);
+            if(typeof p.uri==='string'&&/^https:\/\//.test(p.uri))html+='<br><a href="'+escapeHtml(p.uri)+'" target="_blank" rel="noopener">'+T('Podrobnosti','Details')+'</a>';
+            layer.bindPopup(html);
+          }
+        }).addTo(map);
+      })
+      .catch(()=>{});
+  }
+  // PERUN LIBREWXR LEGEND V1
+  const LIBRE_DBZ=[[10,'#009f9f'],[15,'#008c4b'],[20,'#00d319'],[25,'#21fd22'],[29,'#92fd1e'],[30,'#fffd1b'],[35,'#ffd400'],[40,'#ffab00'],[45,'#ff6e00'],[50,'#f01002'],[55,'#d00523'],[60,'#e400b1'],[65,'#ff33ff'],[70,'#ff66ff'],[80,'#ffaaff']];
+  const libreOptSig=()=>['lightning','arrows','cells','alerts'].map(k=>libreOpt(k)?1:0).join('');
+  function libreLegend(content,forecast){
+    const sat=libreLayer()==='satellite',parts=[];
+    const note=txt=>'<div style="margin-top:8px;color:#bbc4d2">'+txt+'</div>';
+    if(sat){
+      parts.push('<div>'+T('Satelit NOAA GMGSI','NOAA GMGSI satellite')+'</div>'
+        +note(T('Cez deň viditeľné svetlo odrazené od zeme a mrakov, v noci infračervené žiarenie, ktoré zvýrazní studené vrcholy mrakov. Prechod medzi dňom a nocou je plynulý. Bez číselnej stupnice.',
+                'Visible light reflected from land and clouds by day; at night, infrared that highlights cold cloud tops. The day/night transition is gradual. No numeric scale.')));
+    }else{
+      const grad=LIBRE_DBZ.map(([d,c])=>c+' '+((d-10)/70*100).toFixed(1)+'%').join(',');
+      const ticks=[10,20,30,40,50,60,70,80].map(d=>'<span style="position:absolute;left:'+((d-10)/70*100).toFixed(1)+'%;transform:translateX(-50%)">'+d+'</span>').join('');
+      parts.push('<div>'+T('Radar: odrazivosť (dBZ)','Radar: reflectivity (dBZ)')+'</div>'
+        +'<div style="height:12px;margin-top:4px;border-radius:3px;border:1px solid #596273;background:linear-gradient(90deg,'+grad+')"></div>'
+        +'<div style="position:relative;height:14px;margin:2px 7px 0;font-size:11px;color:#bbc4d2">'+ticks+'</div>'
+        +'<div style="display:flex;justify-content:space-between;color:#bbc4d2"><span>'+T('slabšie','weaker')+'</span><span>'+T('silnejšie','stronger')+'</span></div>'
+        +note(T('Odrazivosť radaru, nie úhrn v mm. Farebná schéma Rainbow @ Selex SI; pod 10 dBZ je vrstva priehľadná.',
+                'Radar reflectivity, not accumulation in mm. Rainbow @ Selex SI colour scheme; the layer is transparent below 10 dBZ.')));
+      if(forecast)parts.push(note(T('Aktuálna snímka je nowcast: odhad pohybu radarových ech, nie pozorovanie.','The current frame is a nowcast: an estimate of radar echo motion, not an observation.')));
+      if(libreOpt('arrows'))parts.push(note(T('Šípky: smer a relatívna rýchlosť pohybu zrážok.','Arrows: direction and relative speed of precipitation motion.')));
+      if(libreOpt('lightning'))parts.push(note(T('Bodky: blesky za posledných 30 minút, väčšia bodka znamená vyššiu energiu výboja.','Dots: lightning in the last 30 minutes; a larger dot means a higher discharge energy.')));
+      if(libreOpt('cells'))parts.push(note(T('Značky: detegované búrkové bunky.','Markers: detected storm cells.')));
+    }
+    if(libreOpt('alerts')){
+      const sev=[['Extreme',T('extrémna','extreme')],['Severe',T('závažná','severe')],['Moderate',T('stredná','moderate')],['Minor',T('mierna','minor')],['Unknown',T('neznáma','unknown')]];
+      parts.push(note(T('Výstrahy (orientačné), závažnosť:','Alerts (indicative), severity:')
+        +'<div style="display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:4px">'
+        +sev.map(([k,l])=>'<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:12px;height:12px;border:2px solid '+libreSeverityColor(k)+';border-radius:2px"></span>'+l+'</span>').join('')
+        +'</div>'));
+    }
+    content.innerHTML=parts.join('');
+  }
+  function addLibreControl(lib,map){
+    const ctl=lib.control({position:'topright'});
+    ctl.onAdd=function(){
+      const box=lib.DomUtil.create('div','pw-librewxr-ctl');
+      box.style.cssText='background:var(--panel,#fff);color:var(--text,#222);padding:8px 10px;border-radius:6px;box-shadow:0 1px 5px #0005;min-width:190px;font-size:12px';
+      const label=(text,id)=>{const l=document.createElement('label');l.htmlFor=id;l.textContent=text;l.style.cssText='display:block;margin-bottom:4px';return l};
+      const sel=document.createElement('select');
+      sel.id='pwLibreLayer';sel.style.cssText='display:block;width:100%;margin-bottom:8px';
+      [['radar',T('Radar a nowcast','Radar and nowcast')],['satellite',T('Satelit (12 h späť)','Satellite (last 12 h)')]].forEach(([v,t])=>{
+        const o=document.createElement('option');o.value=v;o.textContent=t;sel.appendChild(o);
+      });
+      sel.value=libreLayer();
+      sel.addEventListener('change',()=>{libreStore.set('layer',sel.value);stopPlay();destroy();sync()});
+      box.append(label(T('Vrstva','Layer'),'pwLibreLayer'),sel);
+      const opLabel=document.createElement('label');
+      opLabel.htmlFor='pwLibreOpacity';opLabel.style.cssText='display:block;margin-bottom:4px';
+      const slider=document.createElement('input');
+      slider.id='pwLibreOpacity';slider.type='range';slider.min='0';slider.max='100';slider.step='1';
+      slider.value=String(Math.round((R.libreOpacity??(libreLayer()==='satellite'?.7:.8))*100));
+      slider.style.cssText='display:block;width:100%;margin-bottom:8px;accent-color:var(--accent)';
+      const opText=()=>{opLabel.textContent=T('Krytie vrstvy','Layer opacity')+': '+slider.value+' %'};
+      slider.addEventListener('input',()=>{
+        R.libreOpacity=Number(slider.value)/100;
+        Object.values(R.layers||{}).forEach(l=>l.setOpacity(R.libreOpacity));
+        opText();
+      });
+      opText();box.append(opLabel,slider);
+      const sat=libreLayer()==='satellite';
+      [['lightning',T('Blesky','Lightning'),true],['arrows',T('Šípky pohybu zrážok','Precipitation motion arrows'),true],['cells',T('Búrkové bunky','Storm cells'),true],['alerts',T('Výstrahy (orientačné)','Alerts (indicative)'),false]].forEach(([k,text,radarOnly])=>{
+        const row=document.createElement('label');
+        row.style.cssText='display:flex;align-items:center;gap:6px;margin-top:4px';
+        const cb=document.createElement('input');
+        cb.type='checkbox';cb.checked=libreOpt(k);cb.disabled=!!(radarOnly&&sat);
+        cb.addEventListener('change',()=>{
+          libreStore.set('opt.'+k,cb.checked?'1':'0');
+          if(k==='alerts')refreshLibreAlerts();else rebuildLibreLayers();
+          syncControls();
+        });
+        row.append(cb,document.createTextNode(text));box.appendChild(row);
+      });
+      lib.DomEvent.disableClickPropagation(box);
+      lib.DomEvent.disableScrollPropagation(box);
+      lib.DomEvent.on(box,'keydown',lib.DomEvent.stopPropagation);
+      return box;
+    };
+    ctl.addTo(map);
+    map.on('moveend',()=>{
+      if(!libreOpt('alerts'))return;
+      clearTimeout(R.libreAlertTimer);R.libreAlertTimer=setTimeout(refreshLibreAlerts,600);
+    });
+    refreshLibreAlerts();
+  }
   function frameLabel(fr){
+    if(fr.libre){
+      const hm=new Date(fr.time).toLocaleTimeString(sk()?'sk-SK':'en-GB',{hour:'2-digit',minute:'2-digit'});
+      if(fr.kind==='satellite')return hm+' · '+T('satelit','satellite');
+      const m=Math.round((fr.time-Date.now())/60000),a=Math.abs(m);
+      const rel=a<5?T('Teraz','Now'):(m<0?'−':'+')+(a>=60?(a/60).toFixed(a%60?1:0)+' h':a+' min');
+      return rel+' · '+hm+(fr.forecast?' · '+T('nowcast (odhad radaru)','nowcast (radar estimate)'):'');
+    }
     if(fr.weatherapi){
       const when=new Date(fr.time).toLocaleString(sk()?'sk-SK':'en-GB',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
       return when+' · '+T('predpoveď','forecast')+(fr.min?' · +'+(fr.min/60)+' h':'');
@@ -6092,6 +6300,7 @@ pw11Compass=function(wd,label){
   function setPlayLabel(){
     const b=el('radarPlay');if(!b)return;
     b.textContent=R.playing?'⏸':'▶';
+    if(isLibre()){b.title=R.playing?T('Zastaviť','Pause'):T('Prehrať snímky LibreWXR (stiahne všetky dlaždice vrstvy)','Play LibreWXR frames (downloads all tiles of the layer)');return}
     if(isWeatherApi()){b.title=R.playing?T('Zastaviť','Pause'):T('Prehrať predpoveď (načíta až 72 snímok)','Play forecast (loads up to 72 frames)');return}
     b.title=R.playing?T('Zastaviť','Pause'):T('Prehrať posledné 2 hodiny a predpoveď (stiahne všetky snímky a spotrebuje mapové jednotky)','Play the last 2 hours and the forecast (downloads all frames and uses map units)');
   }
@@ -6125,9 +6334,10 @@ pw11Compass=function(wd,label){
     const content=box.querySelector('.pw-radar-legend-content');
     const fr=R.frames&&R.frames[R.index];
     const forecast=!!(fr&&fr.forecast);
-    const sig=(sk()?'sk':'en')+'|'+forecast+'|'+provider()+'|'+weatherLayer();
+    const sig=(sk()?'sk':'en')+'|'+forecast+'|'+provider()+'|'+weatherLayer()+'|'+libreLayer()+'|'+libreOptSig();
     if(content.dataset.sig===sig)return;
     content.dataset.sig=sig;
+    if(isLibre()){libreLegend(content,forecast);return}
     if(isWeatherApi()){
       content.textContent=T('Predpovedná vrstva WeatherAPI.com. Číselná farebná stupnica a jednotky zatiaľ nie sú overené; nepoužívaj radarovú škálu dBZ.','WeatherAPI.com forecast layer. The numerical colour scale and units have not yet been verified; do not use the radar dBZ scale.');
       return;
@@ -6185,8 +6395,8 @@ pw11Compass=function(wd,label){
       document.head.appendChild(style);
     }
 
-    const name=isWeatherApi()?'WeatherAPI':'Xweather';
-    const source=isWeatherApi()?'#22c55e':'#f97316';
+    const name=isLibre()?'LibreWXR':isWeatherApi()?'WeatherAPI':'Xweather';
+    const source=isLibre()?'#38bdf8':isWeatherApi()?'#22c55e':'#f97316';
     const messages={
       idle:T('Bez načítanej meteorologickej vrstvy',
              'No weather layer loaded'),
@@ -6263,6 +6473,7 @@ pw11Compass=function(wd,label){
 
   function frameError(fr){
     if(!enabled()||!isOpen()||!R.frames||R.frames[R.index]!==fr)return;
+    if(fr.libre){const m=el('radarMessage');if(m)m.textContent=T('Niektoré dlaždice LibreWXR sa nenačítali. Server môže byť nedostupný alebo je vrstva vypnutá.','Some LibreWXR tiles failed to load. The server may be unavailable or the layer disabled.');return}
     if(fr.weatherapi){const m=el('radarMessage');if(m)m.textContent=T('Niektoré dlaždice WeatherAPI.com sa nenačítali. Snímka môže byť neúplná alebo nedostupná; skús inú hodinu.','Some WeatherAPI.com tiles failed to load. The frame may be incomplete or unavailable; try another hour.');return}
     R.errors++;
     if(R.errors===4){const m=el('radarMessage');if(m)m.textContent=fr.forecast
@@ -6275,8 +6486,8 @@ pw11Compass=function(wd,label){
     R.layers=R.layers||{};
     const fr=R.frames[i];let layer=R.layers[i];
     if(!layer){
-      const url=fr.weatherapi?weatherTileUrl(fr):'https://maps.api.xweather.com/'+R.key+'/'+fr.layer+'/{z}/{x}/{y}/'+fr.offset+'.png';
-      layer=R.lib.tileLayer(url,{opacity:fr.weatherapi?(R.weatherOpacity??.55):.85,maxZoom:10,attribution:fr.weatherapi?'&copy; WeatherAPI.com':'&copy; Xweather'});
+      const url=fr.libre?libreTileUrl(fr):fr.weatherapi?weatherTileUrl(fr):'https://maps.api.xweather.com/'+R.key+'/'+fr.layer+'/{z}/{x}/{y}/'+fr.offset+'.png';
+      layer=R.lib.tileLayer(url,{opacity:fr.libre?(R.libreOpacity??(fr.kind==='satellite'?.7:.8)):fr.weatherapi?(R.weatherOpacity??.55):.85,maxZoom:10,attribution:fr.libre?libreAttr(fr):fr.weatherapi?'&copy; WeatherAPI.com':'&copy; Xweather'});
       layer.on('tileerror',()=>{layer._perunFailed=true;frameError(fr)});
       layer.on('load',()=>{if(R.frames&&R.frames[R.index]===fr&&!layer._perunFailed){R.errors=0;const m=el('radarMessage');if(m)m.textContent=''}});
       watchMapTiles(layer);
@@ -6333,6 +6544,11 @@ pw11Compass=function(wd,label){
   function create(){
     const s=st(),lib=R.lib,box=el('radarMap');if(!s||!lib||!box)return;
     if(R.map){R.map.invalidateSize();return}
+    if(isLibre()){
+      if(!R.libreMeta)return;
+      if(!libreFrames().length&&libreLayer()==='satellite')libreStore.set('layer','radar');
+      if(!libreFrames().length){const m=el('radarMessage');if(m)m.textContent=T('LibreWXR momentálne neposkytuje snímky.','LibreWXR currently provides no frames.');return}
+    }
     const loc=(s.locations||[])[s.selected]||null,lat=loc?Number(loc.latitude):48.15,lon=loc?Number(loc.longitude):17.1;
     const map=lib.map(box,{center:[lat,lon],zoom:6,minZoom:4,maxZoom:10});
     map.attributionControl.setPrefix('Leaflet');
@@ -6413,6 +6629,7 @@ pw11Compass=function(wd,label){
       };
       opacityControl.addTo(map);
     }
+    if(isLibre())addLibreControl(lib,map);
     R.frames=buildFrames();R.layers={};R.index=initialIndex();
     const sl=el('radarSlider');if(sl){sl.max=String(R.frames.length-1);sl.value=String(initialIndex())}
     showFrame(initialIndex());
@@ -6433,9 +6650,9 @@ pw11Compass=function(wd,label){
   }
   function show(){
     const wrap=el('radarWrap'),msg=el('radarMessage');if(!wrap||!msg)return;
-    if(!isWeatherApi()&&!hasKey()){wrap.hidden=true;msg.textContent=T('Zadaj Client ID a Client Secret v Nastavenia → Panely → Meteoradar.','Enter the Client ID and Client Secret in Settings → Panels → Weather radar.');return}
+    if(!isWeatherApi()&&!isLibre()&&!hasKey()){wrap.hidden=true;msg.textContent=T('Zadaj Client ID a Client Secret v Nastavenia → Panely → Meteoradar.','Enter the Client ID and Client Secret in Settings → Panels → Weather radar.');return}
     if(!R.map)msg.textContent='';wrap.hidden=false;
-    loadLib().then(()=>{if(enabled()&&isOpen()&&(isWeatherApi()||hasKey()))create()}).catch(()=>{msg.textContent=T('Knižnicu mapy (leaflet.js) sa nepodarilo načítať.','The map library (leaflet.js) could not be loaded.')});
+    loadLib().then(()=>isLibre()&&!R.map?loadLibreMeta():null).then(()=>{if(enabled()&&isOpen()&&(isWeatherApi()||isLibre()||hasKey()))create()}).catch(()=>{msg.textContent=T('Knižnicu mapy (leaflet.js) sa nepodarilo načítať.','The map library (leaflet.js) could not be loaded.')});
   }
   function sync(){if(!enabled()||!isOpen()){destroy();return}show()}
   function applyState(){
@@ -6443,7 +6660,7 @@ pw11Compass=function(wd,label){
     const s=st(),on=enabled(),sec=el('radarSection');if(sec)sec.hidden=!on;
     if(!on){const b=el('radarBody'),c=el('radarChevron');if(b)b.classList.remove('open');if(c)c.classList.remove('open')}
     document.querySelectorAll('[data-pw-radar]').forEach(b=>{const a=(b.getAttribute('data-pw-radar')==='on')===on;b.classList.toggle('active',a);b.setAttribute('aria-pressed',String(a))});
-    const keys=el('pwRadarKeys');if(keys)keys.hidden=!on||isWeatherApi();
+    const keys=el('pwRadarKeys');if(keys)keys.hidden=!on||isWeatherApi()||isLibre();
     const idEl=el('pwRadarId'),secEl=el('pwRadarSecret');
     if(s&&idEl&&document.activeElement!==idEl)idEl.value=s.radar_client_id||'';
     if(s&&secEl&&document.activeElement!==secEl)secEl.value=s.radar_client_secret||'';
@@ -6751,6 +6968,313 @@ pwBftDecorate=function(d){pwBftFitPrev(d);pwBftFitSoon()};
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(pwBftFitSoon);
 window.addEventListener('resize',()=>{clearTimeout(pwBftFit.t);pwBftFit.t=setTimeout(pwBftFitSoon,100)});
 if(window.ResizeObserver)new ResizeObserver(()=>{clearTimeout(pwBftFit.r);pwBftFit.r=setTimeout(pwBftFit,60)}).observe(document.body);
+// PERUN NOWCAST V1
+(function(){
+  const sk=()=>currentLang==='sk',T=(s,e)=>sk()?s:e,E=s=>escapeHtml(String(s==null?'':s));
+  const BASE='https://api.librewxr.net',Z=7,STEP=10,HORIZON=60,MIN_RATE=0.1;
+  const NC={at:0,key:'',busy:false,data:null};
+  const store={
+    get(k,d){try{const v=localStorage.getItem('pwNc.'+k);return v===null?d:v}catch(e){return d}},
+    set(k,v){try{localStorage.setItem('pwNc.'+k,v)}catch(e){}}
+  };
+  const source=()=>store.get('source','radar')==='openmeteo'?'openmeteo':'radar';
+  const st=()=>{try{return typeof state!=='undefined'&&state?state:null}catch(e){return null}};
+  const active=()=>{const s=st();return !!(s&&s.radar_enabled&&s.radar_provider==='librewxr')};
+  const place=()=>{
+    const s=st(),l=s&&(s.locations||[])[s.selected];
+    return l&&Number.isFinite(Number(l.latitude))&&Number.isFinite(Number(l.longitude))?{lat:Number(l.latitude),lon:Number(l.longitude)}:null;
+  };
+  const PAL=['009f9f', '009e9e', '009d99', '009a8c', '009573', '008c4b', '008c4a', '009047', '009b40', '00b031', '00d319', '00d319', '02d519', '07dc1a', '10e81d', '21fd22', '22fd21', '2ffd21', '50fd20', '92fd1e', 'fffd1b', 'fffc1a', 'fffa19', 'fff415', 'ffe80d', 'ffd400', 'ffd300', 'ffd100', 'ffcb00', 'ffbf00', 'ffab00', 'ffaa00', 'ffa700', 'ff9d00', 'ff8b00', 'ff6e00', 'fe6d00', 'fe6700', 'fb5900', 'f73d01', 'f01002', 'ef0f02', 'ed0f04', 'e90d09', 'df0a12', 'd00523', 'd00424', 'd1042c', 'd40341', 'da026b', 'e400b1', 'e400b1', 'e503b5', 'e90bc1', 'f11ad8', 'ff33ff', 'ff33ff', 'ff36ff', 'ff3eff', 'ff4dff', 'ff66ff', 'ff66ff', 'ff69ff', 'ff71ff', 'ff80ff', 'ff99ff', 'ff99ff', 'ff9aff', 'ff9cff', 'ffa1ff', 'ffaaff'].map(h=>[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]);
+  const CLASSES=[
+    {min:0.1,sk:'veľmi slabé zrážky',en:'very light precipitation',c:'#a5d6a7'},
+    {min:0.5,sk:'slabé zrážky',en:'light precipitation',c:'#66bb6a'},
+    {min:2.5,sk:'mierne zrážky',en:'moderate precipitation',c:'#ffca28'},
+    {min:7.6,sk:'silné zrážky',en:'heavy precipitation',c:'#ef5350'}
+  ];
+  const klass=r=>{let k=null;CLASSES.forEach(c=>{if(r>=c.min)k=c});return k};
+  const kname=k=>k?(sk()?k.sk:k.en):'';
+  function dbzOf(r,g,b,a){
+    if(a<128)return 0;
+    let best=-1,bd=1e9;
+    for(let i=0;i<PAL.length;i++){const d=(PAL[i][0]-r)**2+(PAL[i][1]-g)**2+(PAL[i][2]-b)**2;if(d<bd){bd=d;best=i}}
+    return bd<=4800?10+best:0;
+  }
+  const rateFromDbz=d=>d>=10?Math.pow(Math.pow(10,d/10)/200,1/1.6):0;
+  const imperial=()=>{const s=st();return !!(s&&s.units==='imperial')};
+  function fmtRate(r){
+    const v=imperial()?r/25.4:r,s=v>=10?v.toFixed(0):v>=1?v.toFixed(1):v.toFixed(2);
+    return (sk()?s.replace('.',','):s)+' '+(imperial()?'in/h':'mm/h');
+  }
+  function tileRef(p){
+    const n=Math.pow(2,Z),x=(p.lon+180)/360*n,rad=p.lat*Math.PI/180;
+    const y=(1-Math.log(Math.tan(rad)+1/Math.cos(rad))/Math.PI)/2*n;
+    const tx=Math.floor(x),ty=Math.floor(y);
+    return {tx:tx,ty:ty,px:Math.min(255,Math.floor((x-tx)*256)),py:Math.min(255,Math.floor((y-ty)*256))};
+  }
+  function sampleTile(path,p){
+    const t=tileRef(p),url=BASE+path+'/256/'+Z+'/'+t.tx+'/'+t.ty+'/7/0_0.png';
+    return new Promise((resolve,reject)=>{
+      const img=new Image();img.crossOrigin='anonymous';
+      img.onload=()=>{
+        try{
+          const c=document.createElement('canvas');c.width=c.height=256;
+          const g=c.getContext('2d');g.drawImage(img,0,0);
+          const x0=Math.max(0,t.px-1),y0=Math.max(0,t.py-1),w=Math.min(256,t.px+2)-x0,h=Math.min(256,t.py+2)-y0;
+          const d=g.getImageData(x0,y0,w,h).data;let best=0;
+          for(let i=0;i<d.length;i+=4)best=Math.max(best,dbzOf(d[i],d[i+1],d[i+2],d[i+3]));
+          resolve(best);
+        }catch(e){reject(e)}
+      };
+      img.onerror=()=>reject(new Error('tile'));
+      img.src=url;
+    });
+  }
+  function loadRadar(p){
+    return fetch(BASE+'/public/weather-maps.json',{cache:'no-store'})
+      .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
+      .then(meta=>{
+        const past=(meta&&meta.radar&&meta.radar.past)||[],now=(meta&&meta.radar&&meta.radar.nowcast)||[];
+        if(!past.length||!now.length)throw new Error('no nowcast');
+        const last=past[past.length-1],frames=[last].concat(now.slice(0,HORIZON/STEP));
+        return Promise.all(frames.map(f=>sampleTile(f.path,p).then(d=>({
+          min:Math.max(0,Math.round((Number(f.time)-Number(last.time))/60/STEP)*STEP),dbz:d,rate:rateFromDbz(d)
+        }))));
+      });
+  }
+  function loadOpenMeteo(p){
+    const url='https://api.open-meteo.com/v1/forecast?latitude='+p.lat.toFixed(4)+'&longitude='+p.lon.toFixed(4)
+      +'&minutely_15=precipitation&forecast_minutely_15=8&past_minutely_15=1&timeformat=unixtime&timezone=GMT';
+    return fetch(url).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}).then(j=>{
+      const m=j&&j.minutely_15,t=m&&m.time,v=m&&m.precipitation;
+      if(!Array.isArray(t)||!Array.isArray(v))throw new Error('no minutely_15');
+      const now=Date.now()/1000,pts=[];
+      for(let min=0;min<=HORIZON;min+=STEP){
+        const ts=now+min*60;let rate=0;
+        for(let i=0;i<t.length;i++){if(ts>t[i]-900&&ts<=t[i]){rate=(Number(v[i])||0)*4;break}}
+        pts.push({min:min,dbz:null,rate:rate});
+      }
+      return pts;
+    });
+  }
+  const km=(p,lat,lon)=>{
+    const dx=(lon-p.lon)*111.32*Math.cos(p.lat*Math.PI/180),dy=(lat-p.lat)*110.57;
+    return {dx:dx,dy:dy,dist:Math.hypot(dx,dy)};
+  };
+  const DIRS_SK=['S','SV','V','JV','J','JZ','Z','SZ'],DIRS_EN=['N','NE','E','SE','S','SW','W','NW'];
+  const compass=deg=>(sk()?DIRS_SK:DIRS_EN)[Math.round(((deg%360)+360)%360/45)%8];
+  function parseCells(gj,p){
+    if(!gj||!Array.isArray(gj.features))return null;
+    const out=[];
+    gj.features.forEach(f=>{
+      const c=f&&f.geometry&&f.geometry.coordinates,pr=(f&&f.properties)||{};
+      if(!Array.isArray(c)||c.length<2)return;
+      const k=km(p,Number(c[1]),Number(c[0])),sp=Number(pr.motion_speed_kmh),hd=Number(pr.motion_heading_deg);
+      let eta=null,minDist=k.dist;
+      if(Number.isFinite(sp)&&Number.isFinite(hd)&&pr.motion_heading_deg!==null){
+        const vx=sp*Math.sin(hd*Math.PI/180)/60,vy=sp*Math.cos(hd*Math.PI/180)/60;
+        for(let t=0;t<=HORIZON;t+=5){
+          const d=Math.hypot(k.dx+vx*t,k.dy+vy*t);
+          if(d<minDist)minDist=d;
+          if(eta===null&&d<8)eta=t;
+        }
+      }
+      out.push({dist:k.dist,bearing:(Math.atan2(k.dx,k.dy)*180/Math.PI+360)%360,dbz:Number(pr.max_dbz),speed:(pr.motion_speed_kmh==null?NaN:sp),heading:(pr.motion_heading_deg==null?NaN:hd),eta:eta,minDist:minDist});
+    });
+    out.sort((a,b)=>(a.eta===null?1e6:a.eta)-(b.eta===null?1e6:b.eta)||a.dist-b.dist);
+    return out;
+  }
+  function parseStrikes(gj,p){
+    if(!gj||!Array.isArray(gj.features))return null;
+    const out=[];
+    gj.features.forEach(f=>{
+      const c=f&&f.geometry&&f.geometry.coordinates;
+      if(!Array.isArray(c)||c.length<2)return;
+      const lat=Number(c[1]),lon=Number(c[0]);
+      if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
+      const k=km(p,lat,lon);
+      out.push({dx:k.dx,dy:k.dy,dist:k.dist});
+    });
+    return out;
+  }
+  function loadStorm(p){
+    const q='lat='+p.lat.toFixed(4)+'&lon='+p.lon.toFixed(4);
+    const cells=fetch(BASE+'/v2/storm-cells?'+q+'&radius_km=100').then(r=>r.ok?r.json():null).catch(()=>null);
+    const light=fetch(BASE+'/v2/lightning?'+q+'&radius_km=100&limit=500').then(r=>r.ok?r.json():null).catch(()=>null);
+    return Promise.all([cells,light]).then(a=>{
+      const strikes=parseStrikes(a[1],p);
+      return {cells:parseCells(a[0],p),strikes:strikes,lightning:strikes?strikes.filter(x=>x.dist<=25).length:null};
+    });
+  }
+  function derive(){
+    const D=NC.data;if(!D||!D.pts||!D.pts.length)return null;
+    const pts=D.pts,wet=pts.find(x=>x.rate>=MIN_RATE);
+    if(!wet)return null;
+    const wetNow=pts[0].rate>=MIN_RATE;
+    let head;
+    if(wetNow){
+      const dry=pts.find((x,i)=>i>0&&pts.slice(i).every(q=>q.rate<MIN_RATE));
+      head=dry?T('Dážď skončí o ~'+dry.min+' min','Rain ends in ~'+dry.min+' min'):T('Dážď potrvá aspoň hodinu','Rain for at least an hour');
+    }else head=T('Dážď začne o ~'+wet.min+' min','Rain starts in ~'+wet.min+' min');
+    const peak=pts.reduce((a,b)=>b.rate>a.rate?b:a);
+    return {head:head,pts:pts,peak:peak,k:klass(peak.rate),wetNow:wetNow,src:D.src,fallback:D.fallback,storm:D.storm};
+  }
+  const segs=(pts,h)=>pts.map(x=>{const k=klass(x.rate);return '<i title="'+E((x.min?'+'+x.min+' min':T('Teraz','Now'))+': '+(k?kname(k)+' · '+fmtRate(x.rate):T('bez zrážok','no precipitation')))+'" style="background:'+(k?k.c:'#2a3446')+'"></i>'}).join('');
+  function tileHtml(i){
+    return '<div class="pw-nc-h">'+E(i.head)+'</div>'
+      +'<div class="pw-nc-s">'+E(T('najsilnejšie: ','strongest: ')+kname(i.k))+'</div>'
+      +'<div class="pw-nc-scale">'+segs(i.pts)+'</div>';
+  }
+  function cardHtml(i){
+    const bars=i.pts.map(x=>{
+      const k=klass(x.rate),h=k?Math.max(12,Math.min(100,Math.sqrt(x.rate/10)*100)):6;
+      return '<div class="pw-nc-bar" title="'+E((x.min?'+'+x.min+' min':T('Teraz','Now'))+': '+(k?kname(k)+' · '+fmtRate(x.rate)+(x.dbz?' · '+x.dbz+' dBZ':''):T('bez zrážok','no precipitation')))+'" style="height:'+h+'%;background:'+(k?k.c:'#2a3446')+'"></div>';
+    }).join('');
+    const axis=i.pts.map(x=>'<span>'+(x.min?'+'+x.min:T('Teraz','Now'))+'</span>').join('');
+    const when=new Date(Date.now()+i.peak.min*60000).toLocaleTimeString(sk()?'sk-SK':'en-GB',{hour:'2-digit',minute:'2-digit'});
+    const legend=CLASSES.map(c=>'<span><i style="background:'+c.c+'"></i>'+E(sk()?c.sk.replace(' zrážky',''):c.en.replace(' precipitation',''))+'</span>').join('');
+    const sw=(id,label)=>'<button type="button" data-pw-nc-src="'+id+'" class="'+(i.src===id?'active':'')+'">'+E(label)+'</button>';
+    const note=i.src==='radar'
+      ?T('LibreWXR radar a nowcast. Množstvo je orientačný odhad z odrazivosti (Z = 200·R^1,6), nie meranie.','LibreWXR radar and nowcast. The amount is a rough estimate from reflectivity (Z = 200·R^1.6), not a measurement.')
+      :T('Open-Meteo, 15-minútový model (ICON-D2/AROME v strednej Európe, inde interpolované z hodinových dát).','Open-Meteo 15-minute model (ICON-D2/AROME in Central Europe, interpolated from hourly data elsewhere).');
+    return '<div class="pw5-label"><span class="pw3-dot" style="background:'+(i.k?i.k.c:'#5b6577')+'"></span>'+E(T('Nowcast zrážok (60 min)','Precipitation nowcast (60 min)'))
+      +'<span class="pw-nc-sw">'+sw('radar','Radar')+sw('openmeteo','Open-Meteo')+'</span></div>'
+      +'<div class="pw5-value pw-nc-big">'+E(i.head)+'</div>'
+      +'<div class="pw5-text">'+E(T('najsilnejšie: ','strongest: ')+kname(i.k))+'</div>'
+      +'<div class="pw-nc-bars">'+bars+'</div><div class="pw-nc-axis">'+axis+'</div>'
+      +'<div class="pw-nc-peak"><b>'+E(T('Najsilnejšie o ','Strongest at ')+when)+'</b> · '+E(kname(i.k))+' · '+E(fmtRate(i.peak.rate))+(i.peak.dbz?' · '+i.peak.dbz+' dBZ':'')+'</div>'
+      +'<div class="pw-nc-legend">'+legend+'</div>'
+      +'<div class="pw-nc-note">'+E(note)+(i.fallback?' '+E(T('(záloha: vybraný zdroj nebol dostupný)','(fallback: the selected source was unavailable)')):'')+'</div>';
+  }
+  function cellColor(dbz){
+    if(!Number.isFinite(dbz))return '#bbc4d2';
+    const c=PAL[Math.max(0,Math.min(PAL.length-1,Math.round(dbz)-10))];
+    return 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+  }
+  function stormSvg(cells,strikes){
+    const S=116,C=S/2,R=C-15,main=cells[0]||null,list=(strikes||[]).slice(0,80);
+    const maxD=Math.max(main?main.dist:0,...list.map(x=>x.dist),1);
+    const range=[25,50,100].find(r=>maxD*1.2<=r)||100,px=k=>k/range*R;
+    const xy=(dx,dy)=>[C+px(dx),C-px(dy)];
+    const polar=(d,b)=>xy(d*Math.sin(b*Math.PI/180),d*Math.cos(b*Math.PI/180));
+    let s='<svg class="pw-st-svg" viewBox="0 0 '+S+' '+S+'" role="img" aria-label="'+E(T('Poloha búrkových buniek a blesk voči lokalite','Storm cells and lightning relative to the location'))+'">';
+    s+='<circle cx="'+C+'" cy="'+C+'" r="'+R+'" fill="#141821" stroke="#4b586c"/><circle cx="'+C+'" cy="'+C+'" r="'+(R/2)+'" fill="none" stroke="#3a4558" stroke-dasharray="2 3"/>';
+    s+='<circle cx="'+C+'" cy="'+C+'" r="'+px(8).toFixed(1)+'" fill="none" stroke="#ffffff55" stroke-dasharray="2 2"/>';
+    s+='<text x="'+C+'" y="9" text-anchor="middle" font-size="9" fill="#bbc4d2">'+E(compass(0))+'</text>';
+    s+='<text x="'+(C+R-2)+'" y="11" text-anchor="end" font-size="8" fill="#8794a8">'+range+' km</text>';
+    cells.slice(1,6).forEach(c=>{
+      if(c.dist>range*1.05)return;
+      const p=polar(c.dist,c.bearing);
+      s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="'+cellColor(c.dbz)+'" fill-opacity=".65"/>';
+    });
+    let p0=null;
+    if(main){
+      p0=polar(main.dist,main.bearing);
+      if(Number.isFinite(main.speed)&&Number.isFinite(main.heading)&&main.speed>=3){
+        const dx0=main.dist*Math.sin(main.bearing*Math.PI/180),dy0=main.dist*Math.cos(main.bearing*Math.PI/180);
+        let ex=dx0+main.speed*0.5*Math.sin(main.heading*Math.PI/180),ey=dy0+main.speed*0.5*Math.cos(main.heading*Math.PI/180);
+        const len=Math.hypot(ex,ey);
+        if(len>range*1.02){ex*=range*1.02/len;ey*=range*1.02/len}
+        const p1=xy(ex,ey);
+        if(Math.hypot(p1[0]-p0[0],p1[1]-p0[1])>6){
+          const dur=Math.max(1.2,Math.min(8,120/main.speed)).toFixed(2),col=cellColor(main.dbz);
+          s+='<line x1="'+p0[0].toFixed(1)+'" y1="'+p0[1].toFixed(1)+'" x2="'+p1[0].toFixed(1)+'" y2="'+p1[1].toFixed(1)+'" stroke="#e8eaf0" stroke-opacity=".35" stroke-dasharray="2 3"/>';
+          s+='<circle class="pw-st-anim" r="3.6" fill="'+col+'" stroke="#fff" stroke-width=".9" opacity="0">'
+            +'<animateMotion dur="'+dur+'s" repeatCount="indefinite" calcMode="linear" path="M'+p0[0].toFixed(1)+' '+p0[1].toFixed(1)+' L'+p1[0].toFixed(1)+' '+p1[1].toFixed(1)+'"/>'
+            +'<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.75;1" dur="'+dur+'s" repeatCount="indefinite"/></circle>';
+        }
+      }
+      s+='<circle cx="'+p0[0].toFixed(1)+'" cy="'+p0[1].toFixed(1)+'" r="5" fill="'+cellColor(main.dbz)+'" stroke="#fff" stroke-width="1.2"/>';
+    }
+    list.forEach(x=>{
+      if(x.dist>range*1.05)return;
+      const p=xy(x.dx,x.dy);
+      s+='<path transform="translate('+p[0].toFixed(1)+' '+p[1].toFixed(1)+')" d="M0.6 -4.5 L-2.6 0.8 L-0.4 0.8 L-1.2 4.5 L2.6 -1 L0.4 -1 Z" fill="#ffe14d" stroke="#141821" stroke-width=".5"/>';
+    });
+    s+='<g transform="translate('+C+' '+C+') scale(.36) translate(-18 -46)"><path d="M18 46C15 42 2 28 2 18a16 16 0 0 1 32 0c0 10-13 24-16 28Z" fill="#e53935" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/><circle cx="18" cy="18" r="6" fill="#fff"/></g></svg>';
+    return s;
+  }
+  function stormHtml(i){
+    const s=i.storm||{},cells=s.cells,light=s.lightning,strikes=s.strikes||[];
+    let big,line='',color='#5b6577',svg='';
+    if(cells&&cells.length){
+      const c=cells[0];color='#ffb74d';
+      big=Math.round(c.dist)+' km '+T('na ','to the ')+compass(c.bearing);
+      if(c.eta!==null)line=c.eta===0?T('už je pri vás','already overhead'):T('pri vás o ~'+c.eta+' min','over you in ~'+c.eta+' min');
+      svg=stormSvg(cells,strikes);
+    }else if(cells){
+      big=T('Žiadne','None');line=T('v okolí 100 km sa nenašla búrková bunka','no storm cell found within 100 km');
+      if(strikes.length)svg=stormSvg([],strikes);
+    }else{
+      big='—';line=T('Údaje o búrkových bunkách nie sú dostupné','Storm cell data unavailable');
+    }
+    if(light>0)color='#ff7043';
+    return '<div class="pw5-label"><span class="pw3-dot" style="background:'+color+'"></span>'+E(T('Búrky v okolí','Storms nearby'))+'</div>'
+      +'<div class="pw5-body pw-st-body">'+svg+'<div class="pw-st-text"><div class="pw5-value" style="'+(cells&&cells.length?'':'color:#bbc4d2')+'">'+E(big)+'</div>'
+      +(line?'<div class="pw5-text">'+E(line)+'</div>':'')
+      +'<div class="pw5-text" style="margin-top:6px">'+E(T('Blesky (30 min, 25 km): ','Lightning (30 min, 25 km): '))+'<b>'+(light==null?'—':light)+'</b></div></div></div>';
+  }
+  function upsert(parent,id,cls,html){
+    let el=document.getElementById(id);
+    if(!el||el.parentElement!==parent){
+      if(el)el.remove();
+      el=document.createElement('div');el.id=id;parent.appendChild(el);
+    }
+    if(el.className!==cls)el.className=cls;
+    if(el._h!==html){el.innerHTML=html;el._h=html}
+  }
+  function cleanup(tiles,first){
+    if(first){
+      first.classList.remove('pw-nc-on');
+      const b=first.querySelector('.pw-nc-bottom');if(b)b.remove();
+    }
+    ['pwNcCard','pwNcStorm'].forEach(id=>{const e=document.getElementById(id);if(e)e.remove()});
+  }
+  function apply(){
+    const root=document.getElementById('pwOverview');if(!root)return;
+    const tiles=root.querySelector('.pw5-tiles');if(!tiles)return;
+    const first=tiles.firstElementChild,info=active()?derive():null;
+    if(!root._pwNcBound){
+      root._pwNcBound=true;
+      root.addEventListener('click',e=>{
+        const b=e.target instanceof Element?e.target.closest('[data-pw-nc-src]'):null;
+        if(!b)return;
+        store.set('source',b.getAttribute('data-pw-nc-src'));NC.key='';refresh(true);
+      });
+    }
+    if(!info){cleanup(tiles,first);return}
+    const body=first&&first.querySelector('.pw5-body');
+    if(body){
+      first.classList.add('pw-nc-on');
+      let b=body.querySelector(':scope>.pw-nc-bottom');
+      if(!b){b=document.createElement('div');b.className='pw-nc-bottom';body.appendChild(b)}
+      const html=tileHtml(info);
+      if(b._h!==html){b.innerHTML=html;b._h=html}
+    }
+    upsert(tiles,'pwNcCard','pw5-tile wide pw-nc-card',cardHtml(info));
+    upsert(tiles,'pwNcStorm','pw5-tile pw-nc-storm',stormHtml(info));
+  }
+  function refresh(force){
+    if(NC.busy||!active())return;
+    const p=place();if(!p)return;
+    const key=p.lat.toFixed(3)+','+p.lon.toFixed(3)+'|'+source();
+    if(!force&&key===NC.key&&Date.now()-NC.at<600000)return;
+    NC.busy=true;
+    const primary=source()==='openmeteo'
+      ?loadOpenMeteo(p).then(pts=>({pts:pts,src:'openmeteo'})).catch(()=>loadRadar(p).then(pts=>({pts:pts,src:'radar',fallback:true})))
+      :loadRadar(p).then(pts=>({pts:pts,src:'radar'})).catch(()=>loadOpenMeteo(p).then(pts=>({pts:pts,src:'openmeteo',fallback:true})));
+    Promise.all([primary,loadStorm(p).catch(()=>({cells:null,lightning:null}))])
+      .then(a=>{NC.data={pts:a[0].pts,src:a[0].src,fallback:!!a[0].fallback,storm:a[1]}})
+      .catch(e=>{NC.data=null;console.warn('[Perun Weather] Nowcast failed:',e)})
+      .then(()=>{NC.key=key;NC.at=Date.now();NC.busy=false;try{apply()}catch(e){console.warn('[Perun Weather] Nowcast render failed:',e)}});
+  }
+  const prevDecorate=pw11Decorate;
+  pw11Decorate=function(d){
+    prevDecorate(d);
+    try{refresh(false);apply()}catch(error){console.warn('[Perun Weather] Nowcast decoration failed:',error)}
+  };
+  setInterval(()=>{refresh(false)},60000);
+  window.__pwNowcast={derive:derive,klass:klass,dbzOf:dbzOf,rateFromDbz:rateFromDbz,parseCells:parseCells,tileRef:tileRef,tileHtml:tileHtml,cardHtml:cardHtml,stormHtml:stormHtml,fmtRate:fmtRate,_NC:NC};
+})();
 </script>
 </body>
 </html>
